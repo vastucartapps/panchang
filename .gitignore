@@ -1,0 +1,8 @@
+# Development artifacts
+.playwright-mcp/
+Reference Files/
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
