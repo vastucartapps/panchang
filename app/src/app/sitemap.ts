@@ -32,6 +32,8 @@ function getDateRange(): string[] {
 // Sitemap 4: Tithi city topic pages
 // Sitemap 5: Nakshatra city topic pages
 // Sitemap 6: Moon Phase city topic pages
+export const dynamic = "force-dynamic";
+
 export async function generateSitemaps() {
   return [
     { id: 0 },
@@ -45,12 +47,13 @@ export async function generateSitemaps() {
 }
 
 export default function sitemap({ id }: { id: number }): MetadataRoute.Sitemap {
+  const sitemapId = Number(id);
   const slugs = getCitySlugs();
   const today = new Date();
   const dates = getDateRange();
 
   // Sitemap 0: Main pages
-  if (id === 0) {
+  if (sitemapId === 0) {
     const cityPages = slugs.map((slug) => ({
       url: `${SITE_URL}/${slug}`,
       lastModified: today,
@@ -93,7 +96,7 @@ export default function sitemap({ id }: { id: number }): MetadataRoute.Sitemap {
   }
 
   // Sitemap 1: City/date panchang pages (/city/date)
-  if (id === 1) {
+  if (sitemapId === 1) {
     const pages: MetadataRoute.Sitemap = [];
     for (const slug of slugs) {
       for (const date of dates) {
@@ -110,7 +113,7 @@ export default function sitemap({ id }: { id: number }): MetadataRoute.Sitemap {
   }
 
   // Sitemaps 2-6: City topic pages (/city/topic/date)
-  const topicIndex = id - 2;
+  const topicIndex = sitemapId - 2;
   if (topicIndex >= 0 && topicIndex < SEO_TOPICS.length) {
     const topic = SEO_TOPICS[topicIndex];
     const pages: MetadataRoute.Sitemap = [];
