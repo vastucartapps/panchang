@@ -3,6 +3,8 @@ import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { CHOGHADIYA_FAQS } from "@/lib/faqs";
+import { getAllCities } from "@/lib/cities";
+import { getTodayISO } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
@@ -33,16 +35,9 @@ const CHOGHADIYA_TYPES = [
   { name: "Udveg", nature: "Inauspicious", desc: "Avoid new ventures; government work may be okay" },
 ];
 
-const POPULAR_CITIES = [
-  { name: "New Delhi", slug: "new-delhi" },
-  { name: "Mumbai", slug: "mumbai" },
-  { name: "Bangalore", slug: "bangalore" },
-  { name: "Chennai", slug: "chennai" },
-  { name: "Kolkata", slug: "kolkata" },
-  { name: "Hyderabad", slug: "hyderabad" },
-];
-
 export default function ChoghadiyaPage() {
+  const allCities = getAllCities();
+  const today = getTodayISO();
   return (
     <>
       <JsonLd
@@ -112,11 +107,14 @@ export default function ChoghadiyaPage() {
           <h2 className="text-xl font-bold text-[var(--color-vedic)]">
             Check Choghadiya for Your City
           </h2>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {POPULAR_CITIES.map((city) => (
+          <p className="text-sm text-muted-foreground">
+            Select your city to view today&apos;s day and night Choghadiya periods.
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+            {allCities.map((city) => (
               <Link
                 key={city.slug}
-                href={`/${city.slug}`}
+                href={`/${city.slug}/choghadiya-today/${today}`}
                 className="flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-saffron)]/30 hover:shadow-md"
               >
                 <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />

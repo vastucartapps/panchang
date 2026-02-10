@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
-import { getCityBySlug } from "@/lib/cities";
-import { formatDate } from "@/lib/format";
+import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
+import { formatDate, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
 import { HeroSection } from "@/components/hero/hero-section";
@@ -14,8 +14,12 @@ import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
 import { FaqSection } from "@/components/seo/faq-section";
 
-export const dynamic = "force-dynamic";
 export const revalidate = 3600;
+
+export function generateStaticParams() {
+  const today = getTodayISO();
+  return getTopCitySlugs().map((city) => ({ city, date: today }));
+}
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 

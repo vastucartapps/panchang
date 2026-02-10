@@ -159,6 +159,112 @@ export const MOON_PHASE_FAQS: FaqItem[] = [
   },
 ];
 
+// City-specific FAQs for topic pages
+export function getCityRahuKaalFaqs(cityName: string, stateName: string): FaqItem[] {
+  return [
+    {
+      question: `What is Rahu Kaal time in ${cityName} today?`,
+      answer: `Rahu Kaal timings for ${cityName}, ${stateName} are calculated daily based on the local sunrise and sunset times. The exact duration is approximately 1.5 hours and changes each day of the week. Check this page for today's accurate Rahu Kaal timing.`,
+    },
+    {
+      question: `Should I avoid travel during Rahu Kaal in ${cityName}?`,
+      answer: `Yes, starting a new journey during Rahu Kaal in ${cityName} is traditionally avoided. However, if you are already travelling, there is no need to stop. The restriction applies specifically to beginning new activities.`,
+    },
+    {
+      question: `Is Rahu Kaal the same in ${cityName} and other cities?`,
+      answer: `No. Rahu Kaal in ${cityName} differs from other cities because it depends on local sunrise and sunset times, which vary by geographical location. Even nearby cities can have slightly different timings.`,
+    },
+    {
+      question: `What is Yamagandam and Gulika Kalam in ${cityName}?`,
+      answer: `Yamagandam and Gulika Kalam are additional inauspicious periods calculated similarly to Rahu Kaal. Yamagandam is ruled by Yama, and Gulika Kalam by Saturn's son Gulika. Both last approximately 1.5 hours daily in ${cityName}.`,
+    },
+  ];
+}
+
+export function getCityChoghadiyaFaqs(cityName: string, stateName: string): FaqItem[] {
+  return [
+    {
+      question: `What is today's best Choghadiya in ${cityName}?`,
+      answer: `The best Choghadiya periods in ${cityName}, ${stateName} are Amrit (most auspicious), Shubh (auspicious), and Labh (profitable). Check the timings on this page to find the exact hours for each period today.`,
+    },
+    {
+      question: `How many Choghadiya periods are there in ${cityName} today?`,
+      answer: `There are 16 Choghadiya periods in ${cityName} each day — 8 during daytime (sunrise to sunset) and 8 during nighttime (sunset to next sunrise). Each period lasts about 1.5 hours.`,
+    },
+    {
+      question: `Can I start a business during Labh Choghadiya in ${cityName}?`,
+      answer: `Yes, Labh Choghadiya is considered favorable for business ventures, financial transactions, and profit-oriented activities in ${cityName}. It is one of the three auspicious periods in the Choghadiya system.`,
+    },
+    {
+      question: `Is Choghadiya timing different for ${cityName} compared to other cities?`,
+      answer: `Yes. Since Choghadiya is calculated based on sunrise and sunset times, which vary by location, the exact period timings in ${cityName} differ from those in other cities across India.`,
+    },
+  ];
+}
+
+export function getCityTithiFaqs(cityName: string, stateName: string): FaqItem[] {
+  return [
+    {
+      question: `What is today's Tithi in ${cityName}?`,
+      answer: `The current Tithi for ${cityName}, ${stateName} is shown on this page with its name, Paksha (lunar fortnight), deity, and progression. Tithi is the lunar day based on the angular distance between the Sun and Moon.`,
+    },
+    {
+      question: `Does Tithi change during the day in ${cityName}?`,
+      answer: `Yes, a Tithi can start or end at any point during the day. Unlike a calendar date which is exactly 24 hours, a Tithi can be shorter or longer. This is why checking the exact Tithi for ${cityName} at the current time is important.`,
+    },
+    {
+      question: `Which Tithis are auspicious for ceremonies in ${cityName}?`,
+      answer: `Nanda Tithis (1st, 6th, 11th) and Purna Tithis (5th, 10th, 15th) are generally auspicious for ceremonies in ${cityName}. Rikta Tithis (4th, 9th, 14th) are considered inauspicious and should be avoided for important events.`,
+    },
+    {
+      question: `What is the difference between Shukla and Krishna Paksha in ${cityName}'s Panchang?`,
+      answer: `Shukla Paksha (bright half) is the waxing period from New Moon to Full Moon, generally favorable for new beginnings. Krishna Paksha (dark half) is the waning period from Full Moon to New Moon, suited for spiritual practices and completing ongoing work.`,
+    },
+  ];
+}
+
+export function getCityNakshatraFaqs(cityName: string, stateName: string): FaqItem[] {
+  return [
+    {
+      question: `What is today's Nakshatra in ${cityName}?`,
+      answer: `The current Nakshatra for ${cityName}, ${stateName} is displayed on this page along with its Pada, ruling Lord, Deity, Gana, and activity type. Nakshatra determines the quality and nature of the day.`,
+    },
+    {
+      question: `How does Nakshatra affect activities in ${cityName}?`,
+      answer: `Each Nakshatra has an activity type: Fixed (Dhruva) for permanent works, Moveable (Chara) for travel, Sharp (Tikshna) for competitive tasks, Soft (Mridu) for arts and relationships, and Mixed (Mishra) for routine activities in ${cityName}.`,
+    },
+    {
+      question: `Is the Nakshatra the same across all cities including ${cityName}?`,
+      answer: `The Nakshatra itself is the same globally since it depends on the Moon's position in the sky, which is the same for all locations. However, the start and end times of a Nakshatra transition may appear at different local times.`,
+    },
+    {
+      question: `What is Nakshatra Pada and why does it matter for ${cityName}?`,
+      answer: `Each Nakshatra has 4 Padas (quarters). The Pada adds specificity to the Nakshatra's influence and is used for naming ceremonies, Navamsa chart analysis, and determining more precise astrological predictions for people in ${cityName}.`,
+    },
+  ];
+}
+
+export function getCityMoonPhaseFaqs(cityName: string, stateName: string): FaqItem[] {
+  return [
+    {
+      question: `What is today's Moon Phase in ${cityName}?`,
+      answer: `The current Moon Phase for ${cityName}, ${stateName} is shown on this page with its name, illumination percentage, Paksha, and age. The Moon phase directly influences Tithis and the nature of the day.`,
+    },
+    {
+      question: `Is the Moon phase different in ${cityName} versus other cities?`,
+      answer: `The Moon phase (illumination and phase name) is the same globally at any given moment. However, moonrise and moonset times vary by location, so when you can see the Moon in ${cityName} differs from other cities.`,
+    },
+    {
+      question: `How does Moon Phase affect Panchang in ${cityName}?`,
+      answer: `The Moon Phase is directly tied to Tithi in ${cityName}'s Panchang. Waxing phases (Shukla Paksha) are generally favorable for growth and new beginnings. Waning phases (Krishna Paksha) suit spiritual practices and introspection.`,
+    },
+    {
+      question: `When is the next Full Moon visible in ${cityName}?`,
+      answer: `Full Moon (Purnima) occurs approximately every 29.5 days. Check the daily Panchang for ${cityName} to track the Moon's progress toward the next Full Moon by monitoring the illumination percentage shown on this page.`,
+    },
+  ];
+}
+
 export const PANCHANG_GUIDE_FAQS: FaqItem[] = [
   {
     question: "What is Panchang?",

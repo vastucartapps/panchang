@@ -42,3 +42,15 @@ export function findNearestCity(lat: number, lng: number): City {
 export function getCitySlugs(): string[] {
   return cities.map((c) => c.slug);
 }
+
+/** Top 20 cities by traffic potential — used for generateStaticParams pre-rendering */
+const TOP_CITY_SLUGS = [
+  "new-delhi", "mumbai", "bangalore", "chennai", "kolkata",
+  "hyderabad", "pune", "ahmedabad", "jaipur", "lucknow",
+  "varanasi", "indore", "chandigarh", "patna", "bhopal",
+  "surat", "nagpur", "coimbatore", "visakhapatnam", "ujjain",
+];
+
+export function getTopCitySlugs(): string[] {
+  return TOP_CITY_SLUGS.filter((s) => cities.some((c) => c.slug === s));
+}

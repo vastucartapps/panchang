@@ -3,6 +3,8 @@ import { Star, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { NAKSHATRA_FAQS } from "@/lib/faqs";
+import { getAllCities } from "@/lib/cities";
+import { getTodayISO } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
@@ -23,16 +25,9 @@ export const metadata: Metadata = {
   },
 };
 
-const POPULAR_CITIES = [
-  { name: "New Delhi", slug: "new-delhi" },
-  { name: "Mumbai", slug: "mumbai" },
-  { name: "Bangalore", slug: "bangalore" },
-  { name: "Chennai", slug: "chennai" },
-  { name: "Varanasi", slug: "varanasi" },
-  { name: "Ujjain", slug: "ujjain" },
-];
-
 export default function TodaysNakshatraPage() {
+  const allCities = getAllCities();
+  const today = getTodayISO();
   return (
     <>
       <JsonLd
@@ -97,13 +92,16 @@ export default function TodaysNakshatraPage() {
           </ul>
 
           <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-            Check Today&apos;s Nakshatra
+            Check Today&apos;s Nakshatra for Your City
           </h2>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {POPULAR_CITIES.map((city) => (
+          <p className="text-sm text-muted-foreground">
+            Select your city to view today&apos;s Nakshatra, Pada, Lord, and Deity details.
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+            {allCities.map((city) => (
               <Link
                 key={city.slug}
-                href={`/${city.slug}`}
+                href={`/${city.slug}/todays-nakshatra/${today}`}
                 className="flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-saffron)]/30 hover:shadow-md"
               >
                 <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />

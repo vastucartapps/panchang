@@ -3,6 +3,8 @@ import { ShieldAlert, Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { RAHU_KAAL_FAQS } from "@/lib/faqs";
+import { getAllCities } from "@/lib/cities";
+import { getTodayISO } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
@@ -23,22 +25,9 @@ export const metadata: Metadata = {
   },
 };
 
-const POPULAR_CITIES = [
-  { name: "New Delhi", slug: "new-delhi" },
-  { name: "Mumbai", slug: "mumbai" },
-  { name: "Bangalore", slug: "bangalore" },
-  { name: "Chennai", slug: "chennai" },
-  { name: "Kolkata", slug: "kolkata" },
-  { name: "Hyderabad", slug: "hyderabad" },
-  { name: "Pune", slug: "pune" },
-  { name: "Ahmedabad", slug: "ahmedabad" },
-  { name: "Jaipur", slug: "jaipur" },
-  { name: "Varanasi", slug: "varanasi" },
-  { name: "Lucknow", slug: "lucknow" },
-  { name: "Indore", slug: "indore" },
-];
-
 export default function RahuKaalPage() {
+  const allCities = getAllCities();
+  const today = getTodayISO();
   return (
     <>
       <JsonLd
@@ -104,11 +93,14 @@ export default function RahuKaalPage() {
           <h2 className="text-xl font-bold text-[var(--color-vedic)]">
             Check Rahu Kaal for Your City
           </h2>
+          <p className="text-sm text-muted-foreground">
+            Select your city to view today&apos;s Rahu Kaal, Yamagandam, and Gulika Kalam timings.
+          </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-            {POPULAR_CITIES.map((city) => (
+            {allCities.map((city) => (
               <Link
                 key={city.slug}
-                href={`/${city.slug}`}
+                href={`/${city.slug}/rahu-kaal-today/${today}`}
                 className="flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-saffron)]/30 hover:shadow-md"
               >
                 <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />
