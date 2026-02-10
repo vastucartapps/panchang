@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Moon, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { MOON_PHASE_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
   title: "Moon Phase Today - Current Lunar Phase, Illumination & Paksha",
@@ -36,6 +38,7 @@ export default function MoonPhasePage() {
           { name: "Home", url: SITE_CONFIG.url },
           { name: "Moon Phase Today", url: `${SITE_CONFIG.url}/moon-phase-today` },
         ]}
+        faqs={MOON_PHASE_FAQS}
       />
 
       <div className="mb-8 flex items-center gap-3">
@@ -101,6 +104,8 @@ export default function MoonPhasePage() {
             </Link>
           ))}
         </div>
+
+        <FaqSection faqs={MOON_PHASE_FAQS} />
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
 
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 200 160" className="h-40 w-48 sm:h-48 sm:w-56">
+      <svg viewBox="0 0 200 200" className="h-44 w-48 sm:h-52 sm:w-56">
         {/* Background arc */}
         <path
           d={bgArc}

@@ -1,11 +1,17 @@
 import { SITE_CONFIG, SOCIAL_LINKS } from "@/lib/constants";
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 interface JsonLdProps {
   city?: string;
   breadcrumbs?: { name: string; url: string }[];
+  faqs?: FaqItem[];
 }
 
-export function JsonLd({ city, breadcrumbs }: JsonLdProps) {
+export function JsonLd({ city, breadcrumbs, faqs }: JsonLdProps) {
   const schemas = [];
 
   // WebSite schema
@@ -42,6 +48,22 @@ export function JsonLd({ city, breadcrumbs }: JsonLdProps) {
         position: i + 1,
         name: item.name,
         item: item.url,
+      })),
+    });
+  }
+
+  // FAQPage schema for rich results
+  if (faqs && faqs.length > 0) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
       })),
     });
   }

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Moon, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { TITHI_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
   title: "Today's Tithi - Current Lunar Day in Hindu Calendar",
@@ -38,6 +40,7 @@ export default function TodaysTithiPage() {
           { name: "Home", url: SITE_CONFIG.url },
           { name: "Today's Tithi", url: `${SITE_CONFIG.url}/todays-tithi` },
         ]}
+        faqs={TITHI_FAQS}
       />
 
       <div className="mb-8 flex items-center gap-3">
@@ -97,6 +100,8 @@ export default function TodaysTithiPage() {
             </Link>
           ))}
         </div>
+
+        <FaqSection faqs={TITHI_FAQS} />
       </div>
     </div>
   );

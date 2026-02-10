@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Star, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { NAKSHATRA_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
   title: "Today's Nakshatra - Current Lunar Constellation & Pada",
@@ -38,6 +40,7 @@ export default function TodaysNakshatraPage() {
           { name: "Home", url: SITE_CONFIG.url },
           { name: "Today's Nakshatra", url: `${SITE_CONFIG.url}/todays-nakshatra` },
         ]}
+        faqs={NAKSHATRA_FAQS}
       />
 
       <div className="mb-8 flex items-center gap-3">
@@ -97,6 +100,8 @@ export default function TodaysNakshatraPage() {
             </Link>
           ))}
         </div>
+
+        <FaqSection faqs={NAKSHATRA_FAQS} />
       </div>
     </div>
   );

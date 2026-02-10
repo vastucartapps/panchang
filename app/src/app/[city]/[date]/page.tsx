@@ -4,6 +4,7 @@ import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug } from "@/lib/cities";
 import { formatDate } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
+import { getCityFaqs } from "@/lib/faqs";
 import { HeroSection } from "@/components/hero/hero-section";
 import { TimeQualitySection } from "@/components/time-quality/time-quality-section";
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
@@ -11,6 +12,7 @@ import { WidgetSidebar } from "@/components/network-widgets/widget-sidebar";
 import { JsonLd } from "@/components/seo/json-ld";
 import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
@@ -59,6 +61,8 @@ export default async function CityDatePanchangPage({
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
+
+  const faqs = getCityFaqs(city.name, city.state);
 
   let data;
   try {
@@ -110,6 +114,7 @@ export default async function CityDatePanchangPage({
             { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
             { name: formatDate(date), url: `${SITE_CONFIG.url}/${city.slug}/${date}` },
           ]}
+          faqs={faqs}
         />
         <HeroSection data={data} />
 
@@ -122,6 +127,8 @@ export default async function CityDatePanchangPage({
             <WidgetSidebar />
           </aside>
         </div>
+
+        <FaqSection faqs={faqs} cityName={city.name} />
       </div>
     </>
   );

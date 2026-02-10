@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { ShieldAlert, Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { RAHU_KAAL_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
   title: "Rahu Kaal Today - Accurate Rahu Kalam Timings for All Indian Cities",
@@ -44,6 +46,7 @@ export default function RahuKaalPage() {
           { name: "Home", url: SITE_CONFIG.url },
           { name: "Rahu Kaal Today", url: `${SITE_CONFIG.url}/rahu-kaal-today` },
         ]}
+        faqs={RAHU_KAAL_FAQS}
       />
 
       <div className="mb-8 flex items-center gap-3">
@@ -102,6 +105,8 @@ export default function RahuKaalPage() {
             </Link>
           ))}
         </div>
+
+        <FaqSection faqs={RAHU_KAAL_FAQS} />
       </div>
     </div>
   );

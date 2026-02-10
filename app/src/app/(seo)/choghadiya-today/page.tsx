@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { CHOGHADIYA_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
   title: "Choghadiya Today - Auspicious Time Periods for Every Activity",
@@ -48,6 +50,7 @@ export default function ChoghadiyaPage() {
           { name: "Home", url: SITE_CONFIG.url },
           { name: "Choghadiya Today", url: `${SITE_CONFIG.url}/choghadiya-today` },
         ]}
+        faqs={CHOGHADIYA_FAQS}
       />
 
       <div className="mb-8 flex items-center gap-3">
@@ -110,6 +113,8 @@ export default function ChoghadiyaPage() {
             </Link>
           ))}
         </div>
+
+        <FaqSection faqs={CHOGHADIYA_FAQS} />
       </div>
     </div>
   );

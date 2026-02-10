@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import { BookOpen, MapPin } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
+import { PANCHANG_GUIDE_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
   title: "What is Panchang? - Complete Guide to the Vedic Calendar System",
   description:
-    "Learn about Panchang, the ancient Hindu calendar system with its five limbs: Tithi, Nakshatra, Yoga, Karana, and Vara. Understand how it guides daily life and rituals.",
+    "Learn about Panchang, the ancient Hindu calendar system with its five limbs: Tithi, Nakshatra, Yoga, Karana, and Vara. Understand Rahu Kaal, Choghadiya, Hora, Muhurta selection, and how Panchang guides daily life.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/what-is-panchang`,
   },
   openGraph: {
     title: "What is Panchang? | VastuCart Panchang",
     description:
-      "Complete guide to the Vedic Panchang calendar. Learn about Tithi, Nakshatra, Yoga, Karana, and Vara.",
+      "Complete guide to the Vedic Panchang calendar. Learn about Tithi, Nakshatra, Yoga, Karana, Vara, Rahu Kaal, Choghadiya, and Muhurta selection.",
     url: `${SITE_CONFIG.url}/what-is-panchang`,
     siteName: SITE_CONFIG.name,
     type: "website",
@@ -61,6 +63,7 @@ export default function WhatIsPanchangPage() {
           { name: "Home", url: SITE_CONFIG.url },
           { name: "What is Panchang?", url: `${SITE_CONFIG.url}/what-is-panchang` },
         ]}
+        faqs={PANCHANG_GUIDE_FAQS}
       />
 
       <div className="mb-8 flex items-center gap-3">
@@ -132,6 +135,8 @@ export default function WhatIsPanchangPage() {
           ))}
         </div>
       </div>
+
+      <FaqSection faqs={PANCHANG_GUIDE_FAQS} />
     </div>
   );
 }
