@@ -110,7 +110,7 @@ export default async function CityPanchangPage({
         </div>
       </section>
 
-      <div className="mx-auto px-4 py-6 sm:px-6" style={{ maxWidth: "92%" }}>
+      <div className="mx-auto max-w-[92%] overflow-hidden px-4 py-6 sm:px-6">
         <JsonLd
           city={city.name}
           breadcrumbs={[
@@ -122,7 +122,7 @@ export default async function CityPanchangPage({
         <HeroSection data={data} />
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-8">
+          <div className="min-w-0 space-y-8">
             <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} />
             <PanchangGrid data={data} />
           </div>

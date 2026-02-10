@@ -162,7 +162,7 @@ function PeriodList({
   isCurrentFn: (p: ChoghadiyaPeriod) => boolean;
 }) {
   return (
-    <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4">
+    <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1.5 sm:grid-cols-4 sm:gap-x-4">
       {periods.map((period, i) => {
         const style = getNatureStyle(period.nature);
         const current = isCurrentFn(period);

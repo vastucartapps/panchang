@@ -22,7 +22,7 @@ export function DayQualityBreakdown({ dayQuality }: DayQualityBreakdownProps) {
       className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-lg"
       style={{ background: "linear-gradient(180deg, #003636 0%, #002828 100%)" }}
     >
-      <div className="flex items-center gap-2 border-b border-white/[0.06] px-6 py-4">
+      <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-4 sm:px-6">
         <BarChart3 className="h-5 w-5 text-white/70" />
         <h3 className="text-sm font-bold uppercase tracking-wider text-white/90">
           Score Breakdown
@@ -32,7 +32,7 @@ export function DayQualityBreakdown({ dayQuality }: DayQualityBreakdownProps) {
         </span>
       </div>
 
-      <div className="space-y-5 p-6">
+      <div className="space-y-5 p-4 sm:p-6">
         {items.map(({ key, data }) => {
           const weight = parseWeight(data.weight);
           const style = getNatureStyle(data.nature);
@@ -72,7 +72,7 @@ export function DayQualityBreakdown({ dayQuality }: DayQualityBreakdownProps) {
                 >
                   {/* Glowing endpoint */}
                   <div
-                    className="absolute right-0 top-1/2 h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 rounded-full"
+                    className="absolute right-0 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full"
                     style={{
                       backgroundColor: style.fill,
                       boxShadow: `0 0 6px ${style.fill}`,

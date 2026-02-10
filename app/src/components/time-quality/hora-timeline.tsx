@@ -110,7 +110,7 @@ export function HoraTimeline({ hora }: HoraTimelineProps) {
       </div>
 
       {/* Legend / detail list */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 sm:grid-cols-3 sm:gap-x-4 lg:grid-cols-4">
         {allHoras.map((entry, i) => {
           const style = getNatureStyle(entry.nature);
           const isCurrent =

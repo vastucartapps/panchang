@@ -60,7 +60,7 @@ export default async function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <NetworkHeader />
-      <main className="flex-1">
+      <main className="flex-1 overflow-hidden">
         <JsonLd
           city={city.name}
           breadcrumbs={[{ name: "Home", url: SITE_CONFIG.url }]}
@@ -111,7 +111,7 @@ export default async function HomePage() {
 
             {/* Tithi */}
             <div
-              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              className="relative overflow-hidden rounded-3xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-7"
               style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.08) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
@@ -139,7 +139,7 @@ export default async function HomePage() {
 
             {/* Nakshatra */}
             <div
-              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              className="relative overflow-hidden rounded-3xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-7"
               style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(34,197,94,0.08) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
@@ -167,7 +167,7 @@ export default async function HomePage() {
 
             {/* Sun */}
             <div
-              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              className="relative overflow-hidden rounded-3xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-7"
               style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(227,100,20,0.08) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">

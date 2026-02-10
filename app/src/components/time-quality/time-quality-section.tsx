@@ -26,18 +26,18 @@ export function TimeQualitySection({
 
       <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
         <Tabs defaultValue="hora" className="w-full">
-          <div className="border-b px-5 pt-4">
+          <div className="border-b px-3 pt-4 sm:px-5">
             <TabsList className="grid w-full max-w-xs grid-cols-2">
               <TabsTrigger value="hora">Hora</TabsTrigger>
               <TabsTrigger value="choghadiya">Choghadiya</TabsTrigger>
             </TabsList>
           </div>
 
-          <TabsContent value="hora" className="p-5">
+          <TabsContent value="hora" className="p-3 sm:p-5">
             <HoraTimeline hora={hora} />
           </TabsContent>
 
-          <TabsContent value="choghadiya" className="p-5">
+          <TabsContent value="choghadiya" className="p-3 sm:p-5">
             <ChoghadiyaTimeline choghadiya={choghadiya} />
           </TabsContent>
         </Tabs>

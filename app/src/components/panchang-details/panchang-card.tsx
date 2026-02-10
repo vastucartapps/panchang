@@ -24,7 +24,7 @@ export function PanchangCard({
 
   return (
     <div
-      className="relative overflow-hidden rounded-3xl border border-white/[0.08] p-6 shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl"
+      className="relative overflow-hidden rounded-3xl border border-white/[0.08] p-4 shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl sm:p-6"
       style={{ background: `linear-gradient(135deg, #003636 0%, #003636 60%, ${gradientAccent} 100%)` }}
     >
       {watermarkIcon && (

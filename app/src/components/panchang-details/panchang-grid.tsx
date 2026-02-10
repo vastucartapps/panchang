@@ -30,7 +30,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
       </div>
 
       {/* Panchang Limbs Grid */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid min-w-0 gap-4 sm:grid-cols-2">
         {/* Nakshatra */}
         <PanchangCard
           title="Nakshatra"
@@ -103,27 +103,27 @@ export function PanchangGrid({ data }: PanchangGridProps) {
         className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-lg"
         style={{ background: "linear-gradient(135deg, #003636 0%, #002828 100%)" }}
       >
-        <div className="flex items-center justify-between p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-400/20">
-              <Sunrise className="h-5 w-5 text-amber-300" />
+        <div className="flex items-center justify-between p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-400/20 sm:h-10 sm:w-10">
+              <Sunrise className="h-4 w-4 text-amber-300 sm:h-5 sm:w-5" />
             </div>
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/50">Sunrise</p>
-              <p className="text-2xl font-bold tracking-tight text-white">{formatTime12h(timing.sunrise)}</p>
+              <p className="text-lg font-bold tracking-tight text-white sm:text-2xl">{formatTime12h(timing.sunrise)}</p>
             </div>
           </div>
           <div className="text-center">
             <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/50">Day Length</p>
-            <p className="text-lg font-bold text-amber-300">{timing.dinamana_hours.toFixed(1)} hrs</p>
+            <p className="text-base font-bold text-amber-300 sm:text-lg">{timing.dinamana_hours.toFixed(1)} hrs</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="text-right">
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/50">Sunset</p>
-              <p className="text-2xl font-bold tracking-tight text-white">{formatTime12h(timing.sunset)}</p>
+              <p className="text-lg font-bold tracking-tight text-white sm:text-2xl">{formatTime12h(timing.sunset)}</p>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-400/20">
-              <Sunrise className="h-5 w-5 rotate-180 text-orange-300" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-400/20 sm:h-10 sm:w-10">
+              <Sunrise className="h-4 w-4 rotate-180 text-orange-300 sm:h-5 sm:w-5" />
             </div>
           </div>
         </div>
@@ -132,13 +132,13 @@ export function PanchangGrid({ data }: PanchangGridProps) {
       {/* Avoid These Times */}
       <div className="relative overflow-hidden rounded-3xl shadow-lg">
         <div
-          className="flex items-center gap-3 px-6 py-3"
+          className="flex items-center gap-3 px-4 py-3 sm:px-6"
           style={{ background: "linear-gradient(135deg, #8B1A1A, #6B1010)" }}
         >
           <ShieldAlert className="h-5 w-5 text-white" />
           <h2 className="text-base font-bold text-white">Avoid These Times</h2>
         </div>
-        <div className="grid gap-3 p-4 sm:grid-cols-3" style={{ backgroundColor: "#fef2f2" }}>
+        <div className="grid gap-3 p-3 sm:grid-cols-3 sm:p-4" style={{ backgroundColor: "#fef2f2" }}>
           {[
             { entry: timing.rahu_kalam },
             { entry: timing.yamagandam },
@@ -146,16 +146,16 @@ export function PanchangGrid({ data }: PanchangGridProps) {
           ].map((t) => (
             <div
               key={t.entry.name}
-              className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] p-5"
+              className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] p-4 sm:p-5"
               style={{ background: "linear-gradient(135deg, #8B1A1A, #6B1010)" }}
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60">{t.entry.name}</p>
               <div className="mt-2 h-px w-12 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-              <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <p className="mt-3 font-mono text-2xl font-bold tracking-tight text-white sm:text-4xl">
                 {formatTime12h(t.entry.start_time)}
               </p>
               <p className="text-xs text-white/50">to</p>
-              <p className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <p className="font-mono text-2xl font-bold tracking-tight text-white sm:text-4xl">
                 {formatTime12h(t.entry.end_time)}
               </p>
               <span className="mt-3 rounded-full bg-white/10 px-3 py-0.5 text-xs font-medium text-white/80">
@@ -169,29 +169,29 @@ export function PanchangGrid({ data }: PanchangGridProps) {
       {/* Best Times */}
       <div className="relative overflow-hidden rounded-3xl shadow-lg">
         <div
-          className="flex items-center gap-3 px-6 py-3"
+          className="flex items-center gap-3 px-4 py-3 sm:px-6"
           style={{ background: "linear-gradient(135deg, #14532d, #0A3D1F)" }}
         >
           <ShieldCheck className="h-5 w-5 text-white" />
           <h2 className="text-base font-bold text-white">Best Times Today</h2>
         </div>
-        <div className="grid gap-3 p-4 sm:grid-cols-2" style={{ backgroundColor: "#f0fdf4" }}>
+        <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4" style={{ backgroundColor: "#f0fdf4" }}>
           {[
             { entry: timing.abhijit_muhurta },
             { entry: timing.brahma_muhurta },
           ].map((t) => (
             <div
               key={t.entry.name}
-              className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] p-5"
+              className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] p-4 sm:p-5"
               style={{ background: "linear-gradient(135deg, #14532d, #0A3D1F)" }}
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60">{t.entry.name}</p>
               <div className="mt-2 h-px w-12 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-              <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <p className="mt-3 font-mono text-2xl font-bold tracking-tight text-white sm:text-4xl">
                 {formatTime12h(t.entry.start_time)}
               </p>
               <p className="text-xs text-white/50">to</p>
-              <p className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <p className="font-mono text-2xl font-bold tracking-tight text-white sm:text-4xl">
                 {formatTime12h(t.entry.end_time)}
               </p>
               <span className="mt-3 rounded-full bg-white/10 px-3 py-0.5 text-xs font-medium text-white/80">
