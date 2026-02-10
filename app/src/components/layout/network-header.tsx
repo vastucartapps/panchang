@@ -82,7 +82,7 @@ export function NetworkHeader() {
       </div>
 
       {/* Row 2: Navigation Ribbon */}
-      <nav className="bg-[#003636] shadow-[0_4px_20px_rgba(0,54,54,0.4)]" style={{ backgroundImage: "none" }}>
+      <nav style={{ backgroundColor: "#003636", backgroundImage: "none" }}>
         <div
           className="mx-auto hidden items-center gap-1 px-4 sm:flex sm:px-6"
           style={{ maxWidth: "92%" }}
@@ -125,7 +125,7 @@ export function NetworkHeader() {
             </a>
           </div>
           {/* Mobile ribbon links */}
-          <div className="rounded-lg bg-[#003636]" style={{ backgroundImage: "none" }}>
+          <div className="rounded-lg" style={{ backgroundColor: "#003636", backgroundImage: "none" }}>
             {ribbonLinks.map((item) => (
               <Link
                 key={item.label}

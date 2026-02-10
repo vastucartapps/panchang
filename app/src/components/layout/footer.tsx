@@ -41,11 +41,10 @@ const socialIcons = [
 export function Footer() {
   return (
     <footer
-      className="relative z-10"
+      className="relative z-[60]"
       style={{
         backgroundColor: "#003636",
         backgroundImage: "none",
-        isolation: "isolate",
       }}
     >
       <div className="mx-auto px-4 py-12 sm:px-6" style={{ maxWidth: "92%" }}>

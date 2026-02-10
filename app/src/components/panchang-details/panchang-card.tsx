@@ -23,7 +23,7 @@ export function PanchangCard({
   return (
     <div className="relative overflow-hidden rounded-2xl p-6 shadow-lg" style={{ backgroundColor: "#003636" }}>
       {watermarkIcon && (
-        <div className="absolute top-3 right-3 text-white/10">
+        <div className="absolute -bottom-3 -right-3 pointer-events-none" style={{ color: "#004a4a" }}>
           {watermarkIcon}
         </div>
       )}

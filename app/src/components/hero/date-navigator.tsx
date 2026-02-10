@@ -25,7 +25,7 @@ export function DateNavigator({ currentDate, citySlug }: DateNavigatorProps) {
     if (dateStr === todayStr) {
       router.push(`/${citySlug}`);
     } else {
-      router.push(`/${citySlug}?date=${dateStr}`);
+      router.push(`/${citySlug}/${dateStr}`);
     }
   }
 

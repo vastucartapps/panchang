@@ -35,7 +35,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
         <PanchangCard
           title="Nakshatra"
           icon={<Star className="h-4 w-4" />}
-          watermarkIcon={<Star className="h-14 w-14" />}
+          watermarkIcon={<Star className="h-20 w-20" />}
           name={panchang.nakshatra.nakshatra}
           nature={panchang.nakshatra.nature}
         >
@@ -50,7 +50,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
         <PanchangCard
           title="Yoga"
           icon={<Sparkles className="h-4 w-4" />}
-          watermarkIcon={<Sparkles className="h-14 w-14" />}
+          watermarkIcon={<Sparkles className="h-20 w-20" />}
           name={panchang.yoga.yoga}
           nature={panchang.yoga.nature}
         >
@@ -63,7 +63,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
         <PanchangCard
           title="Karana"
           icon={<Layers className="h-4 w-4" />}
-          watermarkIcon={<Layers className="h-14 w-14" />}
+          watermarkIcon={<Layers className="h-20 w-20" />}
           name={panchang.karana.karana}
           nature={panchang.karana.nature}
         >
@@ -75,7 +75,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
         <PanchangCard
           title="Vara (Day)"
           icon={<CalendarDays className="h-4 w-4" />}
-          watermarkIcon={<CalendarDays className="h-14 w-14" />}
+          watermarkIcon={<CalendarDays className="h-20 w-20" />}
           name={`${panchang.vara.name} (${panchang.vara.day})`}
           nature={panchang.vara.nature}
         >

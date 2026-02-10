@@ -1,8 +1,8 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug } from "@/lib/cities";
-import { getTodayISO, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { HeroSection } from "@/components/hero/hero-section";
 import { TimeQualitySection } from "@/components/time-quality/time-quality-section";
@@ -13,58 +13,57 @@ import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 300;
+export const revalidate = 3600;
 
-interface CityPageProps {
-  params: Promise<{ city: string }>;
-  searchParams: Promise<{ date?: string }>;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+interface CityDatePageProps {
+  params: Promise<{ city: string; date: string }>;
+}
+
+function isValidDate(dateStr: string): boolean {
+  if (!DATE_REGEX.test(dateStr)) return false;
+  const d = new Date(dateStr + "T00:00:00");
+  return !isNaN(d.getTime());
 }
 
 export async function generateMetadata({
   params,
-}: CityPageProps): Promise<Metadata> {
-  const { city: citySlug } = await params;
+}: CityDatePageProps): Promise<Metadata> {
+  const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  if (!city || !isValidDate(date)) return {};
 
-  const today = formatDate(getTodayISO());
+  const formattedDate = formatDate(date);
 
   return {
-    title: `Panchang Today in ${city.name} | Tithi, Nakshatra, Rahu Kaal`,
-    description: `Today's Panchang for ${city.name}, ${city.state} - ${today}. Get accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings. Updated daily.`,
+    title: `Panchang for ${city.name} on ${formattedDate} | Tithi, Nakshatra, Rahu Kaal`,
+    description: `Panchang for ${city.name}, ${city.state} on ${formattedDate}. Accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for ${city.name}.`,
     alternates: {
-      canonical: `${SITE_CONFIG.url}/${city.slug}`,
+      canonical: `${SITE_CONFIG.url}/${city.slug}/${date}`,
     },
     openGraph: {
-      title: `Panchang Today in ${city.name}`,
-      description: `Accurate daily Panchang for ${city.name}. Tithi, Nakshatra, Rahu Kaal, Choghadiya timings.`,
-      url: `${SITE_CONFIG.url}/${city.slug}`,
+      title: `Panchang for ${city.name} - ${formattedDate}`,
+      description: `Accurate Panchang for ${city.name} on ${formattedDate}. Tithi, Nakshatra, Rahu Kaal, Choghadiya timings.`,
+      url: `${SITE_CONFIG.url}/${city.slug}/${date}`,
       siteName: SITE_CONFIG.name,
       type: "website",
     },
   };
 }
 
-export default async function CityPanchangPage({
+export default async function CityDatePanchangPage({
   params,
-  searchParams,
-}: CityPageProps) {
-  const { city: citySlug } = await params;
-  const { date } = await searchParams;
+}: CityDatePageProps) {
+  const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
-
-  // Redirect ?date= to clean /city/date path for SEO
-  if (date) {
-    redirect(`/${citySlug}/${date}`);
-  }
-
-  const targetDate = getTodayISO();
+  if (!isValidDate(date)) notFound();
 
   let data;
   try {
     data = await fetchPanchang({
-      targetDate,
+      targetDate: date,
       latitude: city.lat,
       longitude: city.lng,
       timezone: city.tz,
@@ -76,8 +75,8 @@ export default async function CityPanchangPage({
           Unable to Load Panchang
         </h1>
         <p className="text-muted-foreground">
-          We&apos;re having trouble fetching today&apos;s Panchang data for{" "}
-          {city.name}. Please try again shortly.
+          We&apos;re having trouble fetching Panchang data for {city.name} on{" "}
+          {date}. Please try again shortly.
         </p>
       </div>
     );
@@ -109,6 +108,7 @@ export default async function CityPanchangPage({
           breadcrumbs={[
             { name: "Home", url: SITE_CONFIG.url },
             { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
+            { name: formatDate(date), url: `${SITE_CONFIG.url}/${city.slug}/${date}` },
           ]}
         />
         <HeroSection data={data} />

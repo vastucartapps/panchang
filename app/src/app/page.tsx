@@ -6,18 +6,15 @@ import { NetworkHeader } from "@/components/layout/network-header";
 import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
-  Sun,
-  Moon,
-  Star,
   ArrowRight,
-  Sparkles,
-  BookOpen,
-  Heart,
-  ShoppingBag,
   Sunrise,
   Sunset,
   ShieldAlert,
   ShieldCheck,
+  Star,
+  Moon,
+  Sparkles,
+  Sun,
 } from "lucide-react";
 import Link from "next/link";
 import { HeroActions } from "@/components/hero/hero-actions";
@@ -92,8 +89,8 @@ export default async function HomePage() {
               className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
               style={{ backgroundColor: "#003636" }}
             >
-              <div className="absolute top-3 right-3 text-white/15">
-                <Star className="h-16 w-16" />
+              <div className="absolute -bottom-3 -right-3 pointer-events-none">
+                <Star className="h-20 w-20" style={{ color: "#004a4a" }} />
               </div>
               <div className="relative flex flex-col">
                 <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Today&apos;s Vibe</p>
@@ -113,8 +110,8 @@ export default async function HomePage() {
               className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
               style={{ backgroundColor: "#003636" }}
             >
-              <div className="absolute top-3 right-3 text-white/10">
-                <Moon className="h-14 w-14" />
+              <div className="absolute -bottom-3 -right-3 pointer-events-none">
+                <Moon className="h-20 w-20" style={{ color: "#004a4a" }} />
               </div>
               <div className="relative flex flex-col">
                 <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Tithi</p>
@@ -141,8 +138,8 @@ export default async function HomePage() {
               className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
               style={{ backgroundColor: "#003636" }}
             >
-              <div className="absolute top-3 right-3 text-white/10">
-                <Sparkles className="h-14 w-14" />
+              <div className="absolute -bottom-3 -right-3 pointer-events-none">
+                <Sparkles className="h-20 w-20" style={{ color: "#004a4a" }} />
               </div>
               <div className="relative flex flex-col">
                 <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Nakshatra</p>
@@ -169,8 +166,8 @@ export default async function HomePage() {
               className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
               style={{ backgroundColor: "#003636" }}
             >
-              <div className="absolute top-3 right-3 text-white/10">
-                <Sun className="h-14 w-14" />
+              <div className="absolute -bottom-3 -right-3 pointer-events-none">
+                <Sun className="h-20 w-20" style={{ color: "#004a4a" }} />
               </div>
               <div className="relative flex flex-col">
                 <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Sun Today</p>
@@ -282,7 +279,6 @@ export default async function HomePage() {
                 title: "Your Kundali",
                 tagline: "Know your stars",
                 desc: "Free personalized birth chart, instantly.",
-                icon: <Sparkles className="h-7 w-7" />,
                 href: NETWORK_LINKS.kundali,
                 bg: "#003636",
               },
@@ -290,7 +286,6 @@ export default async function HomePage() {
                 title: "Sacred Stotras",
                 tagline: "Daily devotion",
                 desc: "Powerful mantras and chalisas for every day.",
-                icon: <BookOpen className="h-7 w-7" />,
                 href: NETWORK_LINKS.stotra,
                 bg: "#8B1A1A",
               },
@@ -298,7 +293,6 @@ export default async function HomePage() {
                 title: "Find Muhurta",
                 tagline: "Perfect timing",
                 desc: "Pick the most auspicious date for anything.",
-                icon: <Heart className="h-7 w-7" />,
                 href: NETWORK_LINKS.muhurta,
                 bg: "#14532d",
               },
@@ -306,7 +300,6 @@ export default async function HomePage() {
                 title: "VastuCart Store",
                 tagline: "Shop spiritual",
                 desc: "Authentic Vastu remedies and essentials.",
-                icon: <ShoppingBag className="h-7 w-7" />,
                 href: NETWORK_LINKS.store,
                 bg: "#92400e",
               },
@@ -319,9 +312,6 @@ export default async function HomePage() {
                 className="group relative overflow-hidden rounded-2xl p-6 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl"
                 style={{ backgroundColor: item.bg }}
               >
-                <div className="absolute top-4 right-4 text-white/10">
-                  {item.icon}
-                </div>
                 <div className="relative">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-white/50">{item.tagline}</p>
                   <h3 className="mt-1 text-xl font-bold text-white">{item.title}</h3>
