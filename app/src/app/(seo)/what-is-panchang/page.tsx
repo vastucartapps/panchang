@@ -57,7 +57,7 @@ const POPULAR_CITIES = [
 
 export default function WhatIsPanchangPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <>
       <JsonLd
         breadcrumbs={[
           { name: "Home", url: SITE_CONFIG.url },
@@ -66,77 +66,89 @@ export default function WhatIsPanchangPage() {
         faqs={PANCHANG_GUIDE_FAQS}
       />
 
-      <div className="mb-8 flex items-center gap-3">
-        <BookOpen className="h-8 w-8 text-[var(--color-vedic)]" />
-        <h1 className="text-3xl font-bold text-[var(--color-vedic)]">
-          What is Panchang?
-        </h1>
-      </div>
+      {/* Hero bar */}
+      <section
+        className="py-12 sm:py-16"
+        style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+      >
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <BookOpen className="mx-auto h-10 w-10 text-[#C4973B]" />
+          <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl heading-display">
+            What is Panchang?
+          </h1>
+          <div className="mt-4 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+          <p className="mt-4 text-base text-white/60 sm:text-lg">
+            Complete guide to the ancient Vedic calendar system
+          </p>
+        </div>
+      </section>
 
-      <div className="prose prose-neutral max-w-none space-y-6">
-        <p className="text-lg text-muted-foreground">
-          Panchang (also spelled Panchangam) is the traditional Hindu calendar and almanac.
-          The word comes from Sanskrit: &ldquo;Pancha&rdquo; (five) + &ldquo;Anga&rdquo; (limb),
-          referring to its five key elements that together describe the quality of any given day.
-        </p>
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <div className="prose prose-neutral max-w-none space-y-6">
+          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Panchang (also spelled Panchangam) is the traditional Hindu calendar and almanac.
+            The word comes from Sanskrit: &ldquo;Pancha&rdquo; (five) + &ldquo;Anga&rdquo; (limb),
+            referring to its five key elements that together describe the quality of any given day.
+          </p>
 
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-            The Five Limbs of Panchang
-          </h2>
-          <div className="mt-4 space-y-4">
-            {FIVE_LIMBS.map((limb, i) => (
-              <div key={limb.name} className="flex gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-vedic)] text-xs font-bold text-white">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-bold text-foreground">{limb.name}</p>
-                  <p className="text-sm text-muted-foreground">{limb.desc}</p>
+          <div className="rounded-2xl border-0 bg-card p-6 shadow-lg">
+            <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+              The Five Limbs of Panchang
+            </h2>
+            <div className="mt-4 space-y-4">
+              {FIVE_LIMBS.map((limb, i) => (
+                <div key={limb.name} className="flex gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-vedic)] text-xs font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-bold text-foreground">{limb.name}</p>
+                    <p className="text-sm text-muted-foreground">{limb.desc}</p>
+                  </div>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
+
+          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+            Why is Panchang Important?
+          </h2>
+          <ul className="space-y-2 text-muted-foreground">
+            <li>Determines auspicious and inauspicious times for daily activities</li>
+            <li>Essential for selecting Muhurta (auspicious moments) for ceremonies</li>
+            <li>Guides festival dates, fasting days, and religious observances</li>
+            <li>Used in Vedic astrology for horoscope construction and predictions</li>
+            <li>Helps farmers with agricultural planning based on lunar cycles</li>
+          </ul>
+
+          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+            Additional Elements in Modern Panchang
+          </h2>
+          <p className="text-muted-foreground">
+            Beyond the five limbs, a modern Panchang includes Rahu Kaal (inauspicious period
+            ruled by Rahu), Yamagandam, Gulika Kalam, Hora (planetary hours), Choghadiya
+            (time quality periods), sunrise/sunset times, and Moon phase information.
+          </p>
+
+          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+            View Today&apos;s Panchang
+          </h2>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {POPULAR_CITIES.map((city) => (
+              <Link
+                key={city.slug}
+                href={`/${city.slug}`}
+                className="flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-saffron)]/30 hover:shadow-md"
+              >
+                <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />
+                {city.name}
+              </Link>
             ))}
           </div>
         </div>
 
-        <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-          Why is Panchang Important?
-        </h2>
-        <ul className="space-y-2 text-muted-foreground">
-          <li>Determines auspicious and inauspicious times for daily activities</li>
-          <li>Essential for selecting Muhurta (auspicious moments) for ceremonies</li>
-          <li>Guides festival dates, fasting days, and religious observances</li>
-          <li>Used in Vedic astrology for horoscope construction and predictions</li>
-          <li>Helps farmers with agricultural planning based on lunar cycles</li>
-        </ul>
-
-        <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-          Additional Elements in Modern Panchang
-        </h2>
-        <p className="text-muted-foreground">
-          Beyond the five limbs, a modern Panchang includes Rahu Kaal (inauspicious period
-          ruled by Rahu), Yamagandam, Gulika Kalam, Hora (planetary hours), Choghadiya
-          (time quality periods), sunrise/sunset times, and Moon phase information.
-        </p>
-
-        <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-          View Today&apos;s Panchang
-        </h2>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {POPULAR_CITIES.map((city) => (
-            <Link
-              key={city.slug}
-              href={`/${city.slug}`}
-              className="flex items-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-[var(--color-saffron)]/30 hover:bg-accent"
-            >
-              <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />
-              {city.name}
-            </Link>
-          ))}
-        </div>
+        <FaqSection faqs={PANCHANG_GUIDE_FAQS} />
       </div>
-
-      <FaqSection faqs={PANCHANG_GUIDE_FAQS} />
-    </div>
+    </>
   );
 }

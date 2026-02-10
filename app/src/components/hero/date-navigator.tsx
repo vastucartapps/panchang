@@ -3,14 +3,14 @@
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { format, addDays, subDays, parseISO } from "date-fns";
-import { Button } from "@/components/ui/button";
 
 interface DateNavigatorProps {
   currentDate: string;
   citySlug: string;
+  variant?: "light" | "dark";
 }
 
-export function DateNavigator({ currentDate, citySlug }: DateNavigatorProps) {
+export function DateNavigator({ currentDate, citySlug, variant = "dark" }: DateNavigatorProps) {
   const router = useRouter();
   const date = parseISO(currentDate);
   const today = new Date();
@@ -30,42 +30,36 @@ export function DateNavigator({ currentDate, citySlug }: DateNavigatorProps) {
   }
 
   return (
-    <div className="flex items-center gap-1">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-[var(--color-vedic)]"
+    <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-1 backdrop-blur-sm">
+      <button
+        className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
         onClick={() => navigateToDate(subDays(date, 1))}
         aria-label="Previous day"
       >
         <ChevronLeft className="h-4 w-4" />
-      </Button>
+      </button>
 
       {!isToday && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 gap-1 text-xs text-[var(--color-saffron)]"
+        <button
+          className="flex h-8 items-center gap-1 rounded-full px-3 text-xs font-semibold text-amber-300 transition-colors hover:bg-white/10"
           onClick={() => navigateToDate(today)}
         >
           <CalendarDays className="h-3.5 w-3.5" />
           Today
-        </Button>
+        </button>
       )}
 
-      <span className="min-w-[140px] text-center text-sm font-medium">
+      <span className="min-w-[140px] text-center text-sm font-medium text-white">
         {format(date, "EEE, MMM d, yyyy")}
       </span>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-[var(--color-vedic)]"
+      <button
+        className="flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
         onClick={() => navigateToDate(addDays(date, 1))}
         aria-label="Next day"
       >
         <ChevronRight className="h-4 w-4" />
-      </Button>
+      </button>
     </div>
   );
 }

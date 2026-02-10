@@ -1,4 +1,4 @@
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, ChevronDown } from "lucide-react";
 import type { FaqItem } from "@/lib/faqs";
 
 interface FaqSectionProps {
@@ -17,19 +17,17 @@ export function FaqSection({ faqs, cityName }: FaqSectionProps) {
             : "Frequently Asked Questions"}
         </h2>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {faqs.map((faq, i) => (
           <details
             key={i}
-            className="group rounded-lg border bg-card shadow-sm"
+            className="group rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-md"
           >
-            <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-foreground transition-colors hover:text-[var(--color-vedic)] [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 text-base font-semibold text-foreground transition-colors hover:text-[var(--color-vedic)] [&::-webkit-details-marker]:hidden">
               <span>{faq.question}</span>
-              <span className="shrink-0 text-muted-foreground transition-transform group-open:rotate-45">
-                +
-              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-180" />
             </summary>
-            <div className="border-t px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+            <div className="rounded-b-xl border-t bg-[#FBFAF5] px-5 py-4 text-sm leading-relaxed text-muted-foreground">
               {faq.answer}
             </div>
           </details>

@@ -89,19 +89,23 @@ export default async function CityDatePanchangPage({
   return (
     <>
       {/* Hero Banner */}
-      <section className="py-8" style={{ backgroundColor: "#D9C2A6", backgroundImage: "none" }}>
+      <section
+        className="py-14 sm:py-20"
+        style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+      >
         <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-3xl font-bold text-[#3B2512] sm:text-4xl">
+            <h1 className="animate-fade-in-up heading-display text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
               Panchang &mdash; {city.name}
             </h1>
-            <p className="mt-2 text-base text-[#5C3D1E]/70">
+            <div className="mt-4 h-px w-24 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+            <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">
               {formatDate(data.date)} &middot; {city.state}
             </p>
-            <HeroActions citySlug={city.slug} cityName={city.name} />
+            <HeroActions citySlug={city.slug} cityName={city.name} variant="dark" />
           </div>
-          <div className="mt-3 flex justify-center">
-            <DateNavigator currentDate={data.date} citySlug={city.slug} />
+          <div className="mt-5 flex justify-center">
+            <DateNavigator currentDate={data.date} citySlug={city.slug} variant="dark" />
           </div>
         </div>
       </section>

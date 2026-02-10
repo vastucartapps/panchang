@@ -1,5 +1,4 @@
 import { Check, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface ActivityPillsProps {
   suitable: string[];
@@ -8,25 +7,27 @@ interface ActivityPillsProps {
 
 export function ActivityPills({ suitable, avoid }: ActivityPillsProps) {
   return (
-    <div className="space-y-3">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
       {/* Suitable Activities */}
       {suitable.length > 0 && (
         <div>
-          <div className="mb-1.5 flex items-center gap-1.5">
-            <Check className="h-3.5 w-3.5 text-green-400" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-green-400">
+          <div className="mb-3 flex items-center gap-2">
+            <Check className="h-5 w-5 text-green-400" />
+            <span className="text-sm font-semibold uppercase tracking-wider text-green-400">
               Favorable For
             </span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="space-y-1.5">
             {suitable.map((activity) => (
-              <Badge
+              <div
                 key={activity}
-                variant="outline"
-                className="border-green-400/30 bg-green-400/10 text-green-300 capitalize hover:bg-green-400/10"
+                className="flex items-center gap-2 rounded-lg border border-green-400/15 bg-green-400/[0.08] px-3 py-2"
               >
-                {activity}
-              </Badge>
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
+                <span className="text-sm font-medium capitalize text-green-300">
+                  {activity}
+                </span>
+              </div>
             ))}
           </div>
         </div>
@@ -35,21 +36,23 @@ export function ActivityPills({ suitable, avoid }: ActivityPillsProps) {
       {/* Avoid Activities */}
       {avoid.length > 0 && (
         <div>
-          <div className="mb-1.5 flex items-center gap-1.5">
-            <X className="h-3.5 w-3.5 text-red-400" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-red-400">
+          <div className="mb-3 flex items-center gap-2">
+            <X className="h-5 w-5 text-red-400" />
+            <span className="text-sm font-semibold uppercase tracking-wider text-red-400">
               Avoid
             </span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="space-y-1.5">
             {avoid.map((activity) => (
-              <Badge
+              <div
                 key={activity}
-                variant="outline"
-                className="border-red-400/30 bg-red-400/10 text-red-300 capitalize hover:bg-red-400/10"
+                className="flex items-center gap-2 rounded-lg border border-red-400/15 bg-red-400/[0.08] px-3 py-2"
               >
-                {activity}
-              </Badge>
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-red-400" />
+                <span className="text-sm font-medium capitalize text-red-300">
+                  {activity}
+                </span>
+              </div>
             ))}
           </div>
         </div>

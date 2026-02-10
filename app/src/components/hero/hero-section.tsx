@@ -10,26 +10,29 @@ interface HeroSectionProps {
 
 export function HeroSection({ data }: HeroSectionProps) {
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg" style={{ backgroundColor: "#003636" }}>
+    <div
+      className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-2xl shadow-black/20"
+      style={{ background: "linear-gradient(180deg, #003636 0%, #002828 100%)" }}
+    >
       {/* Three-panel visual row */}
-      <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-3">
-        <div className="flex items-center justify-center">
+      <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">
+        <div className="flex items-center justify-center rounded-2xl bg-white/[0.03] p-6 m-3">
           <DayQualityGauge dayQuality={data.day_quality} />
         </div>
-        <div className="flex items-center justify-center border-y border-white/10 py-4 sm:border-x sm:border-y-0 sm:py-0">
+        <div className="flex items-center justify-center rounded-2xl bg-white/[0.03] p-6 m-3">
           <TithiTracker
             tithi={data.panchang.tithi}
             tithiBreakdown={data.day_quality.breakdown.tithi}
           />
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center rounded-2xl bg-white/[0.03] p-6 m-3">
           <MoonPhaseVisualizer moonPhase={data.moon_phase} />
         </div>
       </div>
 
-      <div className="h-px bg-white/10" />
+      <div className="border-t border-white/[0.06]" />
 
-      <div className="p-5">
+      <div className="p-6 sm:p-8">
         <ActivityPills
           suitable={data.day_quality.suitable_activities}
           avoid={data.day_quality.avoid_activities}

@@ -40,151 +40,156 @@ const socialIcons = [
 
 export function Footer() {
   return (
-    <footer
-      className="relative z-[60]"
-      style={{
-        backgroundColor: "#003636",
-        backgroundImage: "none",
-      }}
-    >
-      <div className="mx-auto px-4 py-12 sm:px-6" style={{ maxWidth: "92%" }}>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Column */}
-          <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-3">
-              <Image
-                src="/images/vastucart-logo.png"
-                alt="VastuCart"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-white">VastuCart</span>
-                <span className="text-[10px] tracking-wide text-white/50">
-                  Divinely Perfect
-                </span>
-              </div>
-            </Link>
-            <p className="text-sm leading-relaxed text-white/50">
-              Accurate Vedic Panchang for 200+ Indian cities. Tithi, Nakshatra,
-              Rahu Kaal, Choghadiya, and more — updated daily.
-            </p>
-            <div className="flex gap-4">
-              {socialIcons.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="text-sm font-bold uppercase text-white/60 transition-colors hover:text-white"
-                >
-                  {s.initial}
-                </a>
-              ))}
-            </div>
-          </div>
+    <footer className="relative z-[60]">
+      {/* Gold gradient top border */}
+      <div
+        className="h-px"
+        style={{ background: "linear-gradient(90deg, transparent, #C4973B, transparent)" }}
+      />
 
-          {/* Panchang Links */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-white/80">Panchang</h3>
-            <ul className="space-y-2.5">
-              {panchangLinks.map((link) => (
-                <li key={link.label}>
+      <div
+        style={{ background: "linear-gradient(180deg, #003636 0%, #002828 100%)" }}
+      >
+        <div className="mx-auto px-4 py-16 sm:px-6" style={{ maxWidth: "92%" }}>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Brand Column */}
+            <div className="space-y-4">
+              <Link href="/" className="flex items-center gap-3">
+                <Image
+                  src="/images/vastucart-logo.png"
+                  alt="VastuCart"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-white">VastuCart</span>
+                  <span className="text-[10px] tracking-wide text-white/50">
+                    Divinely Perfect
+                  </span>
+                </div>
+              </Link>
+              <p className="text-sm leading-relaxed text-white/50">
+                Accurate Vedic Panchang for 200+ Indian cities. Tithi, Nakshatra,
+                Rahu Kaal, Choghadiya, and more — updated daily.
+              </p>
+              {/* Social icons as circles */}
+              <div className="flex gap-3">
+                {socialIcons.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-xs font-bold uppercase text-white/60 transition-all hover:bg-white/10 hover:text-white"
+                  >
+                    {s.initial}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Panchang Links */}
+            <div>
+              <h3 className="mb-4 text-sm font-bold text-[#C4973B]/80">Panchang</h3>
+              <ul className="space-y-2.5">
+                {panchangLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-white/50 transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Tools & Services */}
+            <div>
+              <h3 className="mb-4 text-sm font-bold text-[#C4973B]/80">
+                Tools & Services
+              </h3>
+              <ul className="space-y-2.5">
+                {toolsLinks.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-white/50 transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <h3 className="mb-3 mt-6 text-sm font-bold text-[#C4973B]/80">
+                Legal
+              </h3>
+              <ul className="space-y-2.5">
+                <li>
                   <Link
-                    href={link.href}
+                    href="/privacy-policy"
                     className="text-sm text-white/50 transition-colors hover:text-white"
                   >
-                    {link.label}
+                    Privacy Policy
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Tools & Services */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-white/80">
-              Tools & Services
-            </h3>
-            <ul className="space-y-2.5">
-              {toolsLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                <li>
+                  <Link
+                    href="/terms-of-service"
                     className="text-sm text-white/50 transition-colors hover:text-white"
                   >
-                    {link.label}
-                  </a>
+                    Terms of Service
+                  </Link>
                 </li>
-              ))}
-            </ul>
+              </ul>
+            </div>
 
-            <h3 className="mb-3 mt-6 text-sm font-bold text-white/80">
-              Legal
-            </h3>
-            <ul className="space-y-2.5">
-              <li>
-                <Link
-                  href="/privacy-policy"
-                  className="text-sm text-white/50 transition-colors hover:text-white"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms-of-service"
-                  className="text-sm text-white/50 transition-colors hover:text-white"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* The Network */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold text-white/80">
-              The Network
-            </h3>
-            <ul className="space-y-2.5">
-              {networkLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-white/50 transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {/* The Network */}
+            <div>
+              <h3 className="mb-4 text-sm font-bold text-[#C4973B]/80">
+                The Network
+              </h3>
+              <ul className="space-y-2.5">
+                {networkLinks.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-white/50 transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Copyright Bar */}
-      <div style={{ backgroundColor: "#003636", backgroundImage: "none" }}>
-        <div className="mx-auto px-4 py-4 sm:px-6" style={{ maxWidth: "92%" }}>
-          <p className="mb-3 text-center text-xs text-white/40">
-            For informational and educational purposes only. Not professional
-            advice.
-          </p>
-          <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
-            <p className="text-xs text-white/40">
-              &copy; {new Date().getFullYear()} {SITE_CONFIG.brandName}&reg;.
-              All rights reserved
+        {/* Copyright Bar */}
+        <div className="border-t border-white/5">
+          <div className="mx-auto px-4 py-4 sm:px-6" style={{ maxWidth: "92%" }}>
+            <p className="mb-3 text-center text-xs text-white/30">
+              For informational and educational purposes only. Not professional
+              advice.
             </p>
-            <p className="flex items-center gap-1 text-xs text-white/40">
-              Made with{" "}
-              <Heart className="h-3 w-3 fill-red-500 text-red-500" /> in India
-            </p>
+            <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+              <p className="text-xs text-white/30">
+                &copy; {new Date().getFullYear()} {SITE_CONFIG.brandName}&reg;.
+                All rights reserved
+              </p>
+              <p className="flex items-center gap-1 text-xs text-white/30">
+                Made with{" "}
+                <Heart className="h-3 w-3 fill-red-500 text-red-500" /> in India
+              </p>
+            </div>
           </div>
         </div>
       </div>

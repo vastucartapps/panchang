@@ -22,20 +22,6 @@ export function ChoghadiyaTimeline({ choghadiya }: ChoghadiyaTimelineProps) {
   const totalSpan =
     lastEnd > firstStart ? lastEnd - firstStart : 1440 - firstStart + lastEnd;
 
-  function getPosition(timeStr: string) {
-    const mins = timeToMinutes(timeStr);
-    const offset = mins >= firstStart ? mins - firstStart : 1440 - firstStart + mins;
-    return (offset / totalSpan) * 100;
-  }
-
-  const nowPos = getPosition(
-    `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`
-  );
-
-  const isCurrentTimeVisible =
-    currentMinutes >= firstStart ||
-    (lastEnd < firstStart && currentMinutes <= lastEnd);
-
   function isCurrent(period: ChoghadiyaPeriod) {
     const start = timeToMinutes(period.start_time);
     const end = timeToMinutes(period.end_time);
@@ -57,11 +43,7 @@ export function ChoghadiyaTimeline({ choghadiya }: ChoghadiyaTimelineProps) {
         </div>
         <TimelineBar
           periods={choghadiya.day_periods}
-          totalSpan={totalSpan}
-          firstStart={firstStart}
           currentMinutes={currentMinutes}
-          nowPos={nowPos}
-          isCurrentTimeVisible={isCurrentTimeVisible}
           isCurrentFn={isCurrent}
         />
         <PeriodList periods={choghadiya.day_periods} isCurrentFn={isCurrent} />
@@ -77,11 +59,7 @@ export function ChoghadiyaTimeline({ choghadiya }: ChoghadiyaTimelineProps) {
         </div>
         <TimelineBar
           periods={choghadiya.night_periods}
-          totalSpan={totalSpan}
-          firstStart={firstStart}
           currentMinutes={currentMinutes}
-          nowPos={nowPos}
-          isCurrentTimeVisible={isCurrentTimeVisible}
           isCurrentFn={isCurrent}
         />
         <PeriodList
@@ -95,22 +73,13 @@ export function ChoghadiyaTimeline({ choghadiya }: ChoghadiyaTimelineProps) {
 
 function TimelineBar({
   periods,
-  totalSpan,
-  firstStart,
   currentMinutes,
-  nowPos,
-  isCurrentTimeVisible,
   isCurrentFn,
 }: {
   periods: ChoghadiyaPeriod[];
-  totalSpan: number;
-  firstStart: number;
   currentMinutes: number;
-  nowPos: number;
-  isCurrentTimeVisible: boolean;
   isCurrentFn: (p: ChoghadiyaPeriod) => boolean;
 }) {
-  // Calculate local span for this set of periods
   if (periods.length === 0) return null;
   const localFirst = timeToMinutes(periods[0].start_time);
   const localLast = timeToMinutes(periods[periods.length - 1].end_time);
@@ -135,7 +104,7 @@ function TimelineBar({
 
   return (
     <div className="relative">
-      <div className="flex h-10 overflow-hidden rounded-lg border border-border">
+      <div className="flex h-14 overflow-hidden rounded-xl shadow-inner sm:h-16">
         {periods.map((period, i) => {
           const style = getNatureStyle(period.nature);
           const startMins = timeToMinutes(period.start_time);
@@ -150,7 +119,7 @@ function TimelineBar({
           return (
             <div
               key={i}
-              className={`relative flex items-center justify-center border-r border-white/30 last:border-r-0 ${
+              className={`relative flex items-center justify-center border-r border-white/20 last:border-r-0 ${
                 current
                   ? "ring-2 ring-[var(--color-saffron)] ring-inset z-10"
                   : ""
@@ -158,12 +127,12 @@ function TimelineBar({
               style={{
                 width: `${widthPct}%`,
                 backgroundColor: style.fill,
-                opacity: 0.75,
+                opacity: 0.8,
               }}
               title={`${period.name} (${period.nature}) — ${formatTime12h(period.start_time)} to ${formatTime12h(period.end_time)}`}
             >
               {widthPct > 6 && (
-                <span className="text-[10px] font-bold text-white drop-shadow-sm truncate px-0.5">
+                <span className="truncate px-0.5 text-xs font-bold text-white drop-shadow-sm sm:text-sm">
                   {period.name}
                 </span>
               )}
@@ -172,13 +141,13 @@ function TimelineBar({
         })}
       </div>
 
-      {/* Current time marker */}
+      {/* Current time marker with pulsing dot */}
       {hasCurrentInSet && (
         <div
-          className="absolute top-0 h-full w-0.5 bg-[var(--color-saffron)] z-20"
+          className="absolute top-0 z-20 h-full w-0.5 bg-[var(--color-saffron)]"
           style={{ left: `${localNowPos}%` }}
         >
-          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-2.5 w-2.5 rounded-full bg-[var(--color-saffron)] border-2 border-white shadow-sm" />
+          <div className="absolute -top-1.5 left-1/2 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-white bg-[var(--color-saffron)] shadow-sm animate-pulse-marker" />
         </div>
       )}
     </div>
@@ -201,15 +170,17 @@ function PeriodList({
         return (
           <div
             key={i}
-            className={`flex items-center gap-2 rounded-md px-2 py-1 text-xs ${
-              current ? "bg-[var(--color-saffron)]/10 font-semibold" : ""
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs ${
+              current
+                ? "border border-[var(--color-saffron)]/20 bg-[var(--color-saffron)]/5 font-semibold shadow-sm"
+                : "border border-transparent bg-white/50"
             }`}
           >
             <span
-              className={`h-2.5 w-2.5 rounded-full shrink-0 ${style.dot}`}
+              className={`h-2.5 w-2.5 shrink-0 rounded-full ${style.dot}`}
             />
             <span className="truncate">{period.name}</span>
-            <span className="text-muted-foreground ml-auto whitespace-nowrap">
+            <span className="ml-auto whitespace-nowrap text-muted-foreground">
               {formatTime12h(period.start_time)}
             </span>
           </div>

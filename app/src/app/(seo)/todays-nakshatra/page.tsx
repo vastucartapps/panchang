@@ -34,7 +34,7 @@ const POPULAR_CITIES = [
 
 export default function TodaysNakshatraPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <>
       <JsonLd
         breadcrumbs={[
           { name: "Home", url: SITE_CONFIG.url },
@@ -43,66 +43,78 @@ export default function TodaysNakshatraPage() {
         faqs={NAKSHATRA_FAQS}
       />
 
-      <div className="mb-8 flex items-center gap-3">
-        <Star className="h-8 w-8 text-[var(--color-vedic)]" />
-        <h1 className="text-3xl font-bold text-[var(--color-vedic)]">
-          Today&apos;s Nakshatra
-        </h1>
-      </div>
+      {/* Hero bar */}
+      <section
+        className="py-12 sm:py-16"
+        style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+      >
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <Star className="mx-auto h-10 w-10 text-[#C4973B]" />
+          <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl heading-display">
+            Today&apos;s Nakshatra
+          </h1>
+          <div className="mt-4 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+          <p className="mt-4 text-base text-white/60 sm:text-lg">
+            Current lunar constellation and its significance
+          </p>
+        </div>
+      </section>
 
-      <div className="prose prose-neutral max-w-none space-y-6">
-        <p className="text-lg text-muted-foreground">
-          Nakshatra (lunar mansion) is the constellation the Moon occupies at a given time.
-          There are 27 Nakshatras, each spanning 13 degrees 20 minutes of the zodiac. Each
-          Nakshatra is further divided into 4 Padas (quarters).
-        </p>
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <div className="prose prose-neutral max-w-none space-y-6">
+          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Nakshatra (lunar mansion) is the constellation the Moon occupies at a given time.
+            There are 27 Nakshatras, each spanning 13 degrees 20 minutes of the zodiac. Each
+            Nakshatra is further divided into 4 Padas (quarters).
+          </p>
 
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-            Understanding Nakshatra
-          </h2>
-          <div className="mt-4 space-y-3 text-muted-foreground">
-            <p>
-              Nakshatras are classified into three Ganas: Deva (divine), Manushya (human),
-              and Rakshasa (demonic). Each has a presiding deity and a planetary lord that
-              influences its qualities.
-            </p>
-            <p>
-              The Nakshatra determines the type of activities best suited for the day,
-              ranging from fixed activities (like laying foundations) to moveable ones
-              (like travel).
-            </p>
+          <div className="rounded-2xl border-0 bg-card p-6 shadow-lg">
+            <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+              Understanding Nakshatra
+            </h2>
+            <div className="mt-4 space-y-3 text-muted-foreground">
+              <p>
+                Nakshatras are classified into three Ganas: Deva (divine), Manushya (human),
+                and Rakshasa (demonic). Each has a presiding deity and a planetary lord that
+                influences its qualities.
+              </p>
+              <p>
+                The Nakshatra determines the type of activities best suited for the day,
+                ranging from fixed activities (like laying foundations) to moveable ones
+                (like travel).
+              </p>
+            </div>
           </div>
+
+          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+            Importance of Nakshatra
+          </h2>
+          <ul className="space-y-2 text-muted-foreground">
+            <li>Determines the best type of activities for the day</li>
+            <li>Used in Muhurta selection for ceremonies and events</li>
+            <li>Birth Nakshatra defines personality traits and compatibility</li>
+            <li>Essential for Vedic horoscope and Dasha calculations</li>
+          </ul>
+
+          <h2 className="text-xl font-bold text-[var(--color-vedic)]">
+            Check Today&apos;s Nakshatra
+          </h2>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {POPULAR_CITIES.map((city) => (
+              <Link
+                key={city.slug}
+                href={`/${city.slug}`}
+                className="flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-saffron)]/30 hover:shadow-md"
+              >
+                <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />
+                {city.name}
+              </Link>
+            ))}
+          </div>
+
+          <FaqSection faqs={NAKSHATRA_FAQS} />
         </div>
-
-        <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-          Importance of Nakshatra
-        </h2>
-        <ul className="space-y-2 text-muted-foreground">
-          <li>Determines the best type of activities for the day</li>
-          <li>Used in Muhurta selection for ceremonies and events</li>
-          <li>Birth Nakshatra defines personality traits and compatibility</li>
-          <li>Essential for Vedic horoscope and Dasha calculations</li>
-        </ul>
-
-        <h2 className="text-xl font-bold text-[var(--color-vedic)]">
-          Check Today&apos;s Nakshatra
-        </h2>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {POPULAR_CITIES.map((city) => (
-            <Link
-              key={city.slug}
-              href={`/${city.slug}`}
-              className="flex items-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-[var(--color-saffron)]/30 hover:bg-accent"
-            >
-              <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />
-              {city.name}
-            </Link>
-          ))}
-        </div>
-
-        <FaqSection faqs={NAKSHATRA_FAQS} />
       </div>
-    </div>
+    </>
   );
 }

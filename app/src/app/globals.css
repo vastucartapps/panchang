@@ -56,6 +56,14 @@
   --color-cream-dark: #f3f1e8;
   --color-brand-gold-start: #8B6914;
   --color-brand-gold-end: #C4973B;
+  --color-vedic-dark: #002828;
+  --color-gold-primary: #C4973B;
+  --color-gold-light: #E8D5A3;
+  --color-gold-dark: #8B6914;
+  --color-crimson: #8B1A1A;
+  --color-crimson-dark: #6B1010;
+  --color-forest: #14532d;
+  --color-forest-dark: #0A3D1F;
   --color-nature-auspicious: #22c55e;
   --color-nature-auspicious-light: #f0fdf4;
   --color-nature-neutral: #eab308;
@@ -119,6 +127,68 @@
 /* VastuCart Zodiac Diamond Pattern — must be outside @layer base for Tailwind v4 */
 body {
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%23104f55' fill-opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Premium entrance animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseMarker {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(227,100,20,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(227,100,20,0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out both;
+}
+.animate-fade-in-up-delay {
+  animation: fadeInUp 0.6s ease-out 0.15s both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out both;
+}
+.animate-pulse-marker {
+  animation: pulseMarker 2s ease-in-out infinite;
+}
+
+/* Premium typography */
+.heading-display {
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Gradient gold text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #C4973B, #E8D5A3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Section heading with gradient accent bar */
+.section-heading {
+  position: relative;
+  padding-left: 1rem;
+}
+.section-heading::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #003636, #C4973B);
 }
 
 /* Hide scrollbar for swipe card sections */

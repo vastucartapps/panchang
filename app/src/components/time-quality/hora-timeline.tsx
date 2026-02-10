@@ -40,8 +40,6 @@ export function HoraTimeline({ hora }: HoraTimelineProps) {
     return (offset / totalSpan) * 100;
   }
 
-  const sunrisePos = getPosition(hora.sunrise);
-  const sunsetPos = getPosition(hora.sunset);
   const nowPos = getPosition(
     `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`
   );
@@ -65,7 +63,7 @@ export function HoraTimeline({ hora }: HoraTimelineProps) {
 
       {/* Timeline bar */}
       <div className="relative">
-        <div className="flex h-10 overflow-hidden rounded-lg border border-border">
+        <div className="flex h-14 overflow-hidden rounded-xl shadow-inner sm:h-16">
           {allHoras.map((entry, i) => {
             const style = getNatureStyle(entry.nature);
             const startMins = timeToMinutes(entry.start_time);
@@ -80,18 +78,18 @@ export function HoraTimeline({ hora }: HoraTimelineProps) {
             return (
               <div
                 key={i}
-                className={`relative flex items-center justify-center border-r border-white/30 last:border-r-0 transition-opacity ${
+                className={`relative flex items-center justify-center border-r border-white/20 last:border-r-0 transition-opacity ${
                   isCurrent ? "ring-2 ring-[var(--color-saffron)] ring-inset z-10" : ""
                 }`}
                 style={{
                   width: `${widthPct}%`,
                   backgroundColor: style.fill,
-                  opacity: entry.is_day ? 0.8 : 0.6,
+                  opacity: entry.is_day ? 0.85 : 0.65,
                 }}
                 title={`${entry.ruling_planet} (${entry.nature}) — ${formatTime12h(entry.start_time)} to ${formatTime12h(entry.end_time)}`}
               >
                 {widthPct > 3 && (
-                  <span className="text-[10px] font-bold text-white drop-shadow-sm">
+                  <span className="text-xs font-bold text-white drop-shadow-sm sm:text-sm">
                     {getHoraIcon(entry.ruling_planet)}
                   </span>
                 )}
@@ -100,13 +98,13 @@ export function HoraTimeline({ hora }: HoraTimelineProps) {
           })}
         </div>
 
-        {/* Current time marker */}
+        {/* Current time marker with pulsing dot */}
         {isCurrentTimeVisible && (
           <div
-            className="absolute top-0 h-full w-0.5 bg-[var(--color-saffron)] z-20"
+            className="absolute top-0 z-20 h-full w-0.5 bg-[var(--color-saffron)]"
             style={{ left: `${nowPos}%` }}
           >
-            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-2.5 w-2.5 rounded-full bg-[var(--color-saffron)] border-2 border-white shadow-sm" />
+            <div className="absolute -top-1.5 left-1/2 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-white bg-[var(--color-saffron)] shadow-sm animate-pulse-marker" />
           </div>
         )}
       </div>
@@ -122,19 +120,19 @@ export function HoraTimeline({ hora }: HoraTimelineProps) {
           return (
             <div
               key={i}
-              className={`flex items-center gap-2 rounded-md px-2 py-1 text-xs ${
+              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs ${
                 isCurrent
-                  ? "bg-[var(--color-saffron)]/10 font-semibold"
-                  : ""
+                  ? "border border-[var(--color-saffron)]/20 bg-[var(--color-saffron)]/5 font-semibold shadow-sm"
+                  : "border border-transparent bg-white/50"
               }`}
             >
               <span
-                className={`h-2.5 w-2.5 rounded-full shrink-0 ${style.dot}`}
+                className={`h-2.5 w-2.5 shrink-0 rounded-full ${style.dot}`}
               />
               <span className="truncate">
                 {entry.ruling_planet}
               </span>
-              <span className="text-muted-foreground ml-auto whitespace-nowrap">
+              <span className="ml-auto whitespace-nowrap text-muted-foreground">
                 {formatTime12h(entry.start_time)}
               </span>
             </div>

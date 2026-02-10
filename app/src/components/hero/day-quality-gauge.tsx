@@ -6,14 +6,14 @@ interface DayQualityGaugeProps {
 }
 
 export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
-  const { score, label, summary } = dayQuality;
+  const { score, label } = dayQuality;
   const nature = getScoreNature(score);
   const style = getNatureStyle(nature);
 
-  const radius = 80;
-  const strokeWidth = 14;
-  const cx = 100;
-  const cy = 100;
+  const radius = 95;
+  const strokeWidth = 16;
+  const cx = 120;
+  const cy = 120;
   const startAngle = 135;
   const endAngle = 405;
   const totalAngle = endAngle - startAngle;
@@ -46,23 +46,71 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
   }
 
   const bgArc = describeArc(cx, cy, radius, startAngle, endAngle);
+  const bezelArc = describeArc(cx, cy, radius + 6, startAngle, endAngle);
   const scoreArc =
     score > 0
       ? describeArc(cx, cy, radius, startAngle, scoreAngle)
       : "";
 
+  // Tick marks at every 10%
+  const ticks = Array.from({ length: 11 }, (_, i) => {
+    const angle = startAngle + (i / 10) * totalAngle;
+    const inner = polarToCartesian(cx, cy, radius - strokeWidth / 2 - 2, angle);
+    const outer = polarToCartesian(cx, cy, radius - strokeWidth / 2 + 2, angle);
+    return { x1: inner.x, y1: inner.y, x2: outer.x, y2: outer.y };
+  });
+
+  // Glowing endpoint
+  const endPoint = score > 0 ? polarToCartesian(cx, cy, radius, scoreAngle) : null;
+
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 200 200" className="h-44 w-48 sm:h-52 sm:w-56">
-        {/* Background arc */}
+      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+        Day Quality
+      </p>
+      <svg viewBox="0 0 240 240" className="h-56 w-60 sm:h-64 sm:w-68">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Outer bezel ring */}
+        <path
+          d={bezelArc}
+          fill="none"
+          stroke="rgba(255,255,255,0.06)"
+          strokeWidth={2}
+          strokeLinecap="round"
+        />
+
+        {/* Background arc track */}
         <path
           d={bgArc}
           fill="none"
-          stroke="rgba(255,255,255,0.15)"
+          stroke="rgba(255,255,255,0.08)"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
-        {/* Score arc */}
+
+        {/* Tick marks */}
+        {ticks.map((tick, i) => (
+          <line
+            key={i}
+            x1={tick.x1}
+            y1={tick.y1}
+            x2={tick.x2}
+            y2={tick.y2}
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth={1}
+          />
+        ))}
+
+        {/* Score arc with glow */}
         {scoreArc && (
           <path
             d={scoreArc}
@@ -70,18 +118,32 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
             stroke={style.fill}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
+            filter="url(#glow)"
           />
         )}
-        {/* Score text */}
+
+        {/* Glowing endpoint dot */}
+        {endPoint && (
+          <circle
+            cx={endPoint.x}
+            cy={endPoint.y}
+            r={5}
+            fill={style.fill}
+            filter="url(#glow)"
+          />
+        )}
+
+        {/* Score number */}
         <text
           x={cx}
-          y={cy - 6}
+          y={cy - 4}
           textAnchor="middle"
           fill="white"
           style={{
-            fontSize: "36px",
+            fontSize: "44px",
             fontFamily: "var(--font-merriweather), serif",
             fontWeight: 700,
+            letterSpacing: "-1px",
           }}
         >
           {Math.round(score)}
@@ -89,10 +151,10 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
         {/* Label */}
         <text
           x={cx}
-          y={cy + 22}
+          y={cy + 24}
           textAnchor="middle"
           style={{
-            fontSize: "13px",
+            fontSize: "14px",
             fontWeight: 600,
             fill: style.fill,
           }}
@@ -102,10 +164,10 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
         {/* "out of 100" */}
         <text
           x={cx}
-          y={cx + 38}
+          y={cy + 42}
           textAnchor="middle"
-          fill="rgba(255,255,255,0.6)"
-          style={{ fontSize: "10px" }}
+          fill="rgba(255,255,255,0.5)"
+          style={{ fontSize: "10px", letterSpacing: "0.1em" }}
         >
           out of 100
         </text>

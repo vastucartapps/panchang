@@ -67,13 +67,17 @@ export default async function HomePage() {
         />
 
         {/* Hero Banner */}
-        <section className="py-10" style={{ backgroundColor: "#D9C2A6", backgroundImage: "none" }}>
+        <section
+          className="py-14 sm:py-20"
+          style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+        >
           <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
             <div className="flex flex-col items-center text-center">
-              <h1 className="text-3xl font-bold text-[#3B2512] sm:text-4xl">
+              <h1 className="animate-fade-in-up heading-display text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
                 Today&apos;s Panchang
               </h1>
-              <p className="mt-2 text-base text-[#5C3D1E]/70">
+              <div className="mt-4 h-px w-24 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+              <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">
                 {today} &middot; {city.name}, {city.state}
               </p>
               <HeroActions citySlug={city.slug} cityName={city.name} />
@@ -82,24 +86,24 @@ export default async function HomePage() {
         </section>
 
         {/* At-a-Glance Strip */}
-        <section className="mx-auto px-4 pt-8 pb-4 sm:px-6" style={{ maxWidth: "92%" }}>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Day Score */}
+        <section className="mx-auto px-4 pt-10 pb-4 sm:px-6" style={{ maxWidth: "92%" }}>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Day Score — hero card */}
             <div
-              className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
-              style={{ backgroundColor: "#003636" }}
+              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:col-span-2 lg:col-span-1"
+              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.12) 100%)" }}
             >
-              <div className="absolute -bottom-3 -right-3 pointer-events-none">
-                <Star className="h-20 w-20" style={{ color: "#004a4a" }} />
+              <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
+                <Star className="h-24 w-24 text-white" />
               </div>
               <div className="relative flex flex-col">
-                <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Today&apos;s Vibe</p>
-                <div className="mt-2 h-px w-8 bg-white/20" />
-                <div className="mt-3 flex items-baseline gap-1.5">
-                  <span className="text-5xl font-bold text-white">{Math.round(data.day_quality.score)}</span>
-                  <span className="text-base text-white/70">/100</span>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60">Today&apos;s Vibe</p>
+                <div className="mt-2 h-px w-10 bg-gradient-to-r from-[#C4973B]/60 to-transparent" />
+                <div className="mt-4 flex items-baseline gap-2">
+                  <span className="text-6xl font-bold tracking-tight text-white">{Math.round(data.day_quality.score)}</span>
+                  <span className="text-lg text-white/40">/100</span>
                 </div>
-                <span className={`mt-3 inline-block w-fit rounded-full px-3 py-1 text-xs font-bold ${scoreStyle.bg} ${scoreStyle.text}`}>
+                <span className={`mt-4 inline-block w-fit rounded-full px-3 py-1 text-xs font-bold ${scoreStyle.bg} ${scoreStyle.text}`}>
                   {scoreLabel} Day
                 </span>
               </div>
@@ -107,24 +111,24 @@ export default async function HomePage() {
 
             {/* Tithi */}
             <div
-              className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
-              style={{ backgroundColor: "#003636" }}
+              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.08) 100%)" }}
             >
-              <div className="absolute -bottom-3 -right-3 pointer-events-none">
-                <Moon className="h-20 w-20" style={{ color: "#004a4a" }} />
+              <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
+                <Moon className="h-24 w-24 text-white" />
               </div>
               <div className="relative flex flex-col">
-                <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Tithi</p>
-                <div className="mt-2 h-px w-8 bg-white/20" />
-                <p className="mt-3 text-xl font-bold text-white">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60">Tithi</p>
+                <div className="mt-2 h-px w-10 bg-gradient-to-r from-[#C4973B]/60 to-transparent" />
+                <p className="mt-4 text-2xl font-bold tracking-tight text-white">
                   {data.panchang.tithi.tithi.replace(/_/g, " ").split(" ").map((w: string) => w.charAt(0) + w.slice(1).toLowerCase()).join(" ")}
                 </p>
-                <div className="mt-3 space-y-1">
-                  <p className="text-xs text-white">
-                    <span className="text-white/60">Paksha:</span> {data.panchang.tithi.paksha}
+                <div className="mt-3 space-y-1.5">
+                  <p className="text-xs text-white/80">
+                    <span className="text-white/40">Paksha:</span> {data.panchang.tithi.paksha}
                   </p>
-                  <p className="text-xs text-white">
-                    <span className="text-white/60">Deity:</span> {data.panchang.tithi.deity}
+                  <p className="text-xs text-white/80">
+                    <span className="text-white/40">Deity:</span> {data.panchang.tithi.deity}
                   </p>
                   <span className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${tithiStyle.bg} ${tithiStyle.text}`}>
                     {data.panchang.tithi.nature}
@@ -135,24 +139,24 @@ export default async function HomePage() {
 
             {/* Nakshatra */}
             <div
-              className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
-              style={{ backgroundColor: "#003636" }}
+              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(34,197,94,0.08) 100%)" }}
             >
-              <div className="absolute -bottom-3 -right-3 pointer-events-none">
-                <Sparkles className="h-20 w-20" style={{ color: "#004a4a" }} />
+              <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
+                <Sparkles className="h-24 w-24 text-white" />
               </div>
               <div className="relative flex flex-col">
-                <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Nakshatra</p>
-                <div className="mt-2 h-px w-8 bg-white/20" />
-                <p className="mt-3 text-xl font-bold text-white">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60">Nakshatra</p>
+                <div className="mt-2 h-px w-10 bg-gradient-to-r from-[#C4973B]/60 to-transparent" />
+                <p className="mt-4 text-2xl font-bold tracking-tight text-white">
                   {data.panchang.nakshatra.nakshatra.replace(/_/g, " ").split(" ").map((w: string) => w.charAt(0) + w.slice(1).toLowerCase()).join(" ")}
                 </p>
-                <div className="mt-3 space-y-1">
-                  <p className="text-xs text-white">
-                    <span className="text-white/60">Deity:</span> {data.panchang.nakshatra.deity}
+                <div className="mt-3 space-y-1.5">
+                  <p className="text-xs text-white/80">
+                    <span className="text-white/40">Deity:</span> {data.panchang.nakshatra.deity}
                   </p>
-                  <p className="text-xs text-white">
-                    <span className="text-white/60">Lord:</span> {data.panchang.nakshatra.lord}
+                  <p className="text-xs text-white/80">
+                    <span className="text-white/40">Lord:</span> {data.panchang.nakshatra.lord}
                   </p>
                   <span className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${nakshatraStyle.bg} ${nakshatraStyle.text}`}>
                     {nakshatraStyle.label}
@@ -163,29 +167,29 @@ export default async function HomePage() {
 
             {/* Sun */}
             <div
-              className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
-              style={{ backgroundColor: "#003636" }}
+              className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(227,100,20,0.08) 100%)" }}
             >
-              <div className="absolute -bottom-3 -right-3 pointer-events-none">
-                <Sun className="h-20 w-20" style={{ color: "#004a4a" }} />
+              <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
+                <Sun className="h-24 w-24 text-white" />
               </div>
               <div className="relative flex flex-col">
-                <p className="text-xs font-semibold uppercase tracking-wider text-white/90">Sun Today</p>
-                <div className="mt-2 h-px w-8 bg-white/20" />
-                <div className="mt-3 flex items-center justify-between">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60">Sun Today</p>
+                <div className="mt-2 h-px w-10 bg-gradient-to-r from-[#C4973B]/60 to-transparent" />
+                <div className="mt-4 flex items-center justify-between">
                   <div className="flex flex-1 items-center gap-2.5">
-                    <Sunrise className="h-5 w-5 shrink-0 text-orange-400" />
+                    <Sunrise className="h-5 w-5 shrink-0 text-amber-400" />
                     <div>
-                      <p className="text-xl font-bold text-white">{data.timing.sunrise}</p>
-                      <p className="text-[10px] font-medium text-white/40">Sunrise</p>
+                      <p className="text-2xl font-bold tracking-tight text-white">{data.timing.sunrise}</p>
+                      <p className="text-[10px] font-medium tracking-wider text-white/40">SUNRISE</p>
                     </div>
                   </div>
-                  <div className="mx-3 h-10 w-px bg-white/15" />
+                  <div className="mx-3 h-10 w-px bg-white/10" />
                   <div className="flex flex-1 items-center gap-2.5">
                     <Sunset className="h-5 w-5 shrink-0 text-rose-400" />
                     <div>
-                      <p className="text-xl font-bold text-white">{data.timing.sunset}</p>
-                      <p className="text-[10px] font-medium text-white/40">Sunset</p>
+                      <p className="text-2xl font-bold tracking-tight text-white">{data.timing.sunset}</p>
+                      <p className="text-[10px] font-medium tracking-wider text-white/40">SUNSET</p>
                     </div>
                   </div>
                 </div>
@@ -196,12 +200,18 @@ export default async function HomePage() {
 
         {/* Avoid These Times */}
         <section className="mx-auto px-4 pt-6 pb-3 sm:px-6" style={{ maxWidth: "92%" }}>
-          <div className="overflow-hidden rounded-2xl shadow-lg">
-            <div className="flex items-center gap-3 px-6 py-3" style={{ backgroundColor: "#8B1A1A" }}>
-              <ShieldAlert className="h-5 w-5 text-white" />
-              <h2 className="text-base font-bold text-white">Avoid These Times</h2>
+          <div className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-lg">
+            <div
+              className="flex items-center gap-3 px-5 py-3.5 sm:px-6"
+              style={{ background: "linear-gradient(135deg, #8B1A1A, #6B1010)" }}
+            >
+              <ShieldAlert className="h-5 w-5 shrink-0 text-white" />
+              <h2 className="text-sm font-bold text-white sm:text-base">Avoid These Times</h2>
             </div>
-            <div className="flex gap-4 overflow-x-auto p-4 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-3 sm:overflow-visible" style={{ backgroundColor: "#fef2f2" }}>
+            <div
+              className="grid grid-cols-1 gap-3 p-3 sm:grid-cols-3 sm:gap-4 sm:p-4"
+              style={{ backgroundColor: "#fef2f2" }}
+            >
               {[
                 { label: "Rahu Kalam", start: data.timing.rahu_kalam.start_time, end: data.timing.rahu_kalam.end_time },
                 { label: "Yamagandam", start: data.timing.yamagandam.start_time, end: data.timing.yamagandam.end_time },
@@ -209,16 +219,12 @@ export default async function HomePage() {
               ].map((t) => (
                 <div
                   key={t.label}
-                  className="flex min-w-[200px] shrink-0 snap-center flex-col items-center justify-center rounded-2xl p-5 sm:min-w-0"
-                  style={{ backgroundColor: "#8B1A1A" }}
+                  className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] p-4 sm:p-5"
+                  style={{ background: "linear-gradient(135deg, #8B1A1A, #6B1010)" }}
                 >
-                  <p className="text-lg font-bold text-amber-300">{t.label}</p>
-                  <div className="mt-2.5 flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                    <span className="h-2 w-2 rounded-full bg-amber-300" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                  </div>
-                  <p className="mt-2.5 text-2xl font-bold text-white">{t.start} – {t.end}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60 sm:text-xs">{t.label}</p>
+                  <div className="mt-2 h-px w-10 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+                  <p className="mt-2 font-mono text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">{t.start} – {t.end}</p>
                 </div>
               ))}
             </div>
@@ -227,35 +233,38 @@ export default async function HomePage() {
 
         {/* Best Times Today */}
         <section className="mx-auto px-4 pt-3 pb-6 sm:px-6" style={{ maxWidth: "92%" }}>
-          <div className="overflow-hidden rounded-2xl shadow-lg">
-            <div className="flex items-center gap-3 px-6 py-3" style={{ backgroundColor: "#003636" }}>
-              <ShieldCheck className="h-5 w-5 text-white" />
-              <h2 className="text-base font-bold text-white">Best Times Today</h2>
+          <div className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-lg">
+            <div
+              className="flex items-center gap-3 px-5 py-3.5 sm:px-6"
+              style={{ background: "linear-gradient(135deg, #14532d, #0A3D1F)" }}
+            >
+              <ShieldCheck className="h-5 w-5 shrink-0 text-white" />
+              <h2 className="text-sm font-bold text-white sm:text-base">Best Times Today</h2>
             </div>
-            <div className="flex gap-4 overflow-x-auto p-4 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-2 sm:overflow-visible" style={{ backgroundColor: "#f0fdf4" }}>
+            <div
+              className="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2 sm:gap-4 sm:p-4"
+              style={{ backgroundColor: "#f0fdf4" }}
+            >
               {[
                 { label: "Abhijit Muhurta", start: data.timing.abhijit_muhurta.start_time, end: data.timing.abhijit_muhurta.end_time },
                 { label: "Brahma Muhurta", start: data.timing.brahma_muhurta.start_time, end: data.timing.brahma_muhurta.end_time },
               ].map((t) => (
                 <div
                   key={t.label}
-                  className="flex min-w-[200px] shrink-0 snap-center flex-col items-center justify-center rounded-2xl p-5 sm:min-w-0"
-                  style={{ backgroundColor: "#14532d" }}
+                  className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] p-4 sm:p-5"
+                  style={{ background: "linear-gradient(135deg, #14532d, #0A3D1F)" }}
                 >
-                  <p className="text-lg font-bold text-amber-300">{t.label}</p>
-                  <div className="mt-2.5 flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                    <span className="h-2 w-2 rounded-full bg-amber-300" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                  </div>
-                  <p className="mt-2.5 text-2xl font-bold text-white">{t.start} – {t.end}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/60 sm:text-xs">{t.label}</p>
+                  <div className="mt-2 h-px w-10 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+                  <p className="mt-2 font-mono text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">{t.start} – {t.end}</p>
                 </div>
               ))}
             </div>
-            <div className="p-4" style={{ backgroundColor: "#f0fdf4" }}>
+            <div className="p-3 sm:p-4" style={{ backgroundColor: "#f0fdf4" }}>
               <Link
                 href={`/${city.slug}`}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#003636] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[var(--color-vedic-light)] hover:shadow-md"
+                className="flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                style={{ background: "linear-gradient(135deg, #003636, #004D40)" }}
               >
                 See All Timings <ArrowRight className="h-4 w-4" />
               </Link>
@@ -265,43 +274,44 @@ export default async function HomePage() {
 
         {/* Discover More */}
         <section className="mx-auto px-4 pt-8 pb-12 sm:px-6" style={{ maxWidth: "92%" }}>
-          <div className="mb-6 text-center">
-            <h2 className="text-2xl font-bold text-[var(--color-vedic)]">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-[var(--color-vedic)] heading-display">
               Discover More
             </h2>
-            <p className="mt-1 text-sm text-[var(--color-foreground)]/50">
+            <div className="mt-3 h-px w-16 mx-auto bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+            <p className="mt-3 text-sm text-[var(--color-foreground)]/50">
               Your spiritual toolkit, all in one place
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {[
               {
                 title: "Your Kundali",
                 tagline: "Know your stars",
                 desc: "Free personalized birth chart, instantly.",
                 href: NETWORK_LINKS.kundali,
-                bg: "#003636",
+                gradient: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.15) 100%)",
               },
               {
                 title: "Sacred Stotras",
                 tagline: "Daily devotion",
                 desc: "Powerful mantras and chalisas for every day.",
                 href: NETWORK_LINKS.stotra,
-                bg: "#8B1A1A",
+                gradient: "linear-gradient(135deg, #8B1A1A 0%, #8B1A1A 60%, rgba(196,151,59,0.12) 100%)",
               },
               {
                 title: "Find Muhurta",
                 tagline: "Perfect timing",
                 desc: "Pick the most auspicious date for anything.",
                 href: NETWORK_LINKS.muhurta,
-                bg: "#14532d",
+                gradient: "linear-gradient(135deg, #14532d 0%, #14532d 60%, rgba(196,151,59,0.12) 100%)",
               },
               {
                 title: "VastuCart Store",
                 tagline: "Shop spiritual",
                 desc: "Authentic Vastu remedies and essentials.",
                 href: NETWORK_LINKS.store,
-                bg: "#92400e",
+                gradient: "linear-gradient(135deg, #92400e 0%, #92400e 60%, rgba(196,151,59,0.12) 100%)",
               },
             ].map((item) => (
               <a
@@ -309,15 +319,15 @@ export default async function HomePage() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative overflow-hidden rounded-2xl p-6 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl"
-                style={{ backgroundColor: item.bg }}
+                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-6"
+                style={{ background: item.gradient }}
               >
                 <div className="relative">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/50">{item.tagline}</p>
-                  <h3 className="mt-1 text-xl font-bold text-white">{item.title}</h3>
-                  <div className="mt-2 h-px w-8 bg-white/20" />
-                  <p className="mt-3 text-sm leading-relaxed text-white/70">{item.desc}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-amber-300">
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/50 sm:text-[10px]">{item.tagline}</p>
+                  <h3 className="mt-1 text-base font-bold text-white sm:text-xl">{item.title}</h3>
+                  <div className="mt-2 h-px w-8 bg-gradient-to-r from-[#C4973B]/40 to-transparent" />
+                  <p className="mt-2 hidden text-sm leading-relaxed text-white/70 sm:block">{item.desc}</p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-bold text-amber-300 sm:mt-4 sm:text-xs">
                     Explore <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
