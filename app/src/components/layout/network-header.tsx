@@ -12,6 +12,8 @@ const ribbonLinks = [
   { label: "Muhurta", href: NETWORK_LINKS.muhurta },
   { label: "Stotras", href: NETWORK_LINKS.stotra },
   { label: "Full Panchang", href: "/new-delhi", internal: true },
+  { label: "Festivals", href: "/hindu-festivals", internal: true },
+  { label: "Calendar", href: "/new-delhi/calendar", internal: true },
   { label: "Blog", href: NETWORK_LINKS.blog },
 ];
 
