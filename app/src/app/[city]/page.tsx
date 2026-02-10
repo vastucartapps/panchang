@@ -5,6 +5,7 @@ import { getCityBySlug } from "@/lib/cities";
 import { getTodayISO, formatDate } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
+import { getLocale } from "@/lib/i18n";
 import { HeroSection } from "@/components/hero/hero-section";
 import { TimeQualitySection } from "@/components/time-quality/time-quality-section";
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
@@ -13,6 +14,8 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
 import { FaqSection } from "@/components/seo/faq-section";
+import { ShareButton } from "@/components/hero/share-button";
+import { DailySummary } from "@/components/panchang-details/daily-summary";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
@@ -43,6 +46,20 @@ export async function generateMetadata({
       url: `${SITE_CONFIG.url}/${city.slug}`,
       siteName: SITE_CONFIG.name,
       type: "website",
+      images: [
+        {
+          url: `${SITE_CONFIG.url}/api/og/${city.slug}/${getTodayISO()}`,
+          width: 1200,
+          height: 630,
+          alt: `Panchang for ${city.name} today`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Panchang Today in ${city.name}`,
+      description: `Tithi, Nakshatra, Rahu Kaal for ${city.name} today.`,
+      images: [`${SITE_CONFIG.url}/api/og/${city.slug}/${getTodayISO()}`],
     },
   };
 }
@@ -62,6 +79,7 @@ export default async function CityPanchangPage({
   }
 
   const targetDate = getTodayISO();
+  const locale = await getLocale();
   const faqs = getCityFaqs(city.name, city.state);
 
   let data;
@@ -102,7 +120,10 @@ export default async function CityPanchangPage({
             <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">
               {formatDate(data.date)} &middot; {city.state}
             </p>
-            <HeroActions citySlug={city.slug} cityName={city.name} variant="dark" />
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+              <HeroActions citySlug={city.slug} cityName={city.name} variant="dark" />
+              <ShareButton cityName={city.name} citySlug={city.slug} date={targetDate} />
+            </div>
           </div>
           <div className="mt-5 flex justify-center">
             <DateNavigator currentDate={data.date} citySlug={city.slug} variant="dark" />
@@ -119,12 +140,16 @@ export default async function CityPanchangPage({
           ]}
           faqs={faqs}
         />
-        <HeroSection data={data} />
+        <HeroSection data={data} locale={locale} />
+
+        <div className="mt-6">
+          <DailySummary data={data} cityName={city.name} />
+        </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0 space-y-8">
             <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} />
-            <PanchangGrid data={data} />
+            <PanchangGrid data={data} locale={locale} />
           </div>
           <aside className="lg:sticky lg:top-32 lg:self-start">
             <WidgetSidebar />

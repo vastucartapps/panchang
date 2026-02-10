@@ -1,12 +1,15 @@
 import { getScoreNature, getNatureStyle } from "@/lib/constants";
+import { getTranslations, type Locale } from "@/lib/i18n";
 import type { DayQuality } from "@/schemas/panchang";
 
 interface DayQualityGaugeProps {
   dayQuality: DayQuality;
+  locale?: Locale;
 }
 
-export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
+export function DayQualityGauge({ dayQuality, locale = "en" }: DayQualityGaugeProps) {
   const { score, label } = dayQuality;
+  const t = getTranslations(locale);
   const nature = getScoreNature(score);
   const style = getNatureStyle(nature);
 
@@ -66,7 +69,7 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
   return (
     <div className="flex flex-col items-center">
       <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-        Day Quality
+        {t("dayQuality")}
       </p>
       <svg viewBox="0 0 240 240" className="h-56 w-60 sm:h-64 sm:w-68">
         <defs>
@@ -169,7 +172,7 @@ export function DayQualityGauge({ dayQuality }: DayQualityGaugeProps) {
           fill="rgba(255,255,255,0.5)"
           style={{ fontSize: "10px", letterSpacing: "0.1em" }}
         >
-          out of 100
+          {locale === "hi" ? "100 में से" : "out of 100"}
         </text>
       </svg>
     </div>

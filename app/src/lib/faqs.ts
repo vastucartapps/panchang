@@ -265,6 +265,50 @@ export function getCityMoonPhaseFaqs(cityName: string, stateName: string): FaqIt
   ];
 }
 
+export const SUNRISE_SUNSET_FAQS: FaqItem[] = [
+  {
+    question: "What determines sunrise and sunset time?",
+    answer: "Sunrise and sunset times are determined by the observer's geographical coordinates (latitude and longitude), the date, and the Earth's axial tilt. Cities at different latitudes experience sunrise and sunset at different times, even on the same day.",
+  },
+  {
+    question: "What is Dinamana?",
+    answer: "Dinamana is the total duration of daylight, measured from sunrise to sunset. In Vedic astrology, Dinamana is used to calculate Choghadiya periods, Hora timings, and other Panchang elements that depend on the length of the day.",
+  },
+  {
+    question: "Why is sunrise important in Panchang?",
+    answer: "Sunrise marks the start of the Vedic day and is the foundation for calculating all time-based Panchang elements — Rahu Kaal, Yamagandam, Gulika Kalam, Choghadiya periods, and Hora sequences all derive from the sunrise time.",
+  },
+  {
+    question: "What is Brahma Muhurta?",
+    answer: "Brahma Muhurta is the auspicious period approximately 1 hour 36 minutes before sunrise. It is considered the most sacred time for meditation, prayer, and spiritual practices. The exact timing varies daily based on the local sunrise time.",
+  },
+  {
+    question: "Do sunrise times change throughout the year?",
+    answer: "Yes. Sunrise and sunset times change continuously throughout the year due to the Earth's axial tilt and orbital position. Days are longest around the summer solstice (June) and shortest around the winter solstice (December) in the Northern Hemisphere.",
+  },
+];
+
+export function getCitySunriseSunsetFaqs(cityName: string, stateName: string): FaqItem[] {
+  return [
+    {
+      question: `What time is sunrise in ${cityName} today?`,
+      answer: `Today's exact sunrise time for ${cityName}, ${stateName} is shown on this page. Sunrise times change daily based on the Earth's position and ${cityName}'s geographical coordinates (latitude and longitude).`,
+    },
+    {
+      question: `What time is sunset in ${cityName} today?`,
+      answer: `Today's exact sunset time for ${cityName}, ${stateName} is displayed above. Sunset marks the end of the Vedic day and is used to calculate nighttime Choghadiya and other Panchang timings.`,
+    },
+    {
+      question: `How long is the day in ${cityName} today?`,
+      answer: `The total daylight duration (Dinamana) for ${cityName} today is shown on this page. This varies throughout the year — being longest in June and shortest in December.`,
+    },
+    {
+      question: `Is sunrise time in ${cityName} different from other cities?`,
+      answer: `Yes. Sunrise and sunset times depend on geographical coordinates. ${cityName} has specific latitude and longitude that determine its exact sunrise and sunset times, which differ from other cities across India.`,
+    },
+  ];
+}
+
 export const PANCHANG_GUIDE_FAQS: FaqItem[] = [
   {
     question: "What is Panchang?",

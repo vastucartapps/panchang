@@ -10,13 +10,16 @@ import {
 import { PanchangCard } from "./panchang-card";
 import { DayQualityBreakdown } from "./day-quality-breakdown";
 import { formatTime12h, formatDuration } from "@/lib/format";
+import { getTranslations, getHindiName, type Locale } from "@/lib/i18n";
 import type { PanchangResponse } from "@/schemas/panchang";
 
 interface PanchangGridProps {
   data: PanchangResponse;
+  locale?: Locale;
 }
 
-export function PanchangGrid({ data }: PanchangGridProps) {
+export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
+  const t = getTranslations(locale);
   const { panchang, timing, day_quality } = data;
 
   return (
@@ -25,7 +28,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
       <div className="flex items-center gap-3">
         <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
         <h2 className="text-2xl font-bold text-[#003636] heading-display">
-          Panchang Details
+          {t("section.panchangDetails")}
         </h2>
       </div>
 
@@ -33,10 +36,11 @@ export function PanchangGrid({ data }: PanchangGridProps) {
       <div className="grid min-w-0 gap-4 sm:grid-cols-2">
         {/* Nakshatra */}
         <PanchangCard
-          title="Nakshatra"
+          title={t("panchang.nakshatra")}
           icon={<Star className="h-4 w-4" />}
           watermarkIcon={<Star className="h-20 w-20" />}
           name={panchang.nakshatra.nakshatra}
+          hindiName={locale === "hi" ? getHindiName("nakshatra", panchang.nakshatra.nakshatra) : undefined}
           nature={panchang.nakshatra.nature}
           gradientAccent="rgba(196,151,59,0.12)"
         >
@@ -49,10 +53,11 @@ export function PanchangGrid({ data }: PanchangGridProps) {
 
         {/* Yoga */}
         <PanchangCard
-          title="Yoga"
+          title={t("panchang.yoga")}
           icon={<Sparkles className="h-4 w-4" />}
           watermarkIcon={<Sparkles className="h-20 w-20" />}
           name={panchang.yoga.yoga}
+          hindiName={locale === "hi" ? getHindiName("yoga", panchang.yoga.yoga) : undefined}
           nature={panchang.yoga.nature}
           gradientAccent="rgba(34,197,94,0.1)"
         >
@@ -63,7 +68,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
 
         {/* Karana */}
         <PanchangCard
-          title="Karana"
+          title={t("panchang.karana")}
           icon={<Layers className="h-4 w-4" />}
           watermarkIcon={<Layers className="h-20 w-20" />}
           name={panchang.karana.karana}
@@ -76,7 +81,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
 
         {/* Vara */}
         <PanchangCard
-          title="Vara (Day)"
+          title={t("panchang.vara")}
           icon={<CalendarDays className="h-4 w-4" />}
           watermarkIcon={<CalendarDays className="h-20 w-20" />}
           name={`${panchang.vara.name} (${panchang.vara.day})`}
@@ -94,7 +99,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
       <div className="flex items-center gap-3">
         <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
         <h2 className="text-2xl font-bold text-[#003636] heading-display">
-          Important Timings
+          {locale === "hi" ? "महत्वपूर्ण समय" : "Important Timings"}
         </h2>
       </div>
 
@@ -136,7 +141,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
           style={{ background: "linear-gradient(135deg, #8B1A1A, #6B1010)" }}
         >
           <ShieldAlert className="h-5 w-5 text-white" />
-          <h2 className="text-base font-bold text-white">Avoid These Times</h2>
+          <h2 className="text-base font-bold text-white">{locale === "hi" ? "अशुभ समय" : "Avoid These Times"}</h2>
         </div>
         <div className="grid gap-3 p-3 sm:grid-cols-3 sm:p-4" style={{ backgroundColor: "#fef2f2" }}>
           {[
@@ -173,7 +178,7 @@ export function PanchangGrid({ data }: PanchangGridProps) {
           style={{ background: "linear-gradient(135deg, #14532d, #0A3D1F)" }}
         >
           <ShieldCheck className="h-5 w-5 text-white" />
-          <h2 className="text-base font-bold text-white">Best Times Today</h2>
+          <h2 className="text-base font-bold text-white">{locale === "hi" ? "शुभ समय" : "Best Times Today"}</h2>
         </div>
         <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4" style={{ backgroundColor: "#f0fdf4" }}>
           {[

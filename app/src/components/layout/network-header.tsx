@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { NETWORK_LINKS } from "@/lib/constants";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 
 const ribbonLinks = [
   { label: "Home", href: "/", internal: true },
@@ -100,12 +101,19 @@ export function NetworkHeader() {
               {item.label}
             </Link>
           ))}
+          <div className="ml-auto">
+            <LanguageToggle />
+          </div>
         </div>
       </nav>
 
       {/* Mobile Nav */}
       {mobileOpen && (
         <div className="border-b border-[var(--color-border)] bg-white px-4 pb-4 pt-2 sm:hidden">
+          {/* Language toggle for mobile */}
+          <div className="mb-3 flex justify-end">
+            <LanguageToggle />
+          </div>
           {/* Mobile buttons */}
           <div className="mb-3 flex gap-2">
             <a

@@ -1,27 +1,37 @@
 import { getNatureStyle } from "@/lib/constants";
+import { getTranslations, getHindiName, type Locale } from "@/lib/i18n";
 import type { Tithi } from "@/schemas/panchang";
 import type { DayQualityBreakdownItem } from "@/schemas/panchang";
 
 interface TithiTrackerProps {
   tithi: Tithi;
   tithiBreakdown: DayQualityBreakdownItem;
+  locale?: Locale;
 }
 
-export function TithiTracker({ tithi, tithiBreakdown }: TithiTrackerProps) {
+export function TithiTracker({ tithi, tithiBreakdown, locale = "en" }: TithiTrackerProps) {
+  const t = getTranslations(locale);
   const style = getNatureStyle(tithi.nature);
   const percent = Math.min(tithi.percent_elapsed, 100);
 
   return (
     <div className="flex flex-col items-center justify-center gap-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-        Tithi
+        {t("panchang.tithi")}
       </p>
       <div className="text-center">
         <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
           {tithiBreakdown.name}
         </p>
+        {locale === "hi" && (
+          <p className="mt-0.5 text-sm text-[#C4973B]/80">
+            {getHindiName("tithi", tithi.tithi)}
+          </p>
+        )}
         <p className="mt-1 text-sm text-white/60">
-          {tithi.paksha} Paksha
+          {locale === "hi"
+            ? tithi.paksha === "Shukla" ? "शुक्ल पक्ष" : "कृष्ण पक्ष"
+            : `${tithi.paksha} Paksha`}
         </p>
       </div>
 
@@ -51,8 +61,8 @@ export function TithiTracker({ tithi, tithiBreakdown }: TithiTrackerProps) {
           </div>
         </div>
         <div className="flex items-center justify-between text-xs text-white/50">
-          <span>{percent.toFixed(1)}% elapsed</span>
-          <span>{tithi.remaining_degrees.toFixed(1)}&deg; remaining</span>
+          <span>{percent.toFixed(1)}% {locale === "hi" ? "बीता" : "elapsed"}</span>
+          <span>{tithi.remaining_degrees.toFixed(1)}&deg; {locale === "hi" ? "शेष" : "remaining"}</span>
         </div>
       </div>
 

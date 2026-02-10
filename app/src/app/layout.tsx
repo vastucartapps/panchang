@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://panchang.vastucart.in"
   ),
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     siteName: "VastuCart Panchang",
@@ -29,7 +30,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/images/vastucart-favicon.png",
-    apple: "/images/vastucart-favicon.png",
+    apple: "/images/icon-192.png",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "apple-mobile-web-app-title": "Panchang",
   },
 };
 
@@ -41,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#003636" />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
@@ -51,6 +59,13 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_ID}');
+          `}
+        </Script>
+        <Script id="sw-register" strategy="afterInteractive">
+          {`
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.register('/sw.js').catch(() => {});
+            }
           `}
         </Script>
       </head>

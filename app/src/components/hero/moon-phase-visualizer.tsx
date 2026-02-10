@@ -1,10 +1,24 @@
+import { getTranslations, type Locale } from "@/lib/i18n";
 import type { MoonPhase } from "@/schemas/panchang";
 
 interface MoonPhaseVisualizerProps {
   moonPhase: MoonPhase;
+  locale?: Locale;
 }
 
-export function MoonPhaseVisualizer({ moonPhase }: MoonPhaseVisualizerProps) {
+const MOON_PHASE_HINDI: Record<string, string> = {
+  "New Moon": "अमावस्या",
+  "Waxing Crescent": "शुक्ल द्वितीया-षष्ठी",
+  "First Quarter": "शुक्ल सप्तमी",
+  "Waxing Gibbous": "शुक्ल अष्टमी-चतुर्दशी",
+  "Full Moon": "पूर्णिमा",
+  "Waning Gibbous": "कृष्ण प्रतिपदा-षष्ठी",
+  "Last Quarter": "कृष्ण सप्तमी",
+  "Waning Crescent": "कृष्ण अष्टमी-चतुर्दशी",
+};
+
+export function MoonPhaseVisualizer({ moonPhase, locale = "en" }: MoonPhaseVisualizerProps) {
+  const t = getTranslations(locale);
   const { phase_name, illumination_percent, is_waxing, paksha } = moonPhase;
   const illum = illumination_percent / 100;
 
@@ -133,13 +147,14 @@ export function MoonPhaseVisualizer({ moonPhase }: MoonPhaseVisualizerProps) {
         />
       </svg>
       <p className="mt-1 text-base font-bold text-white">
-        {phase_name}
+        {locale === "hi" ? (MOON_PHASE_HINDI[phase_name] || phase_name) : phase_name}
       </p>
+      {locale === "hi" && <p className="mt-0.5 text-xs text-white/50">{phase_name}</p>}
       <p className="mt-0.5 text-xs text-white/60">
-        {illumination_percent.toFixed(0)}% illuminated
+        {illumination_percent.toFixed(0)}% {locale === "hi" ? "प्रकाशित" : "illuminated"}
       </p>
       <p className="text-xs text-white/40">
-        {paksha}
+        {locale === "hi" ? (paksha === "Shukla" ? "शुक्ल पक्ष" : "कृष्ण पक्ष") : paksha}
       </p>
     </div>
   );

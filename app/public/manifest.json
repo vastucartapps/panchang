@@ -1,0 +1,46 @@
+{
+  "name": "VastuCart Panchang — Vedic Calendar",
+  "short_name": "Panchang",
+  "description": "Accurate daily Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBFAF5",
+  "theme_color": "#003636",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["lifestyle", "education"],
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Today's Panchang — New Delhi",
+      "url": "/new-delhi",
+      "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Rahu Kaal Today",
+      "url": "/rahu-kaal-today",
+      "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

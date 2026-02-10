@@ -1,11 +1,13 @@
 import { Check, X } from "lucide-react";
+import type { Locale } from "@/lib/i18n";
 
 interface ActivityPillsProps {
   suitable: string[];
   avoid: string[];
+  locale?: Locale;
 }
 
-export function ActivityPills({ suitable, avoid }: ActivityPillsProps) {
+export function ActivityPills({ suitable, avoid, locale = "en" }: ActivityPillsProps) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
       {/* Suitable Activities */}
@@ -14,7 +16,7 @@ export function ActivityPills({ suitable, avoid }: ActivityPillsProps) {
           <div className="mb-3 flex items-center gap-2">
             <Check className="h-5 w-5 text-green-400" />
             <span className="text-sm font-semibold uppercase tracking-wider text-green-400">
-              Favorable For
+              {locale === "hi" ? "शुभ कार्य" : "Favorable For"}
             </span>
           </div>
           <div className="space-y-1.5">
@@ -39,7 +41,7 @@ export function ActivityPills({ suitable, avoid }: ActivityPillsProps) {
           <div className="mb-3 flex items-center gap-2">
             <X className="h-5 w-5 text-red-400" />
             <span className="text-sm font-semibold uppercase tracking-wider text-red-400">
-              Avoid
+              {locale === "hi" ? "अशुभ कार्य" : "Avoid"}
             </span>
           </div>
           <div className="space-y-1.5">

@@ -6,6 +6,7 @@ interface PanchangCardProps {
   icon: ReactNode;
   watermarkIcon?: ReactNode;
   name: string;
+  hindiName?: string;
   nature: string;
   gradientAccent?: string;
   children?: ReactNode;
@@ -16,6 +17,7 @@ export function PanchangCard({
   icon,
   watermarkIcon,
   name,
+  hindiName,
   nature,
   gradientAccent = "rgba(196,151,59,0.12)",
   children,
@@ -39,6 +41,9 @@ export function PanchangCard({
         </div>
         <div className="mt-2 h-px w-10 bg-gradient-to-r from-[#C4973B]/60 to-transparent" />
         <p className="mt-3 text-2xl font-bold tracking-tight text-white">{name}</p>
+        {hindiName && (
+          <p className="mt-0.5 text-sm text-[#C4973B]/70">{hindiName}</p>
+        )}
         <span
           className={`mt-2 inline-block w-fit rounded-full px-2.5 py-0.5 text-[10px] font-bold ${style.bg} ${style.text}`}
         >
