@@ -43,6 +43,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const legalPages = [
+    "privacy-policy",
+    "terms-of-service",
+    "disclaimer",
+  ].map((slug) => ({
+    url: `${SITE_URL}/${slug}`,
+    lastModified: today,
+    changeFrequency: "yearly" as const,
+    priority: 0.3,
+  }));
+
   return [
     {
       url: SITE_URL,
@@ -53,5 +64,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...cityPages,
     ...cityDatePages,
     ...seoPages,
+    ...legalPages,
   ];
 }

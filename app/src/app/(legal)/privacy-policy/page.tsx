@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
+  description:
+    "Privacy Policy for VastuCart Panchang. Learn how we handle your data, cookies, and browsing information on panchang.vastucart.in.",
+  alternates: {
+    canonical: `${SITE_CONFIG.url}/privacy-policy`,
+  },
 };
 
 export default function PrivacyPolicyPage() {

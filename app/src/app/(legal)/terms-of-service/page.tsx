@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
+  description:
+    "Terms of Service for VastuCart Panchang. Read the terms and conditions governing use of panchang.vastucart.in.",
+  alternates: {
+    canonical: `${SITE_CONFIG.url}/terms-of-service`,
+  },
 };
 
 export default function TermsOfServicePage() {

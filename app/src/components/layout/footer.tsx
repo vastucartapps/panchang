@@ -17,11 +17,11 @@ const toolsLinks = [
   { label: "Kundali", href: NETWORK_LINKS.kundali },
   { label: "Gemstone Store", href: NETWORK_LINKS.store },
   { label: "Vedic Tools", href: NETWORK_LINKS.tools },
-  { label: "Match Making", href: NETWORK_LINKS.kundali + "/match" },
+  { label: "Match Making", href: "https://www.vastucart.in/en/tools/marriage-matching" },
 ];
 
 const networkLinks = [
-  { label: "VastuCart Home", href: NETWORK_LINKS.main },
+  { label: "VastuCart\u00AE Happy Homes", href: NETWORK_LINKS.main },
   { label: "Horoscope", href: NETWORK_LINKS.horoscope },
   { label: "Muhurta", href: NETWORK_LINKS.muhurta },
   { label: "Stotra", href: NETWORK_LINKS.stotra },
@@ -147,6 +147,14 @@ export function Footer() {
                     Terms of Service
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/disclaimer"
+                    className="text-sm text-white/50 transition-colors hover:text-white"
+                  >
+                    Disclaimer
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -182,8 +190,16 @@ export function Footer() {
             </p>
             <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
               <p className="text-xs text-white/30">
-                &copy; {new Date().getFullYear()} {SITE_CONFIG.brandName}&reg;.
-                All rights reserved
+                &copy; {new Date().getFullYear()}{" "}
+                <a
+                  href="https://www.vastucart.in"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/40 transition-colors hover:text-white/70"
+                >
+                  {SITE_CONFIG.brandName}&reg;
+                </a>
+                . All rights reserved
               </p>
               <p className="flex items-center gap-1 text-xs text-white/30">
                 Made with{" "}
