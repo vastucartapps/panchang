@@ -52,6 +52,8 @@ const ALLOWED_BOT_PATTERNS = [
   "apis-google",
   "feedfetcher-google",
   "google-site-verification",
+  "bingbot",
+  "msnbot",
 ];
 
 export function middleware(request: NextRequest) {

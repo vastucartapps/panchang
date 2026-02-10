@@ -24,7 +24,8 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Bingbot",
-        disallow: "/",
+        allow: "/",
+        disallow: ["/api/"],
       },
       {
         userAgent: "Yandex",
