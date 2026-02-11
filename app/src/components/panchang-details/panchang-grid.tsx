@@ -182,7 +182,7 @@ export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
         </div>
         <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4" style={{ backgroundColor: "#f0fdf4" }}>
           {[
-            { entry: timing.abhijit_muhurta },
+            ...(timing.abhijit_muhurta ? [{ entry: timing.abhijit_muhurta }] : []),
             { entry: timing.brahma_muhurta },
           ].map((t) => (
             <div

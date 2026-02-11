@@ -161,15 +161,17 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
                 {formatDuration(timing.brahma_muhurta.duration_minutes)}
               </p>
             </div>
-            <div className="rounded-2xl bg-white/[0.04] p-4 text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">Abhijit Muhurta</p>
-              <p className="mt-2 font-mono text-lg font-bold text-white">
-                {timing.abhijit_muhurta.start_time} – {timing.abhijit_muhurta.end_time}
-              </p>
-              <p className="mt-1 text-xs text-white/50">
-                {formatDuration(timing.abhijit_muhurta.duration_minutes)}
-              </p>
-            </div>
+            {timing.abhijit_muhurta && (
+              <div className="rounded-2xl bg-white/[0.04] p-4 text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">Abhijit Muhurta</p>
+                <p className="mt-2 font-mono text-lg font-bold text-white">
+                  {timing.abhijit_muhurta.start_time} – {timing.abhijit_muhurta.end_time}
+                </p>
+                <p className="mt-1 text-xs text-white/50">
+                  {formatDuration(timing.abhijit_muhurta.duration_minutes)}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Inauspicious timings summary */}

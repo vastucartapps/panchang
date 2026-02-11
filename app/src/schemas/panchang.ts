@@ -136,7 +136,7 @@ const TimingSchema = z.object({
   rahu_kalam: TimingEntrySchema,
   yamagandam: TimingEntrySchema,
   gulika_kalam: TimingEntrySchema,
-  abhijit_muhurta: TimingEntrySchema,
+  abhijit_muhurta: TimingEntrySchema.nullable(),
   brahma_muhurta: TimingEntrySchema,
   sunrise: z.string(),
   sunset: z.string(),

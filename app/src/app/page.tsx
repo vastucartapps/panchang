@@ -246,7 +246,7 @@ export default async function HomePage() {
               style={{ backgroundColor: "#f0fdf4" }}
             >
               {[
-                { label: "Abhijit Muhurta", start: data.timing.abhijit_muhurta.start_time, end: data.timing.abhijit_muhurta.end_time },
+                ...(data.timing.abhijit_muhurta ? [{ label: "Abhijit Muhurta", start: data.timing.abhijit_muhurta.start_time, end: data.timing.abhijit_muhurta.end_time }] : []),
                 { label: "Brahma Muhurta", start: data.timing.brahma_muhurta.start_time, end: data.timing.brahma_muhurta.end_time },
               ].map((t) => (
                 <div
