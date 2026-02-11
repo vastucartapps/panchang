@@ -170,6 +170,11 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
                 <p className="mt-1 text-xs text-white/50">
                   {formatDuration(timing.abhijit_muhurta.duration_minutes)}
                 </p>
+                {timing.abhijit_muhurta.note && (
+                  <p className="mt-1 text-[10px] leading-tight text-white/30 italic">
+                    {timing.abhijit_muhurta.note}
+                  </p>
+                )}
               </div>
             )}
           </div>

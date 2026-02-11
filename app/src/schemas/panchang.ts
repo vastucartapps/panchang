@@ -130,6 +130,7 @@ const TimingEntrySchema = z.object({
   start_time: z.string(),
   end_time: z.string(),
   duration_minutes: z.number(),
+  note: z.string().optional(),
 });
 
 const TimingSchema = z.object({

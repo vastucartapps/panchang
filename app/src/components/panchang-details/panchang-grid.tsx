@@ -202,6 +202,11 @@ export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
               <span className="mt-3 rounded-full bg-white/10 px-3 py-0.5 text-xs font-medium text-white/80">
                 {formatDuration(t.entry.duration_minutes)}
               </span>
+              {t.entry.note && (
+                <p className="mt-2 max-w-[200px] text-center text-[10px] leading-tight text-white/40 italic">
+                  {t.entry.note}
+                </p>
+              )}
             </div>
           ))}
         </div>
