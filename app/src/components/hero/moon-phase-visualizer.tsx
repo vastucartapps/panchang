@@ -1,4 +1,4 @@
-import { getTranslations, type Locale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { MoonPhase } from "@/schemas/panchang";
 
 interface MoonPhaseVisualizerProps {
@@ -18,7 +18,6 @@ const MOON_PHASE_HINDI: Record<string, string> = {
 };
 
 export function MoonPhaseVisualizer({ moonPhase, locale = "en" }: MoonPhaseVisualizerProps) {
-  const t = getTranslations(locale);
   const { phase_name, illumination_percent, is_waxing, paksha } = moonPhase;
   const illum = illumination_percent / 100;
 

@@ -62,3 +62,18 @@ export function formatISOToTime12h(isoStr: string): string {
   const period = d.getHours() >= 12 ? "PM" : "AM";
   return `${h}:${m} ${period}`;
 }
+
+/** Shift an ISO date string by N days: shiftDate("2026-02-15", 1) → "2026-02-16" */
+export function shiftDate(dateStr: string, days: number): string {
+  const d = parseISO(dateStr);
+  d.setDate(d.getDate() + days);
+  return format(d, "yyyy-MM-dd");
+}
+
+/** Format a panchang name key: "CHATURDASHI_KRISHNA" → "Chaturdashi Krishna" */
+export function formatPanchangKey(key: string): string {
+  return key
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}

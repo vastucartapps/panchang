@@ -52,8 +52,19 @@ const ALLOWED_BOT_PATTERNS = [
   "apis-google",
   "feedfetcher-google",
   "google-site-verification",
+  "google-read-aloud",
+  "storebot-google",
+  "google favicon",
   "bingbot",
   "msnbot",
+  "linkedinbot",
+  "twitterbot",
+  "facebookexternalhit",
+  "whatsapp",
+  "telegrambot",
+  "slackbot",
+  "discordbot",
+  "pinterestbot",
 ];
 
 export function middleware(request: NextRequest) {

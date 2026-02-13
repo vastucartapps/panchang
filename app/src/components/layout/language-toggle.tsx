@@ -19,14 +19,9 @@ function setCookie(locale: Locale) {
 
 export function LanguageToggle() {
   const router = useRouter();
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>(readCookie);
 
-  // Sync state from cookie on mount and after navigation
-  useEffect(() => {
-    setLocale(readCookie());
-  }, []);
-
-  // Also re-sync when the component becomes visible (tab switch, mobile menu reopen)
+  // Re-sync when the component becomes visible (tab switch, mobile menu reopen)
   useEffect(() => {
     const sync = () => setLocale(readCookie());
     document.addEventListener("visibilitychange", sync);

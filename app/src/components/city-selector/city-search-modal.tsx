@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, MapPin, Navigation, Loader2 } from "lucide-react";
 import {
@@ -66,14 +66,17 @@ export function CitySearchModal({ children }: CitySearchModalProps) {
   );
 
   // Auto-detect: when coords arrive, find nearest city
+  const handledCoordsRef = useRef(false);
   useEffect(() => {
-    if (coords) {
+    if (coords && !handledCoordsRef.current) {
+      handledCoordsRef.current = true;
       const nearest = findNearestCity(coords.latitude, coords.longitude);
       if (nearest) {
-        handleSelect(nearest);
+        // Navigate directly — component unmounts on route change
+        router.push(`/${nearest.slug}`);
       }
     }
-  }, [coords, handleSelect]);
+  }, [coords, router]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -14,7 +14,6 @@ export function generateDailySummary(
   const tithi = formatName(panchang.tithi.tithi);
   const nakshatra = formatName(panchang.nakshatra.nakshatra);
   const yoga = formatName(panchang.yoga.yoga);
-  const vara = panchang.vara.name;
   const paksha = panchang.tithi.paksha;
   const moonPhase = moon_phase.phase_name;
   const sunrise = formatTime12h(timing.sunrise);

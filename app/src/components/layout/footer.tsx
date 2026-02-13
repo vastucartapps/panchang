@@ -10,8 +10,21 @@ const panchangLinks = [
   { label: "Today's Tithi", href: "/todays-tithi" },
   { label: "Today's Nakshatra", href: "/todays-nakshatra" },
   { label: "Moon Phase Today", href: "/moon-phase-today" },
+  { label: "Hindu Festivals", href: "/hindu-festivals" },
   { label: "What is Panchang?", href: "/what-is-panchang" },
 ];
+
+const currentYear = new Date().getFullYear();
+const festivalLinks = [
+  { name: "Diwali", slug: "diwali" },
+  { name: "Holi", slug: "holi" },
+  { name: "Navratri", slug: "sharad-navratri" },
+  { name: "Janmashtami", slug: "janmashtami" },
+  { name: "Ganesh Chaturthi", slug: "ganesh-chaturthi" },
+].map((f) => ({
+  label: `${f.name} ${currentYear}`,
+  href: `/hindu-festivals/${f.slug}-${currentYear}`,
+}));
 
 const toolsLinks = [
   { label: "Kundali", href: NETWORK_LINKS.kundali },
@@ -95,6 +108,22 @@ export function Footer() {
               <h3 className="mb-4 text-sm font-bold text-[#C4973B]/80">Panchang</h3>
               <ul className="space-y-2.5">
                 {panchangLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-white/50 transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <h3 className="mb-3 mt-6 text-sm font-bold text-[#C4973B]/80">
+                Festivals {currentYear}
+              </h3>
+              <ul className="space-y-2.5">
+                {festivalLinks.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}

@@ -17,11 +17,6 @@ export function ChoghadiyaTimeline({ choghadiya }: ChoghadiyaTimelineProps) {
   const allPeriods = [...choghadiya.day_periods, ...choghadiya.night_periods];
   if (allPeriods.length === 0) return null;
 
-  const firstStart = timeToMinutes(allPeriods[0].start_time);
-  const lastEnd = timeToMinutes(allPeriods[allPeriods.length - 1].end_time);
-  const totalSpan =
-    lastEnd > firstStart ? lastEnd - firstStart : 1440 - firstStart + lastEnd;
-
   function isCurrent(period: ChoghadiyaPeriod) {
     const start = timeToMinutes(period.start_time);
     const end = timeToMinutes(period.end_time);

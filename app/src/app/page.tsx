@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { DEFAULT_LOCATION, SITE_CONFIG, NETWORK_LINKS } from "@/lib/constants";
 import { getTodayISO, formatDate } from "@/lib/format";
@@ -21,6 +22,23 @@ import { HeroActions } from "@/components/hero/hero-actions";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Panchang Today | Accurate Vedic Calendar for India | VastuCart",
+  description:
+    "Today's Panchang — Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for 200+ Indian cities. Free accurate Vedic calendar updated daily.",
+  alternates: {
+    canonical: SITE_CONFIG.url,
+  },
+  openGraph: {
+    title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
+    description:
+      "Today's Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities. Updated daily.",
+    url: SITE_CONFIG.url,
+    siteName: SITE_CONFIG.name,
+    type: "website",
+  },
+};
 
 export default async function HomePage() {
   const city = DEFAULT_LOCATION;

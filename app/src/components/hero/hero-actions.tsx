@@ -10,7 +10,7 @@ interface HeroActionsProps {
   variant?: "light" | "dark";
 }
 
-export function HeroActions({ citySlug, cityName, variant = "dark" }: HeroActionsProps) {
+export function HeroActions({ citySlug, cityName }: HeroActionsProps) {
   return (
     <div className="mt-5 flex items-center gap-3">
       <CitySearchModal>

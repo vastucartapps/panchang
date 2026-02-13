@@ -11,7 +11,7 @@ interface JsonLdProps {
   faqs?: FaqItem[];
 }
 
-export function JsonLd({ city, breadcrumbs, faqs }: JsonLdProps) {
+export function JsonLd({ breadcrumbs, faqs }: JsonLdProps) {
   const schemas = [];
 
   // WebSite schema

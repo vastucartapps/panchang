@@ -10,15 +10,17 @@ import { getAllCities } from "@/lib/cities";
 
 export const dynamic = "force-dynamic";
 
+const currentYear = new Date().getFullYear();
+const nextYear = currentYear + 1;
+
 export const metadata: Metadata = {
-  title: "Hindu Festivals & Vrat Dates 2025-2026 | Complete Calendar",
-  description:
-    "Complete list of Hindu festivals, vrat dates, and auspicious days for 2025-2026. Diwali, Holi, Navratri, Ekadashi, Karwa Chauth dates with Panchang details.",
+  title: `Hindu Festivals & Vrat Dates ${currentYear}-${nextYear} | Complete Calendar`,
+  description: `Complete list of Hindu festivals, vrat dates, and auspicious days for ${currentYear}-${nextYear}. Diwali, Holi, Navratri, Ekadashi, Karwa Chauth dates with Panchang details.`,
   alternates: {
     canonical: `${SITE_CONFIG.url}/hindu-festivals`,
   },
   openGraph: {
-    title: "Hindu Festivals & Vrat Calendar 2025-2026 | VastuCart Panchang",
+    title: `Hindu Festivals & Vrat Calendar ${currentYear}-${nextYear} | VastuCart Panchang`,
     description:
       "Complete Hindu festival calendar with accurate dates, significance, and Panchang details for 200+ cities.",
     url: `${SITE_CONFIG.url}/hindu-festivals`,
@@ -62,12 +64,14 @@ const FESTIVAL_FAQS = [
 export default function HinduFestivalsPage() {
   const today = getTodayISO();
   const upcoming = getUpcomingFestivals(today, 10);
-  const festivals2025 = getAllFestivals()
-    .filter((f) => f.year === 2025)
-    .sort((a, b) => a.date.localeCompare(b.date));
-  const festivals2026 = getAllFestivals()
-    .filter((f) => f.year === 2026)
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const allFestivals = getAllFestivals();
+  const years = [...new Set(allFestivals.map((f) => f.year))].sort((a, b) => b - a);
+  const festivalsByYear = years.map((year) => ({
+    year,
+    festivals: allFestivals
+      .filter((f) => f.year === year)
+      .sort((a, b) => a.date.localeCompare(b.date)),
+  }));
   const topCities = getAllCities().slice(0, 12);
 
   return (
@@ -99,7 +103,7 @@ export default function HinduFestivalsPage() {
           <div className="mt-4 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
           <p className="mt-4 text-base text-white/60 sm:text-lg">
             Complete calendar of major Hindu festivals, vrat dates, and
-            auspicious days for 2025-2026
+            auspicious days for {currentYear}-{nextYear}
           </p>
         </div>
       </section>
@@ -122,29 +126,19 @@ export default function HinduFestivalsPage() {
           </section>
         )}
 
-        {/* 2026 Full Calendar */}
-        <section className="mb-12">
-          <h2 className="mb-6 text-xl font-bold text-[var(--color-vedic)] sm:text-2xl">
-            Hindu Festivals 2026
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {festivals2026.map((f) => (
-              <FestivalCard key={f.slug} festival={f} />
-            ))}
-          </div>
-        </section>
-
-        {/* 2025 Full Calendar */}
-        <section className="mb-12">
-          <h2 className="mb-6 text-xl font-bold text-[var(--color-vedic)] sm:text-2xl">
-            Hindu Festivals 2025
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {festivals2025.map((f) => (
-              <FestivalCard key={f.slug} festival={f} />
-            ))}
-          </div>
-        </section>
+        {/* Full Calendar by Year */}
+        {festivalsByYear.map(({ year, festivals }) => (
+          <section key={year} className="mb-12">
+            <h2 className="mb-6 text-xl font-bold text-[var(--color-vedic)] sm:text-2xl">
+              Hindu Festivals {year}
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {festivals.map((f) => (
+                <FestivalCard key={f.slug} festival={f} />
+              ))}
+            </div>
+          </section>
+        ))}
 
         {/* Editorial content */}
         <section className="mb-12 rounded-2xl border bg-card p-6 sm:p-8">

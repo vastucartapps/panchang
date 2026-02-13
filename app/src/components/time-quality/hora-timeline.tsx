@@ -4,7 +4,7 @@ import { Sun, Moon } from "lucide-react";
 import { getNatureStyle } from "@/lib/constants";
 import { formatTime12h, timeToMinutes } from "@/lib/format";
 import { useCurrentTime } from "@/hooks/use-current-time";
-import type { Hora, HoraEntry } from "@/schemas/panchang";
+import type { Hora } from "@/schemas/panchang";
 
 interface HoraTimelineProps {
   hora: Hora;

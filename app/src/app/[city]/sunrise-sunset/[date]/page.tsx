@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Sunrise, Sunset, Clock, MapPin, Sun } from "lucide-react";
+import { Sunrise, Sunset, MapPin, Sun } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";

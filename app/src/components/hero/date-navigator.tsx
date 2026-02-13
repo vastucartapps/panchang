@@ -10,7 +10,7 @@ interface DateNavigatorProps {
   variant?: "light" | "dark";
 }
 
-export function DateNavigator({ currentDate, citySlug, variant = "dark" }: DateNavigatorProps) {
+export function DateNavigator({ currentDate, citySlug }: DateNavigatorProps) {
   const router = useRouter();
   const date = parseISO(currentDate);
   const today = new Date();
