@@ -14,7 +14,7 @@ export function HeroSection({ data, locale = "en" }: HeroSectionProps) {
   return (
     <div
       className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-2xl shadow-black/20"
-      style={{ background: "linear-gradient(180deg, #003636 0%, #002828 100%)" }}
+      style={{ background: "linear-gradient(180deg, #013f47 0%, #002828 100%)" }}
     >
       {/* Three-panel visual row */}
       <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">

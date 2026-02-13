@@ -61,7 +61,7 @@ export function Footer() {
       />
 
       <div
-        style={{ background: "linear-gradient(180deg, #003636 0%, #002828 100%)" }}
+        style={{ background: "linear-gradient(180deg, #013f47 0%, #002828 100%)" }}
       >
         <div className="mx-auto px-4 py-16 sm:px-6" style={{ maxWidth: "92%" }}>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">

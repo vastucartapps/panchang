@@ -24,8 +24,8 @@ export function TimeQualitySection({
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="h-8 w-1 rounded-full bg-[#003636]" />
-        <h2 className="text-xl font-bold text-[#003636]">
+        <div className="h-8 w-1 rounded-full bg-[#013f47]" />
+        <h2 className="text-xl font-bold text-[#013f47]">
           {`Hora & Choghadiya${dateSuffix}`}
         </h2>
       </div>

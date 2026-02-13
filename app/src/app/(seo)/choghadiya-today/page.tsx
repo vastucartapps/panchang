@@ -60,7 +60,7 @@ export default function ChoghadiyaPage() {
       {/* Hero bar */}
       <section
         className="py-12 sm:py-16"
-        style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+        style={{ background: "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
       >
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
           <Clock className="mx-auto h-10 w-10 text-[#C4973B]" />

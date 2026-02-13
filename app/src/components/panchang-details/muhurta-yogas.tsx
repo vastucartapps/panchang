@@ -25,8 +25,8 @@ export function MuhurtaYogasSection({ muhurtaYogas, locale = "en", cityName, dat
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
-        <h2 className="text-2xl font-bold text-[#003636] heading-display">
+        <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #013f47, #C4973B)" }} />
+        <h2 className="text-2xl font-bold text-[#013f47] heading-display">
           {locale === "hi" ? `मुहूर्त योग${dateSuffix}` : `Muhurta Yogas & Auspicious Combinations${dateSuffix}`}
         </h2>
       </div>
@@ -68,7 +68,7 @@ export function MuhurtaYogasSection({ muhurtaYogas, locale = "en", cityName, dat
                 <div key={yoga.name} className="rounded-xl border border-green-100 bg-white p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-sm font-bold text-[#003636]">{yoga.name}</p>
+                      <p className="text-sm font-bold text-[#013f47]">{yoga.name}</p>
                       <p className="text-xs text-[#C4973B]">{yoga.name_hindi}</p>
                     </div>
                     <span className="shrink-0 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-medium capitalize text-green-700">
@@ -114,7 +114,7 @@ export function MuhurtaYogasSection({ muhurtaYogas, locale = "en", cityName, dat
                 <div key={yoga.name} className="rounded-xl border border-red-100 bg-white p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-sm font-bold text-[#003636]">{yoga.name}</p>
+                      <p className="text-sm font-bold text-[#013f47]">{yoga.name}</p>
                       <p className="text-xs text-[#C4973B]">{yoga.name_hindi}</p>
                     </div>
                     <span className="shrink-0 rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-medium capitalize text-red-700">

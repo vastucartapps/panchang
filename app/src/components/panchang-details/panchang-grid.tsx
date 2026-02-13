@@ -29,8 +29,8 @@ export function PanchangGrid({ data, locale = "en", cityName, date }: PanchangGr
     <section className="space-y-8">
       {/* Section heading */}
       <div className="flex items-center gap-3">
-        <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
-        <h2 className="text-2xl font-bold text-[#003636] heading-display">
+        <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #013f47, #C4973B)" }} />
+        <h2 className="text-2xl font-bold text-[#013f47] heading-display">
           {locale === "hi" ? `तिथि, नक्षत्र, योग और करण${dateSuffix}` : `Tithi, Nakshatra, Yoga & Karana${dateSuffix}`}
         </h2>
       </div>
@@ -100,8 +100,8 @@ export function PanchangGrid({ data, locale = "en", cityName, date }: PanchangGr
 
       {/* Important Timings */}
       <div className="flex items-center gap-3">
-        <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
-        <h2 className="text-2xl font-bold text-[#003636] heading-display">
+        <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #013f47, #C4973B)" }} />
+        <h2 className="text-2xl font-bold text-[#013f47] heading-display">
           {locale === "hi" ? `सूर्योदय, सूर्यास्त और मुहूर्त${dateSuffix}` : `Sunrise, Sunset & Muhurta Timings${dateSuffix}`}
         </h2>
       </div>
@@ -109,7 +109,7 @@ export function PanchangGrid({ data, locale = "en", cityName, date }: PanchangGr
       {/* Sunrise/Sunset bar */}
       <div
         className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-lg"
-        style={{ background: "linear-gradient(135deg, #003636 0%, #002828 100%)" }}
+        style={{ background: "linear-gradient(135deg, #013f47 0%, #002828 100%)" }}
       >
         <div className="flex items-center justify-between p-4 sm:p-6">
           <div className="flex items-center gap-2 sm:gap-3">

@@ -28,7 +28,7 @@ export function FestivalVratSection({
     <section className="space-y-4">
       <div className="flex items-center gap-3">
         <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #e36414, #C4973B)" }} />
-        <h2 className="text-2xl font-bold text-[#003636] heading-display">
+        <h2 className="text-2xl font-bold text-[#013f47] heading-display">
           {locale === "hi" ? `आज के व्रत और त्यौहार${dateSuffix}` : `Festivals & Vrat${dateSuffix}`}
         </h2>
       </div>
@@ -37,7 +37,7 @@ export function FestivalVratSection({
       {hinduMonth && (
         <div className="flex items-center gap-2">
           <Calendar className="h-3.5 w-3.5 text-[#C4973B]" />
-          <span className="text-sm font-medium text-[#003636]/70">
+          <span className="text-sm font-medium text-[#013f47]/70">
             {locale === "hi"
               ? `हिन्दू मास: ${hinduMonth.month}${hinduMonth.is_adhik ? " (अधिक)" : ""}`
               : `Hindu Month: ${hinduMonth.month}${hinduMonth.is_adhik ? " (Adhik)" : ""}`}
@@ -67,7 +67,7 @@ export function FestivalVratSection({
             </div>
             <div className="space-y-2 bg-[#FFFBF5] p-4">
               {festival.deity && (
-                <p className="text-xs text-[#003636]/60">
+                <p className="text-xs text-[#013f47]/60">
                   <span className="font-semibold">{locale === "hi" ? "देवता" : "Deity"}:</span> {festival.deity}
                 </p>
               )}
@@ -88,7 +88,7 @@ export function FestivalVratSection({
           >
             <div
               className="flex items-center gap-2 px-4 py-3"
-              style={{ background: "linear-gradient(135deg, #003636, #004a4a)" }}
+              style={{ background: "linear-gradient(135deg, #013f47, #004a4a)" }}
             >
               <BookOpen className="h-4 w-4 text-white" />
               <div className="min-w-0 flex-1">

@@ -46,7 +46,7 @@ export function WidgetSidebar() {
           description="Access a curated collection of powerful mantras, stotras, and chalisas for daily spiritual practice."
           icon={<BookOpen className="h-5 w-5" />}
           href={NETWORK_LINKS.stotra}
-          accentColor="#003636"
+          accentColor="#013f47"
         />
         <WidgetCard
           title="Career Predictor"

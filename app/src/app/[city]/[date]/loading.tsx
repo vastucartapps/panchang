@@ -4,7 +4,7 @@ export default function DatePageLoading() {
   return (
     <>
       {/* Hero skeleton */}
-      <section className="py-14 sm:py-20" style={{ background: "linear-gradient(165deg, #003636, #004D40, #1B3A2D)" }}>
+      <section className="py-14 sm:py-20" style={{ background: "linear-gradient(165deg, #013f47, #004D40, #1B3A2D)" }}>
         <div className="mx-auto flex flex-col items-center gap-4 px-4 text-center" style={{ maxWidth: "92%" }}>
           <Skeleton className="h-12 w-80 bg-white/10" />
           <Skeleton className="h-px w-24 bg-white/10" />
@@ -25,7 +25,7 @@ export default function DatePageLoading() {
       <div className="mx-auto max-w-[92%] overflow-hidden px-4 py-6 sm:px-6">
         {/* Hero section card */}
         <div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
-          <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-3" style={{ backgroundColor: "#003636" }}>
+          <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-3" style={{ backgroundColor: "#013f47" }}>
             <div className="flex items-center justify-center">
               <Skeleton className="h-36 w-36 rounded-full bg-white/10" />
             </div>

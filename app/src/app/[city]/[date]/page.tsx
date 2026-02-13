@@ -115,7 +115,7 @@ export default async function CityDatePanchangPage({
       {/* Hero Banner */}
       <section
         className="py-14 sm:py-20"
-        style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+        style={{ background: "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
       >
         <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
           <div className="flex flex-col items-center text-center">

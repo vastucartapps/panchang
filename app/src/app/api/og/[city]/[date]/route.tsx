@@ -46,7 +46,7 @@ export async function GET(
           height: "630px",
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)",
+          background: "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)",
           fontFamily: "system-ui, sans-serif",
           padding: "60px",
         }}

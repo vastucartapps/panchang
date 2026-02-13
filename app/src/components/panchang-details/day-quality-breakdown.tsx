@@ -20,7 +20,7 @@ export function DayQualityBreakdown({ dayQuality }: DayQualityBreakdownProps) {
   return (
     <div
       className="overflow-hidden rounded-3xl border border-white/[0.06] shadow-lg"
-      style={{ background: "linear-gradient(180deg, #003636 0%, #002828 100%)" }}
+      style={{ background: "linear-gradient(180deg, #013f47 0%, #002828 100%)" }}
     >
       <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-4 sm:px-6">
         <BarChart3 className="h-5 w-5 text-white/70" />

@@ -86,7 +86,7 @@ export function NetworkHeader() {
       </div>
 
       {/* Row 2: Navigation Ribbon — gradient */}
-      <nav style={{ background: "linear-gradient(90deg, #003636, #004a4a, #003636)" }}>
+      <nav style={{ background: "linear-gradient(90deg, #013f47, #004a4a, #013f47)" }}>
         <div
           className="mx-auto hidden items-center gap-1 px-4 sm:flex sm:px-6"
           style={{ maxWidth: "92%" }}
@@ -137,7 +137,7 @@ export function NetworkHeader() {
             </a>
           </div>
           {/* Mobile ribbon links */}
-          <div className="overflow-hidden rounded-lg" style={{ background: "linear-gradient(180deg, #003636, #004a4a)" }}>
+          <div className="overflow-hidden rounded-lg" style={{ background: "linear-gradient(180deg, #013f47, #004a4a)" }}>
             {ribbonLinks.map((item) => (
               <Link
                 key={item.label}

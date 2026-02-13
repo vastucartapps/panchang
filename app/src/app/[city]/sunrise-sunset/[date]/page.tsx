@@ -98,7 +98,7 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
 
       <section
         className="py-12 sm:py-16"
-        style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+        style={{ background: "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
       >
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
           <Sun className="mx-auto h-10 w-10 text-[#C4973B]" />
@@ -116,7 +116,7 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
         {/* Sun timing card */}
         <div
           className="rounded-3xl border border-white/[0.08] p-6 sm:p-8"
-          style={{ background: "linear-gradient(135deg, #003636 0%, #002828 100%)" }}
+          style={{ background: "linear-gradient(135deg, #013f47 0%, #002828 100%)" }}
         >
           {/* Sunrise & Sunset — large display */}
           <div className="grid grid-cols-2 gap-6">
@@ -207,7 +207,7 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
             <Link
               href={`/${city.slug}/${date}`}
               className="rounded-full px-6 py-2.5 text-sm font-bold text-white transition-all hover:opacity-90"
-              style={{ background: "linear-gradient(135deg, #003636, #004D40)" }}
+              style={{ background: "linear-gradient(135deg, #013f47, #004D40)" }}
             >
               Full Panchang for {city.name}
             </Link>

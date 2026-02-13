@@ -107,7 +107,7 @@ export default async function HomePage() {
         {/* Hero Banner */}
         <section
           className="py-14 sm:py-20"
-          style={{ background: "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
+          style={{ background: "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
         >
           <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
             <div className="flex flex-col items-center text-center">
@@ -129,7 +129,7 @@ export default async function HomePage() {
             {/* Day Score — hero card */}
             <div
               className="relative overflow-hidden rounded-3xl p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:col-span-2 lg:col-span-1"
-              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.12) 100%)" }}
+              style={{ background: "linear-gradient(135deg, #013f47 0%, #013f47 60%, rgba(196,151,59,0.12) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
                 <Star className="h-24 w-24 text-white" />
@@ -150,7 +150,7 @@ export default async function HomePage() {
             {/* Tithi */}
             <div
               className="relative overflow-hidden rounded-3xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-7"
-              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.08) 100%)" }}
+              style={{ background: "linear-gradient(135deg, #013f47 0%, #013f47 60%, rgba(196,151,59,0.08) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
                 <Moon className="h-24 w-24 text-white" />
@@ -178,7 +178,7 @@ export default async function HomePage() {
             {/* Nakshatra */}
             <div
               className="relative overflow-hidden rounded-3xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-7"
-              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(34,197,94,0.08) 100%)" }}
+              style={{ background: "linear-gradient(135deg, #013f47 0%, #013f47 60%, rgba(34,197,94,0.08) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
                 <Sparkles className="h-24 w-24 text-white" />
@@ -206,7 +206,7 @@ export default async function HomePage() {
             {/* Sun */}
             <div
               className="relative overflow-hidden rounded-3xl p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-7"
-              style={{ background: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(227,100,20,0.08) 100%)" }}
+              style={{ background: "linear-gradient(135deg, #013f47 0%, #013f47 60%, rgba(227,100,20,0.08) 100%)" }}
             >
               <div className="pointer-events-none absolute -bottom-3 -right-3 opacity-[0.04]">
                 <Sun className="h-24 w-24 text-white" />
@@ -302,7 +302,7 @@ export default async function HomePage() {
               <Link
                 href={`/${city.slug}`}
                 className="flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                style={{ background: "linear-gradient(135deg, #003636, #004D40)" }}
+                style={{ background: "linear-gradient(135deg, #013f47, #004D40)" }}
               >
                 See All Timings <ArrowRight className="h-4 w-4" />
               </Link>
@@ -328,7 +328,7 @@ export default async function HomePage() {
                 tagline: "Know your stars",
                 desc: "Free personalized birth chart, instantly.",
                 href: NETWORK_LINKS.kundali,
-                gradient: "linear-gradient(135deg, #003636 0%, #003636 60%, rgba(196,151,59,0.15) 100%)",
+                gradient: "linear-gradient(135deg, #013f47 0%, #013f47 60%, rgba(196,151,59,0.15) 100%)",
               },
               {
                 title: "Sacred Stotras",

@@ -92,7 +92,7 @@ export default function HinduFestivalsPage() {
         className="py-12 sm:py-16"
         style={{
           background:
-            "linear-gradient(165deg, #003636 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)",
+            "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)",
         }}
       >
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">

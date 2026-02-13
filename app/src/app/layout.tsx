@@ -49,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="theme-color" content="#003636" />
+        <meta name="theme-color" content="#013f47" />
         <link rel="preconnect" href="https://api.vastucart.in" />
         <link rel="dns-prefetch" href="https://api.vastucart.in" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />

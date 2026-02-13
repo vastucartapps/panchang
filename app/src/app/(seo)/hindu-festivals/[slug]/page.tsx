@@ -344,7 +344,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(165deg, #003636 0%, #004D40 30%, #1B3A2D 60%, #2C1810 100%)",
+            background: "linear-gradient(165deg, #013f47 0%, #004D40 30%, #1B3A2D 60%, #2C1810 100%)",
           }}
         />
 
@@ -487,7 +487,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
             <div
               className="relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center"
               style={{
-                background: "linear-gradient(135deg, #003636 0%, #004D40 50%, #1B3A2D 100%)",
+                background: "linear-gradient(135deg, #013f47 0%, #004D40 50%, #1B3A2D 100%)",
               }}
             >
               <div
@@ -535,7 +535,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                   </div>
                   <div className="space-y-1.5 bg-[#FFFBF5] p-4">
                     {f.deity && (
-                      <p className="text-xs text-[#003636]/60">
+                      <p className="text-xs text-[#013f47]/60">
                         <span className="font-semibold">Deity:</span> {f.deity}
                       </p>
                     )}
@@ -549,7 +549,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                 <div key={v.key} className="overflow-hidden rounded-2xl shadow-md">
                   <div
                     className="flex items-center gap-2 px-4 py-3"
-                    style={{ background: "linear-gradient(135deg, #003636, #004a4a)" }}
+                    style={{ background: "linear-gradient(135deg, #013f47, #004a4a)" }}
                   >
                     <BookOpen className="h-4 w-4 text-white" />
                     <div className="min-w-0 flex-1">
@@ -575,11 +575,11 @@ export default async function FestivalDetailPage({ params }: PageProps) {
         <section className="mb-10">
           <SectionHeading icon={<BookOpen className="h-5 w-5" />} gradient="saffron">About {festival.name}</SectionHeading>
           <div className="rounded-2xl border border-border/50 bg-white p-6 shadow-sm">
-            <p className="text-base leading-relaxed text-[#003636]/75">
+            <p className="text-base leading-relaxed text-[#013f47]/75">
               {festival.description}
             </p>
             {apiDesc && apiDesc !== festival.description && (
-              <p className="mt-4 border-t border-border/30 pt-4 text-sm leading-relaxed text-[#003636]/60 italic">
+              <p className="mt-4 border-t border-border/30 pt-4 text-sm leading-relaxed text-[#013f47]/60 italic">
                 {apiDesc}
               </p>
             )}
@@ -629,15 +629,15 @@ export default async function FestivalDetailPage({ params }: PageProps) {
           <section className="rounded-2xl border border-[#C4973B]/15 bg-[#C4973B]/[0.03] p-6">
             <div className="flex items-center gap-2 mb-4">
               <Star className="h-5 w-5 text-[#C4973B]" />
-              <h2 className="text-lg font-bold text-[#003636]">Significance</h2>
+              <h2 className="text-lg font-bold text-[#013f47]">Significance</h2>
             </div>
-            <p className="text-sm leading-relaxed text-[#003636]/65">{festival.significance}</p>
+            <p className="text-sm leading-relaxed text-[#013f47]/65">{festival.significance}</p>
 
             {hinduMonth && (
               <div className="mt-4 flex items-center gap-2 rounded-xl bg-white/60 px-3 py-2.5">
                 <Calendar className="h-3.5 w-3.5 text-[#C4973B]" />
-                <span className="text-xs text-[#003636]/50">Hindu Month:</span>
-                <span className="text-xs font-semibold text-[#003636]">
+                <span className="text-xs text-[#013f47]/50">Hindu Month:</span>
+                <span className="text-xs font-semibold text-[#013f47]">
                   {hinduMonth.month}{hinduMonth.is_adhik ? " (Adhik)" : ""}
                 </span>
               </div>
@@ -646,12 +646,12 @@ export default async function FestivalDetailPage({ params }: PageProps) {
             {data && (
               <div className="mt-2 flex items-center gap-2 rounded-xl bg-white/60 px-3 py-2.5">
                 <Moon className="h-3.5 w-3.5 text-[#C4973B]" />
-                <span className="text-xs text-[#003636]/50">Tithi:</span>
-                <span className="text-xs font-semibold text-[#003636]">
+                <span className="text-xs text-[#013f47]/50">Tithi:</span>
+                <span className="text-xs font-semibold text-[#013f47]">
                   {tithiName} ({data.panchang.tithi.paksha})
                 </span>
                 {data.panchang.tithi.end_time && (
-                  <span className="text-[10px] text-[#003636]/40">
+                  <span className="text-[10px] text-[#013f47]/40">
                     ends {formatISOToTime12h(data.panchang.tithi.end_time)}
                   </span>
                 )}
@@ -661,8 +661,8 @@ export default async function FestivalDetailPage({ params }: PageProps) {
             {festival.tithi && (
               <div className="mt-2 flex items-center gap-2 rounded-xl bg-white/60 px-3 py-2.5">
                 <Calendar className="h-3.5 w-3.5 text-[#C4973B]" />
-                <span className="text-xs text-[#003636]/50">Traditional Tithi:</span>
-                <span className="text-xs font-semibold text-[#003636]">{festival.tithi}</span>
+                <span className="text-xs text-[#013f47]/50">Traditional Tithi:</span>
+                <span className="text-xs font-semibold text-[#013f47]">{festival.tithi}</span>
               </div>
             )}
           </section>
@@ -670,18 +670,18 @@ export default async function FestivalDetailPage({ params }: PageProps) {
           <section>
             <div className="flex items-center gap-2 mb-4">
               <Flame className="h-5 w-5 text-[#e36414]" />
-              <h2 className="text-lg font-bold text-[#003636]">Traditions &amp; Customs</h2>
+              <h2 className="text-lg font-bold text-[#013f47]">Traditions &amp; Customs</h2>
             </div>
             <div className="space-y-2.5">
               {festival.traditions.map((tradition, i) => (
                 <div key={tradition} className="flex items-start gap-3 rounded-xl border border-border/50 bg-white px-4 py-3 shadow-sm">
                   <span
                     className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-                    style={{ background: "linear-gradient(135deg, #003636, #004D40)" }}
+                    style={{ background: "linear-gradient(135deg, #013f47, #004D40)" }}
                   >
                     {i + 1}
                   </span>
-                  <span className="text-sm text-[#003636]/80 leading-relaxed">{tradition}</span>
+                  <span className="text-sm text-[#013f47]/80 leading-relaxed">{tradition}</span>
                 </div>
               ))}
             </div>
@@ -702,19 +702,19 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                     <div
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-md"
                       style={{
-                        background: "linear-gradient(135deg, #003636, #004D40)",
+                        background: "linear-gradient(135deg, #013f47, #004D40)",
                       }}
                     >
                       {i + 1}
                     </div>
                     {i < content.celebrationGuide!.length - 1 && (
-                      <div className="mt-2 h-full w-px bg-gradient-to-b from-[#003636]/20 to-transparent" />
+                      <div className="mt-2 h-full w-px bg-gradient-to-b from-[#013f47]/20 to-transparent" />
                     )}
                   </div>
                   {/* Content */}
                   <div className="flex-1 rounded-2xl border border-border/50 bg-white p-5 shadow-sm">
-                    <h3 className="text-sm font-bold text-[#003636]">{guide.step}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-[#003636]/60">{guide.detail}</p>
+                    <h3 className="text-sm font-bold text-[#013f47]">{guide.step}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-[#013f47]/60">{guide.detail}</p>
                   </div>
                 </div>
               ))}
@@ -746,7 +746,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                     >
                       {i + 1}
                     </span>
-                    <p className="text-sm leading-relaxed text-[#003636]/70">{fact}</p>
+                    <p className="text-sm leading-relaxed text-[#013f47]/70">{fact}</p>
                   </div>
                 </div>
               ))}
@@ -765,11 +765,11 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                 <div key={r.region} className="rounded-2xl border border-border/50 bg-white p-4 shadow-sm">
                   <div className="flex items-center gap-2 mb-2">
                     <MapPin className="h-4 w-4 text-[#e36414]" />
-                    <span className="text-xs font-bold uppercase tracking-wide text-[#003636]/40">{r.region}</span>
+                    <span className="text-xs font-bold uppercase tracking-wide text-[#013f47]/40">{r.region}</span>
                   </div>
-                  <p className="text-base font-bold text-[#003636]">{r.name}</p>
+                  <p className="text-base font-bold text-[#013f47]">{r.name}</p>
                   {r.note && (
-                    <p className="mt-1 text-xs text-[#003636]/50">{r.note}</p>
+                    <p className="mt-1 text-xs text-[#013f47]/50">{r.note}</p>
                   )}
                 </div>
               ))}
@@ -794,10 +794,10 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               <div className="space-y-3">
                 {content.benefits.map((benefit, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#003636]/10">
-                      <Check className="h-3 w-3 text-[#003636]" />
+                    <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#013f47]/10">
+                      <Check className="h-3 w-3 text-[#013f47]" />
                     </div>
-                    <p className="text-sm leading-relaxed text-[#003636]/70">{benefit}</p>
+                    <p className="text-sm leading-relaxed text-[#013f47]/70">{benefit}</p>
                   </div>
                 ))}
               </div>
@@ -857,7 +857,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
             <SectionHeading icon={<Calendar className="h-5 w-5" />} gradient="teal">
               Panchang Details — {festival.name} {festival.year}
             </SectionHeading>
-            <p className="mb-5 text-xs text-[#003636]/40">
+            <p className="mb-5 text-xs text-[#013f47]/40">
               Panchang for {DEFAULT_LOCATION.name} on {formattedDate}
             </p>
 
@@ -865,21 +865,21 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               {/* Tithi */}
               <div className="rounded-2xl border bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#003636]/40">Tithi</p>
-                  <Moon className="h-4 w-4 text-[#003636]/15" />
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#013f47]/40">Tithi</p>
+                  <Moon className="h-4 w-4 text-[#013f47]/15" />
                 </div>
-                <p className="mt-2 text-xl font-bold text-[#003636]">{tithiName}</p>
-                <p className="mt-0.5 text-xs text-[#003636]/50">{data.panchang.tithi.paksha} Paksha</p>
+                <p className="mt-2 text-xl font-bold text-[#013f47]">{tithiName}</p>
+                <p className="mt-0.5 text-xs text-[#013f47]/50">{data.panchang.tithi.paksha} Paksha</p>
                 <span className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${getNatureStyle(data.panchang.tithi.nature).bg} ${getNatureStyle(data.panchang.tithi.nature).text}`}>
                   {getNatureStyle(data.panchang.tithi.nature).label}
                 </span>
                 {data.panchang.tithi.start_time && data.panchang.tithi.end_time && (
                   <div className="mt-2 space-y-0.5 border-t border-border/30 pt-2">
-                    <p className="text-[10px] text-[#003636]/40">
-                      Starts: <span className="font-semibold text-[#003636]/70">{formatISOToTime12h(data.panchang.tithi.start_time)}</span>
+                    <p className="text-[10px] text-[#013f47]/40">
+                      Starts: <span className="font-semibold text-[#013f47]/70">{formatISOToTime12h(data.panchang.tithi.start_time)}</span>
                     </p>
-                    <p className="text-[10px] text-[#003636]/40">
-                      Ends: <span className="font-semibold text-[#003636]/70">{formatISOToTime12h(data.panchang.tithi.end_time)}</span>
+                    <p className="text-[10px] text-[#013f47]/40">
+                      Ends: <span className="font-semibold text-[#013f47]/70">{formatISOToTime12h(data.panchang.tithi.end_time)}</span>
                     </p>
                   </div>
                 )}
@@ -917,21 +917,21 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               {moonPhase && (
                 <div className="rounded-2xl border bg-white p-5 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#003636]/40">Moon Phase</p>
-                    <Moon className="h-4 w-4 text-[#003636]/15" />
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#013f47]/40">Moon Phase</p>
+                    <Moon className="h-4 w-4 text-[#013f47]/15" />
                   </div>
-                  <p className="mt-2 text-xl font-bold text-[#003636]">{moonPhase.phase_name}</p>
-                  <p className="mt-0.5 text-xs text-[#003636]/50">
+                  <p className="mt-2 text-xl font-bold text-[#013f47]">{moonPhase.phase_name}</p>
+                  <p className="mt-0.5 text-xs text-[#013f47]/50">
                     {moonPhase.illumination_percent.toFixed(1)}% illuminated · {moonPhase.is_waxing ? "Waxing" : "Waning"}
                   </p>
-                  <p className="mt-1 text-[10px] text-[#003636]/40">
+                  <p className="mt-1 text-[10px] text-[#013f47]/40">
                     Age: {moonPhase.age_days.toFixed(1)} days
                   </p>
                 </div>
               )}
 
               <div className="rounded-2xl border bg-white p-5 shadow-sm sm:col-span-2 lg:col-span-1">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#003636]/40">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#013f47]/40">
                   Key Timings
                 </p>
                 <div className="mt-3 space-y-2.5">
@@ -952,7 +952,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
             {data.muhurta_yogas && (data.muhurta_yogas.count_auspicious > 0 || data.muhurta_yogas.count_inauspicious > 0) && (
               <div className="mt-4 rounded-2xl border bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-sm font-bold text-[#003636]">Muhurta Yogas</p>
+                  <p className="text-sm font-bold text-[#013f47]">Muhurta Yogas</p>
                   <span
                     className="rounded-full px-3 py-0.5 text-[10px] font-bold"
                     style={{
@@ -996,7 +996,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               <Link
                 href={`/${DEFAULT_LOCATION.slug}/${displayDate}`}
                 className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition-all hover:opacity-90 hover:shadow-lg"
-                style={{ background: "linear-gradient(135deg, #003636, #004D40)" }}
+                style={{ background: "linear-gradient(135deg, #013f47, #004D40)" }}
               >
                 <Calendar className="h-4 w-4" />
                 Full Panchang for {formatDateLong(displayDate)}
@@ -1024,7 +1024,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               description={`View complete Panchang for ${formattedDate} in your city`}
               href={`/${DEFAULT_LOCATION.slug}/${displayDate}`}
               icon={<Calendar className="h-5 w-5" />}
-              gradient="linear-gradient(135deg, #003636, #004D40)"
+              gradient="linear-gradient(135deg, #013f47, #004D40)"
             />
             <EcosystemCard
               title="Monthly Calendar"
@@ -1062,7 +1062,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               description="Sacred chants, stotras, and aarti collection"
               href={NETWORK_LINKS.stotra}
               icon={<BookOpen className="h-5 w-5" />}
-              gradient="linear-gradient(135deg, #1B3A2D, #003636)"
+              gradient="linear-gradient(135deg, #1B3A2D, #013f47)"
               external
             />
           </div>
@@ -1071,7 +1071,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
         {/* ── View by City ──────────────────────────────── */}
         <section className="mb-10">
           <SectionHeading icon={<MapPin className="h-5 w-5" />} gradient="saffron">{festival.name} Panchang by City</SectionHeading>
-          <p className="mb-4 text-xs text-[#003636]/40">
+          <p className="mb-4 text-xs text-[#013f47]/40">
             View detailed Panchang for {festival.name} {festival.year} in your city
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -1079,7 +1079,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
               <Link
                 key={c.slug}
                 href={`/${c.slug}/${displayDate}`}
-                className="flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2.5 text-sm font-medium text-[#003636] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#C4973B]/30 hover:shadow-md"
+                className="flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2.5 text-sm font-medium text-[#013f47] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#C4973B]/30 hover:shadow-md"
               >
                 <MapPin className="h-3 w-3 text-[#e36414]" />
                 {c.name}
@@ -1104,15 +1104,15 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                     style={{
                       background: rf.category === "vrat"
                         ? "linear-gradient(135deg, #8B1A1A, #6B1010)"
-                        : "linear-gradient(135deg, #003636, #004D40)",
+                        : "linear-gradient(135deg, #013f47, #004D40)",
                     }}
                   >
                     {rf.category === "vrat" ? <BookOpen className="h-4 w-4" /> : <Flame className="h-4 w-4" />}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-[#003636] group-hover:text-[#C4973B] transition-colors text-sm">{rf.name}</p>
-                    <p className="text-xs text-[#003636]/40">{rf.nameHindi}</p>
-                    <p className="mt-1 text-xs text-[#003636]/50">{formatDate(rf.date)}</p>
+                    <p className="font-bold text-[#013f47] group-hover:text-[#C4973B] transition-colors text-sm">{rf.name}</p>
+                    <p className="text-xs text-[#013f47]/40">{rf.nameHindi}</p>
+                    <p className="mt-1 text-xs text-[#013f47]/50">{formatDate(rf.date)}</p>
                   </div>
                 </Link>
               ))}
@@ -1132,11 +1132,11 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                 className="group rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-md"
                 {...(i === 0 ? { open: true } : {})}
               >
-                <summary className="flex cursor-pointer items-center justify-between px-5 py-4 text-sm font-semibold text-[#003636]">
+                <summary className="flex cursor-pointer items-center justify-between px-5 py-4 text-sm font-semibold text-[#013f47]">
                   <span className="pr-4">{faq.question}</span>
-                  <ChevronDown className="h-4 w-4 shrink-0 text-[#003636]/30 transition-transform duration-300 group-open:rotate-180" />
+                  <ChevronDown className="h-4 w-4 shrink-0 text-[#013f47]/30 transition-transform duration-300 group-open:rotate-180" />
                 </summary>
-                <div className="border-t border-border/50 px-5 py-4 text-sm leading-relaxed text-[#003636]/65">
+                <div className="border-t border-border/50 px-5 py-4 text-sm leading-relaxed text-[#013f47]/65">
                   {faq.answer}
                 </div>
               </details>
@@ -1147,7 +1147,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
         <div className="text-center">
           <Link
             href="/hindu-festivals"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#003636] transition-colors hover:text-[#C4973B]"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#013f47] transition-colors hover:text-[#C4973B]"
           >
             <ArrowLeft className="h-4 w-4" />
             Browse All Hindu Festivals
@@ -1165,17 +1165,17 @@ function SectionHeading({ children, gradient, icon }: { children: React.ReactNod
     ? "linear-gradient(180deg, #e36414, #C4973B)"
     : gradient === "gold"
       ? "linear-gradient(180deg, #C4973B, #e36414)"
-      : "linear-gradient(180deg, #003636, #004D40)";
+      : "linear-gradient(180deg, #013f47, #004D40)";
   const iconColor = gradient === "saffron"
     ? "#e36414"
     : gradient === "gold"
       ? "#C4973B"
-      : "#003636";
+      : "#013f47";
   return (
     <div className="flex items-center gap-3 mb-5">
       <div className="h-8 w-1 rounded-full" style={{ background: g }} />
       {icon && <span style={{ color: iconColor }}>{icon}</span>}
-      <h2 className="text-xl font-bold text-[#003636] tracking-tight sm:text-2xl">{children}</h2>
+      <h2 className="text-xl font-bold text-[#013f47] tracking-tight sm:text-2xl">{children}</h2>
     </div>
   );
 }
@@ -1183,9 +1183,9 @@ function SectionHeading({ children, gradient, icon }: { children: React.ReactNod
 function StatCell({ label, value, sub, color, small }: { label: string; value: string; sub: string; color?: string; small?: boolean }) {
   return (
     <div className="flex flex-col items-center py-5 sm:py-6">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#003636]/40">{label}</span>
-      <span className={`mt-1 font-bold ${small ? "text-lg" : "text-2xl"}`} style={{ color: color || "#003636" }}>{value}</span>
-      <span className="text-[10px] text-[#003636]/40">{sub}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#013f47]/40">{label}</span>
+      <span className={`mt-1 font-bold ${small ? "text-lg" : "text-2xl"}`} style={{ color: color || "#013f47" }}>{value}</span>
+      <span className="text-[10px] text-[#013f47]/40">{sub}</span>
     </div>
   );
 }
@@ -1194,8 +1194,8 @@ function TimingRow({ icon, label, value, danger, good }: { icon: React.ReactNode
   return (
     <div className="flex items-center gap-2">
       {icon}
-      <span className="text-[10px] text-[#003636]/40 w-24">{label}</span>
-      <span className={`text-xs font-bold ${danger ? "text-red-600" : good ? "text-green-700" : "text-[#003636]"}`}>{value}</span>
+      <span className="text-[10px] text-[#013f47]/40 w-24">{label}</span>
+      <span className={`text-xs font-bold ${danger ? "text-red-600" : good ? "text-green-700" : "text-[#013f47]"}`}>{value}</span>
     </div>
   );
 }
@@ -1205,11 +1205,11 @@ function PanchangInfoCard({ label, value, sublabel, nature, icon }: { label: str
   return (
     <div className="rounded-2xl border bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#003636]/40">{label}</p>
-        <span className="text-[#003636]/15">{icon}</span>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#013f47]/40">{label}</p>
+        <span className="text-[#013f47]/15">{icon}</span>
       </div>
-      <p className="mt-2 text-xl font-bold text-[#003636]">{value}</p>
-      {sublabel && <p className="mt-0.5 text-xs text-[#003636]/50">{sublabel}</p>}
+      <p className="mt-2 text-xl font-bold text-[#013f47]">{value}</p>
+      {sublabel && <p className="mt-0.5 text-xs text-[#013f47]/50">{sublabel}</p>}
       <span className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${style.bg} ${style.text}`}>{style.label}</span>
     </div>
   );
@@ -1232,10 +1232,10 @@ function EcosystemCard({ title, description, href, icon, gradient, external }: {
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <p className="text-sm font-bold text-[#003636] group-hover:text-[#C4973B] transition-colors">{title}</p>
-          {external && <ExternalLink className="h-3 w-3 text-[#003636]/20" />}
+          <p className="text-sm font-bold text-[#013f47] group-hover:text-[#C4973B] transition-colors">{title}</p>
+          {external && <ExternalLink className="h-3 w-3 text-[#013f47]/20" />}
         </div>
-        <p className="mt-0.5 text-xs text-[#003636]/50 leading-relaxed">{description}</p>
+        <p className="mt-0.5 text-xs text-[#013f47]/50 leading-relaxed">{description}</p>
       </div>
     </Tag>
   );

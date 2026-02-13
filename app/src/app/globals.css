@@ -53,7 +53,7 @@ html, body {
   --radius-4xl: calc(var(--radius) + 16px);
 
   /* VastuCart Design System */
-  --color-vedic: #003636;
+  --color-vedic: #013f47;
   --color-vedic-light: #005a5a;
   --color-vedic-lighter: #e6f0f0;
   --color-saffron: #e36414;
@@ -91,31 +91,31 @@ html, body {
   --card-foreground: oklch(0.18 0.02 75);
   --popover: #ffffff;
   --popover-foreground: oklch(0.18 0.02 75);
-  --primary: #003636;
+  --primary: #013f47;
   --primary-foreground: #ffffff;
   --secondary: #e36414;
   --secondary-foreground: #ffffff;
   --muted: #f3f1e8;
   --muted-foreground: oklch(0.45 0.02 75);
   --accent: #e6f0f0;
-  --accent-foreground: #003636;
+  --accent-foreground: #013f47;
   --destructive: #ef4444;
   --border: #e8e5dc;
   --input: #e8e5dc;
-  --ring: #003636;
-  --chart-1: #003636;
+  --ring: #013f47;
+  --chart-1: #013f47;
   --chart-2: #e36414;
   --chart-3: #22c55e;
   --chart-4: #eab308;
   --chart-5: #8B6914;
   --sidebar: #FBFAF5;
   --sidebar-foreground: oklch(0.18 0.02 75);
-  --sidebar-primary: #003636;
+  --sidebar-primary: #013f47;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e6f0f0;
-  --sidebar-accent-foreground: #003636;
+  --sidebar-accent-foreground: #013f47;
   --sidebar-border: #e8e5dc;
-  --sidebar-ring: #003636;
+  --sidebar-ring: #013f47;
 }
 
 @layer base {
@@ -194,7 +194,7 @@ html {
   bottom: 0.15em;
   width: 3px;
   border-radius: 2px;
-  background: linear-gradient(180deg, #003636, #C4973B);
+  background: linear-gradient(180deg, #013f47, #C4973B);
 }
 
 /* Hide scrollbar for swipe card sections */
