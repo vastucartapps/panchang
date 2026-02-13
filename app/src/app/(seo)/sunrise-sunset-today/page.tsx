@@ -8,6 +8,8 @@ import { getTodayISO } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Sunrise & Sunset Today - Accurate Timings for All Indian Cities",
   description:

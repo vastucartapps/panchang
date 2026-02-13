@@ -1,26 +1,32 @@
 "use client";
 
-import { Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HoraTimeline } from "./hora-timeline";
 import { ChoghadiyaTimeline } from "./choghadiya-timeline";
+import { formatDateLong } from "@/lib/format";
 import type { Hora, Choghadiya } from "@/schemas/panchang";
 
 interface TimeQualitySectionProps {
   hora: Hora;
   choghadiya: Choghadiya;
+  cityName?: string;
+  date?: string;
 }
 
 export function TimeQualitySection({
   hora,
   choghadiya,
+  cityName,
+  date,
 }: TimeQualitySectionProps) {
+  const dateSuffix = cityName && date ? ` — ${cityName} | ${formatDateLong(date)}` : "";
+
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-3">
         <div className="h-8 w-1 rounded-full bg-[#003636]" />
         <h2 className="text-xl font-bold text-[#003636]">
-          Time Quality
+          {`Hora & Choghadiya${dateSuffix}`}
         </h2>
       </div>
 

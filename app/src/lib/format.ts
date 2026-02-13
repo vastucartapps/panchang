@@ -48,3 +48,17 @@ export function formatTithiName(tithiKey: string): string {
     .replace("Shukla", "Shukla Paksha -")
     .replace("Krishna", "Krishna Paksha -");
 }
+
+/** "13 February 2026" — for SEO headings */
+export function formatDateLong(dateStr: string): string {
+  return format(parseISO(dateStr), "d MMMM yyyy");
+}
+
+/** Parse ISO datetime "2026-02-13T16:09:05+05:30" → "4:09 PM" */
+export function formatISOToTime12h(isoStr: string): string {
+  const d = new Date(isoStr);
+  const h = d.getHours() % 12 || 12;
+  const m = String(d.getMinutes()).padStart(2, "0");
+  const period = d.getHours() >= 12 ? "PM" : "AM";
+  return `${h}:${m} ${period}`;
+}

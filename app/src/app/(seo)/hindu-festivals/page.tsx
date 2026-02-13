@@ -8,6 +8,8 @@ import { getTodayISO, formatDateShort } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getAllCities } from "@/lib/cities";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Hindu Festivals & Vrat Dates 2025-2026 | Complete Calendar",
   description:

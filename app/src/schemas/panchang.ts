@@ -30,6 +30,21 @@ const DayQualitySchema = z.object({
   avoid_activities: z.array(z.string()),
 });
 
+const NextTithiSchema = z.object({
+  tithi: z.string(),
+  tithi_number: z.number(),
+  paksha: z.string(),
+  start_time: z.string(),
+});
+
+const HinduMonthSchema = z.object({
+  month: z.string(),
+  month_number: z.number(),
+  is_adhik: z.boolean(),
+  amanta_month: z.string(),
+  purnimanta_month: z.string(),
+});
+
 const TithiSchema = z.object({
   tithi: z.string(),
   tithi_number: z.number(),
@@ -40,6 +55,11 @@ const TithiSchema = z.object({
   nature: z.string(),
   deity: z.string(),
   category: z.string(),
+  start_time: z.string().optional(),
+  end_time: z.string().optional(),
+  prevails_at_sunrise: z.boolean().optional(),
+  next_tithi: NextTithiSchema.optional(),
+  hindu_month: HinduMonthSchema.optional(),
 });
 
 const NakshatraSchema = z.object({
@@ -173,6 +193,47 @@ const ChoghadiyaSchema = z.object({
   sunset_hour: z.number(),
 });
 
+const MuhurtaYogaEntrySchema = z.object({
+  name: z.string(),
+  name_hindi: z.string(),
+  category: z.string(),
+  type: z.string(),
+  description: z.string(),
+  significance: z.string(),
+  suitable_for: z.array(z.string()),
+  avoid_for: z.array(z.string()),
+  rarity: z.string(),
+});
+
+const MuhurtaYogasSchema = z.object({
+  auspicious: z.array(MuhurtaYogaEntrySchema),
+  inauspicious: z.array(MuhurtaYogaEntrySchema),
+  count_auspicious: z.number(),
+  count_inauspicious: z.number(),
+  overall_muhurta_quality: z.string(),
+  panchaka_active: z.boolean(),
+  panchaka_type: z.string().nullable(),
+});
+
+const FestivalEntrySchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  name_hindi: z.string(),
+  category: z.string(),
+  type: z.string(),
+  deity: z.string().optional(),
+  description: z.string().optional(),
+  description_hindi: z.string().optional(),
+});
+
+const VratEntrySchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  name_hindi: z.string(),
+  category: z.string(),
+  note: z.string().optional(),
+});
+
 export const PanchangResponseSchema = z.object({
   date: z.string(),
   day_name: z.string(),
@@ -186,6 +247,10 @@ export const PanchangResponseSchema = z.object({
   timing: TimingSchema,
   planetary_positions: z.array(PlanetPositionSchema),
   choghadiya: ChoghadiyaSchema,
+  muhurta_yogas: MuhurtaYogasSchema.optional(),
+  festivals: z.array(FestivalEntrySchema).optional(),
+  vrat: z.array(VratEntrySchema).optional(),
+  _warnings: z.array(z.string()).optional(),
 });
 
 export type PanchangResponse = z.infer<typeof PanchangResponseSchema>;
@@ -194,6 +259,8 @@ export type DayQualityBreakdownItem = z.infer<
   typeof DayQualityBreakdownItemSchema
 >;
 export type Tithi = z.infer<typeof TithiSchema>;
+export type NextTithi = z.infer<typeof NextTithiSchema>;
+export type HinduMonth = z.infer<typeof HinduMonthSchema>;
 export type Nakshatra = z.infer<typeof NakshatraSchema>;
 export type Yoga = z.infer<typeof YogaSchema>;
 export type Karana = z.infer<typeof KaranaSchema>;
@@ -206,3 +273,7 @@ export type Timing = z.infer<typeof TimingSchema>;
 export type PlanetPosition = z.infer<typeof PlanetPositionSchema>;
 export type ChoghadiyaPeriod = z.infer<typeof ChoghadiyaPeriodSchema>;
 export type Choghadiya = z.infer<typeof ChoghadiyaSchema>;
+export type MuhurtaYogaEntry = z.infer<typeof MuhurtaYogaEntrySchema>;
+export type MuhurtaYogas = z.infer<typeof MuhurtaYogasSchema>;
+export type FestivalEntry = z.infer<typeof FestivalEntrySchema>;
+export type VratEntry = z.infer<typeof VratEntrySchema>;

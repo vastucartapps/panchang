@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Languages } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 
@@ -21,16 +21,26 @@ export function LanguageToggle() {
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>("en");
 
+  // Sync state from cookie on mount and after navigation
   useEffect(() => {
     setLocale(readCookie());
   }, []);
 
-  const toggle = () => {
-    const next: Locale = locale === "en" ? "hi" : "en";
+  // Also re-sync when the component becomes visible (tab switch, mobile menu reopen)
+  useEffect(() => {
+    const sync = () => setLocale(readCookie());
+    document.addEventListener("visibilitychange", sync);
+    return () => document.removeEventListener("visibilitychange", sync);
+  }, []);
+
+  const toggle = useCallback(() => {
+    // Always read the ACTUAL cookie value, never trust stale React state
+    const current = readCookie();
+    const next: Locale = current === "en" ? "hi" : "en";
     setCookie(next);
     setLocale(next);
     router.refresh();
-  };
+  }, [router]);
 
   return (
     <button

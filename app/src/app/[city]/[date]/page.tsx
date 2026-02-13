@@ -16,6 +16,8 @@ import { DateNavigator } from "@/components/hero/date-navigator";
 import { FaqSection } from "@/components/seo/faq-section";
 import { ShareButton } from "@/components/hero/share-button";
 import { DailySummary } from "@/components/panchang-details/daily-summary";
+import { MuhurtaYogasSection } from "@/components/panchang-details/muhurta-yogas";
+import { FestivalVratSection } from "@/components/panchang-details/festival-vrat-section";
 
 export const revalidate = 3600;
 
@@ -124,6 +126,11 @@ export default async function CityDatePanchangPage({
             <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">
               {formatDate(data.date)} &middot; {city.state}
             </p>
+            {data.panchang.tithi.hindu_month && (
+              <p className="mt-1 text-sm tracking-wide text-[#C4973B]/70">
+                {data.panchang.tithi.hindu_month.month} {data.panchang.tithi.paksha} {data.day_quality.breakdown.tithi.name}
+              </p>
+            )}
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
               <HeroActions citySlug={city.slug} cityName={city.name} variant="dark" />
               <ShareButton cityName={city.name} citySlug={city.slug} date={date} />
@@ -148,13 +155,30 @@ export default async function CityDatePanchangPage({
         <HeroSection data={data} locale={locale} />
 
         <div className="mt-6">
-          <DailySummary data={data} cityName={city.name} />
+          <DailySummary data={data} cityName={city.name} date={date} />
         </div>
+
+        {/* Festival & Vrat — shown above the grid when present */}
+        {((data.festivals && data.festivals.length > 0) || (data.vrat && data.vrat.length > 0)) && (
+          <div className="mt-6">
+            <FestivalVratSection
+              festivals={data.festivals}
+              vrat={data.vrat}
+              hinduMonth={data.panchang.tithi.hindu_month}
+              locale={locale}
+              cityName={city.name}
+              date={date}
+            />
+          </div>
+        )}
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0 space-y-8">
-            <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} />
-            <PanchangGrid data={data} locale={locale} />
+            <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} cityName={city.name} date={date} />
+            <PanchangGrid data={data} locale={locale} cityName={city.name} date={date} />
+            {data.muhurta_yogas && (
+              <MuhurtaYogasSection muhurtaYogas={data.muhurta_yogas} locale={locale} cityName={city.name} date={date} />
+            )}
           </div>
           <aside className="lg:sticky lg:top-32 lg:self-start">
             <WidgetSidebar />

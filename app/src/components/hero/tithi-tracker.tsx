@@ -1,5 +1,6 @@
 import { getNatureStyle } from "@/lib/constants";
 import { getTranslations, getHindiName, type Locale } from "@/lib/i18n";
+import { formatISOToTime12h } from "@/lib/format";
 import type { Tithi } from "@/schemas/panchang";
 import type { DayQualityBreakdownItem } from "@/schemas/panchang";
 
@@ -60,8 +61,9 @@ export function TithiTracker({ tithi, tithiBreakdown, locale = "en" }: TithiTrac
             />
           </div>
         </div>
-        <div className="flex items-center justify-between text-xs text-white/50">
+        <div className="flex items-center justify-center gap-2 text-xs text-white/50">
           <span>{percent.toFixed(1)}% {locale === "hi" ? "बीता" : "elapsed"}</span>
+          <span className="text-[#C4973B]">|</span>
           <span>{tithi.remaining_degrees.toFixed(1)}&deg; {locale === "hi" ? "शेष" : "remaining"}</span>
         </div>
       </div>
@@ -82,6 +84,24 @@ export function TithiTracker({ tithi, tithiBreakdown, locale = "en" }: TithiTrac
           </>
         )}
       </div>
+
+      {/* Tithi timing + next tithi */}
+      {tithi.end_time && (
+        <div className="w-full max-w-[240px] rounded-xl bg-white/[0.04] px-3 py-2">
+          <div className="flex items-center justify-between text-[10px] text-white/40">
+            <span>{locale === "hi" ? "समाप्त" : "Ends"}</span>
+            <span className="font-mono font-semibold text-white/70">{formatISOToTime12h(tithi.end_time)}</span>
+          </div>
+          {tithi.next_tithi && (
+            <div className="mt-1 flex items-center justify-between border-t border-white/[0.06] pt-1 text-[10px] text-white/40">
+              <span>{locale === "hi" ? "अगली" : "Next"}</span>
+              <span className="font-semibold text-[#C4973B]/80">
+                {tithi.next_tithi.tithi.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()).replace(/(Shukla|Krishna)/, "$1 ·")}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

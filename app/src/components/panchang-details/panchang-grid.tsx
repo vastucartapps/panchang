@@ -9,18 +9,21 @@ import {
 } from "lucide-react";
 import { PanchangCard } from "./panchang-card";
 import { DayQualityBreakdown } from "./day-quality-breakdown";
-import { formatTime12h, formatDuration } from "@/lib/format";
+import { formatTime12h, formatDuration, formatDateLong } from "@/lib/format";
 import { getTranslations, getHindiName, type Locale } from "@/lib/i18n";
 import type { PanchangResponse } from "@/schemas/panchang";
 
 interface PanchangGridProps {
   data: PanchangResponse;
   locale?: Locale;
+  cityName?: string;
+  date?: string;
 }
 
-export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
+export function PanchangGrid({ data, locale = "en", cityName, date }: PanchangGridProps) {
   const t = getTranslations(locale);
   const { panchang, timing, day_quality } = data;
+  const dateSuffix = cityName && date ? ` — ${cityName} | ${formatDateLong(date)}` : "";
 
   return (
     <section className="space-y-8">
@@ -28,7 +31,7 @@ export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
       <div className="flex items-center gap-3">
         <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
         <h2 className="text-2xl font-bold text-[#003636] heading-display">
-          {t("section.panchangDetails")}
+          {locale === "hi" ? `तिथि, नक्षत्र, योग और करण${dateSuffix}` : `Tithi, Nakshatra, Yoga & Karana${dateSuffix}`}
         </h2>
       </div>
 
@@ -99,7 +102,7 @@ export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
       <div className="flex items-center gap-3">
         <div className="h-8 w-1 rounded-full" style={{ background: "linear-gradient(180deg, #003636, #C4973B)" }} />
         <h2 className="text-2xl font-bold text-[#003636] heading-display">
-          {locale === "hi" ? "महत्वपूर्ण समय" : "Important Timings"}
+          {locale === "hi" ? `सूर्योदय, सूर्यास्त और मुहूर्त${dateSuffix}` : `Sunrise, Sunset & Muhurta Timings${dateSuffix}`}
         </h2>
       </div>
 
@@ -141,7 +144,7 @@ export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
           style={{ background: "linear-gradient(135deg, #8B1A1A, #6B1010)" }}
         >
           <ShieldAlert className="h-5 w-5 text-white" />
-          <h2 className="text-base font-bold text-white">{locale === "hi" ? "अशुभ समय" : "Avoid These Times"}</h2>
+          <h2 className="text-base font-bold text-white">{locale === "hi" ? `राहु काल और अशुभ समय${dateSuffix}` : `Rahu Kaal & Inauspicious Timings${dateSuffix}`}</h2>
         </div>
         <div className="grid gap-3 p-3 sm:grid-cols-3 sm:p-4" style={{ backgroundColor: "#fef2f2" }}>
           {[
@@ -178,7 +181,7 @@ export function PanchangGrid({ data, locale = "en" }: PanchangGridProps) {
           style={{ background: "linear-gradient(135deg, #14532d, #0A3D1F)" }}
         >
           <ShieldCheck className="h-5 w-5 text-white" />
-          <h2 className="text-base font-bold text-white">{locale === "hi" ? "शुभ समय" : "Best Times Today"}</h2>
+          <h2 className="text-base font-bold text-white">{locale === "hi" ? `शुभ मुहूर्त${dateSuffix}` : `Shubh Muhurta & Auspicious Timings${dateSuffix}`}</h2>
         </div>
         <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4" style={{ backgroundColor: "#f0fdf4" }}>
           {[
