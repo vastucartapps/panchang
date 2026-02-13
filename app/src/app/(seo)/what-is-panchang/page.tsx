@@ -20,6 +20,13 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.url}/what-is-panchang`,
     siteName: SITE_CONFIG.name,
     type: "website",
+    images: [{ url: `${SITE_CONFIG.url}/images/vastucart-logo.png`, width: 512, height: 512, alt: "VastuCart Panchang" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "What is Panchang? | VastuCart Panchang",
+    description: "Complete guide to the Vedic Panchang calendar system.",
+    images: [`${SITE_CONFIG.url}/images/vastucart-logo.png`],
   },
 };
 

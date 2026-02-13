@@ -23,22 +23,42 @@ import { HeroActions } from "@/components/hero/hero-actions";
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Panchang Today | Accurate Vedic Calendar for India | VastuCart",
-  description:
-    "Today's Panchang — Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for 200+ Indian cities. Free accurate Vedic calendar updated daily.",
-  alternates: {
-    canonical: SITE_CONFIG.url,
-  },
-  openGraph: {
-    title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
+export async function generateMetadata(): Promise<Metadata> {
+  const today = getTodayISO();
+  const ogImage = `${SITE_CONFIG.url}/api/og/${DEFAULT_LOCATION.slug}/${today}`;
+
+  return {
+    title: "Panchang Today | Accurate Vedic Calendar for India | VastuCart",
     description:
-      "Today's Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities. Updated daily.",
-    url: SITE_CONFIG.url,
-    siteName: SITE_CONFIG.name,
-    type: "website",
-  },
-};
+      "Today's Panchang — Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for 200+ Indian cities. Free accurate Vedic calendar updated daily.",
+    alternates: {
+      canonical: SITE_CONFIG.url,
+    },
+    openGraph: {
+      title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
+      description:
+        "Today's Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities. Updated daily.",
+      url: SITE_CONFIG.url,
+      siteName: SITE_CONFIG.name,
+      type: "website",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: "Today's Panchang — VastuCart",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
+      description:
+        "Today's Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities.",
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function HomePage() {
   const city = DEFAULT_LOCATION;

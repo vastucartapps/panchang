@@ -24,6 +24,13 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.url}/choghadiya-today`,
     siteName: SITE_CONFIG.name,
     type: "website",
+    images: [{ url: `${SITE_CONFIG.url}/images/vastucart-logo.png`, width: 512, height: 512, alt: "VastuCart Panchang" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Choghadiya Today | VastuCart Panchang",
+    description: "Accurate daily Choghadiya timings for your activities today.",
+    images: [`${SITE_CONFIG.url}/images/vastucart-logo.png`],
   },
 };
 

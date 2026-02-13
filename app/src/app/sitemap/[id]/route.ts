@@ -3,7 +3,7 @@ import { getCitySlugs } from "@/lib/cities";
 import { getAllFestivals } from "@/data/festivals";
 import { format, addDays } from "date-fns";
 
-const SITE_URL = "https://panchang.vastucart.in";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://panchang.vastucart.in";
 
 const SEO_TOPICS = [
   "rahu-kaal-today",
@@ -217,6 +217,11 @@ export async function GET(
         );
       }
     }
+  }
+
+  // Safety: Google sitemaps have a 50K URL limit per file
+  if (entries.length > 45000) {
+    console.warn(`[SITEMAP] Sitemap ${sitemapId} has ${entries.length} URLs — approaching 50K limit. Consider splitting.`);
   }
 
   const xml = wrapUrlset(entries);

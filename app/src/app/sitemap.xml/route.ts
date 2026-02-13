@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const SITE_URL = "https://panchang.vastucart.in";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://panchang.vastucart.in";
 const SITEMAP_COUNT = 9;
 
 export const dynamic = "force-dynamic";

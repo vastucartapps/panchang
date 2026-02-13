@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { merriweather, inter } from "@/lib/fonts";
+import { WebVitalsReporter } from "@/components/web-vitals";
 import "./globals.css";
 
 const GA_ID = "G-JTDVTTMPVE";
@@ -49,6 +50,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#003636" />
+        <link rel="preconnect" href="https://api.vastucart.in" />
+        <link rel="dns-prefetch" href="https://api.vastucart.in" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
@@ -74,6 +78,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <WebVitalsReporter />
       </body>
     </html>
   );

@@ -32,8 +32,43 @@ import {
   shiftDate,
   formatPanchangKey,
 } from "@/lib/format";
+import Image from "next/image";
 import { getAllCities } from "@/lib/cities";
 import { JsonLd } from "@/components/seo/json-ld";
+
+// ─── Festival Hero Image Mapping ─────────────────────────
+// Maps festival base name (without year suffix) to a hero overlay image.
+const FESTIVAL_HERO_IMAGES: Record<string, string> = {
+  diwali: "/images/festivals/diwali.jpg",
+  "holika-dahan": "/images/festivals/holi.jpg",
+  holi: "/images/festivals/holi.jpg",
+  "sharad-navratri": "/images/festivals/navratri.jpg",
+  "chaitra-navratri": "/images/festivals/navratri.jpg",
+  navratri: "/images/festivals/navratri.jpg",
+  dussehra: "/images/festivals/dussehra.jpg",
+  "vijayadashami": "/images/festivals/dussehra.jpg",
+  "maha-shivaratri": "/images/festivals/maha-shivaratri.jpg",
+  "krishna-janmashtami": "/images/festivals/krishna-janmashtami.jpg",
+  "ganesh-chaturthi": "/images/festivals/ganesh-chaturthi.jpg",
+  "rama-navami": "/images/festivals/rama-navami.jpg",
+  "raksha-bandhan": "/images/festivals/raksha-bandhan.jpg",
+  "karwa-chauth": "/images/festivals/karwa-chauth.jpg",
+  "chhath-puja": "/images/festivals/chhath-puja.jpg",
+  "makar-sankranti": "/images/festivals/makar-sankranti.jpg",
+  "vasant-panchami": "/images/festivals/vasant-panchami.jpg",
+  "guru-purnima": "/images/festivals/guru-purnima.jpg",
+  "akshaya-tritiya": "/images/festivals/akshaya-tritiya.jpg",
+  "hanuman-jayanti": "/images/festivals/hanuman-jayanti.jpg",
+  dhanteras: "/images/festivals/dhanteras.jpg",
+  "bhai-dooj": "/images/festivals/bhai-dooj.jpg",
+  "govardhan-puja": "/images/festivals/govardhan-puja.jpg",
+  "nag-panchami": "/images/festivals/nag-panchami.jpg",
+};
+
+function getFestivalHeroImage(slug: string): string | null {
+  const baseName = slug.replace(/-\d{4}$/, "");
+  return FESTIVAL_HERO_IMAGES[baseName] || null;
+}
 
 export const revalidate = 3600;
 
@@ -266,6 +301,7 @@ export default async function FestivalDetailPage({ params }: PageProps) {
   const cities = getAllCities().slice(0, 20);
   const faqs = buildFaqs(festival, data, actualDate, apiFestival);
   const related = getRelatedFestivals(festival);
+  const heroImage = getFestivalHeroImage(slug);
 
   // Use API-corrected date for display, fall back to static
   const displayDate = actualDate;
@@ -295,16 +331,33 @@ export default async function FestivalDetailPage({ params }: PageProps) {
 
       {/* ── Hero Section ────────────────────────────────── */}
       <section className="relative overflow-hidden py-16 sm:py-24">
+        {/* Base gradient — always present */}
         <div
           className="absolute inset-0"
           style={{
             background: "linear-gradient(165deg, #003636 0%, #004D40 30%, #1B3A2D 60%, #2C1810 100%)",
           }}
         />
+
+        {/* Festival-specific hero image overlay */}
+        {heroImage && (
+          <Image
+            src={heroImage}
+            alt=""
+            fill
+            className="absolute inset-0 object-cover opacity-25"
+            sizes="100vw"
+            priority
+          />
+        )}
+
+        {/* Dark overlay on top of image for text readability */}
         <div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse at 50% 0%, rgba(196,151,59,0.15) 0%, transparent 60%)",
+            background: heroImage
+              ? "linear-gradient(to bottom, rgba(0,54,54,0.6) 0%, rgba(0,54,54,0.85) 100%)"
+              : "radial-gradient(ellipse at 50% 0%, rgba(196,151,59,0.15) 0%, transparent 60%)",
           }}
         />
 

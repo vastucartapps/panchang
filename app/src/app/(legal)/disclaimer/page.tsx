@@ -15,7 +15,7 @@ export default function DisclaimerPage() {
     <article className="prose prose-stone max-w-none">
       <h1>Disclaimer</h1>
       <p className="text-muted-foreground">
-        Last updated: February 2026
+        Last updated: {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
       </p>
 
       <h2>Astrological Information</h2>

@@ -853,6 +853,15 @@ export const FESTIVALS: Festival[] = [
 // ─── Helper functions ────────────────────────────────
 
 export function getAllFestivals(): Festival[] {
+  // Runtime warning: check if festival data is going stale
+  const latestYear = Math.max(...FESTIVALS.map((f) => f.year));
+  const currentYear = new Date().getFullYear();
+  if (currentYear >= latestYear) {
+    console.warn(
+      `[FESTIVAL DATA] Latest festival year is ${latestYear}, current year is ${currentYear}. ` +
+      `Festival data needs updating! Add ${currentYear + 1} festivals to src/data/festivals.ts`
+    );
+  }
   return FESTIVALS;
 }
 

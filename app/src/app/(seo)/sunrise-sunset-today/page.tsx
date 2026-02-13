@@ -24,6 +24,13 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.url}/sunrise-sunset-today`,
     siteName: SITE_CONFIG.name,
     type: "website",
+    images: [{ url: `${SITE_CONFIG.url}/images/vastucart-logo.png`, width: 512, height: 512, alt: "VastuCart Panchang" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Sunrise & Sunset Today | VastuCart Panchang",
+    description: "Accurate daily sunrise and sunset timings for 200+ Indian cities.",
+    images: [`${SITE_CONFIG.url}/images/vastucart-logo.png`],
   },
 };
 

@@ -1,8 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { CitySearchModal } from "@/components/city-selector/city-search-modal";
+
+const CitySearchModal = dynamic(
+  () => import("@/components/city-selector/city-search-modal").then((m) => m.CitySearchModal),
+  { ssr: false }
+);
 
 interface HeroActionsProps {
   citySlug: string;

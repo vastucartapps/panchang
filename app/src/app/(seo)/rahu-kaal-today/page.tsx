@@ -24,6 +24,13 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.url}/rahu-kaal-today`,
     siteName: SITE_CONFIG.name,
     type: "website",
+    images: [{ url: `${SITE_CONFIG.url}/images/vastucart-logo.png`, width: 512, height: 512, alt: "VastuCart Panchang" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Rahu Kaal Today | VastuCart Panchang",
+    description: "Accurate daily Rahu Kaal timings for 200+ Indian cities.",
+    images: [`${SITE_CONFIG.url}/images/vastucart-logo.png`],
   },
 };
 

@@ -24,6 +24,13 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.url}/todays-tithi`,
     siteName: SITE_CONFIG.name,
     type: "website",
+    images: [{ url: `${SITE_CONFIG.url}/images/vastucart-logo.png`, width: 512, height: 512, alt: "VastuCart Panchang" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Today's Tithi | VastuCart Panchang",
+    description: "Know the current Tithi with Paksha, deity, and nature.",
+    images: [`${SITE_CONFIG.url}/images/vastucart-logo.png`],
   },
 };
 

@@ -15,7 +15,7 @@ export default function TermsOfServicePage() {
     <article className="prose prose-stone max-w-none">
       <h1>Terms of Service</h1>
       <p className="text-muted-foreground">
-        Last updated: February 2026
+        Last updated: {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
       </p>
 
       <h2>1. Acceptance of Terms</h2>

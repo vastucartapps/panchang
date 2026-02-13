@@ -1,6 +1,5 @@
-const CACHE_NAME = "panchang-v1";
+const CACHE_NAME = "panchang-v2";
 const STATIC_ASSETS = [
-  "/",
   "/manifest.json",
   "/images/icon-192.png",
   "/images/icon-512.png",
@@ -8,7 +7,7 @@ const STATIC_ASSETS = [
   "/images/vastucart-favicon.png",
 ];
 
-// Install — cache static assets
+// Install — cache static assets only
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
@@ -28,31 +27,30 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch — network-first with cache fallback
+// Fetch — only serve static assets from cache; let HTML/API go to network
 self.addEventListener("fetch", (event) => {
-  // Skip non-GET and API/analytics requests
-  if (
-    event.request.method !== "GET" ||
-    event.request.url.includes("/api/") ||
-    event.request.url.includes("google") ||
-    event.request.url.includes("analytics")
-  ) {
-    return;
-  }
+  if (event.request.method !== "GET") return;
+
+  const url = new URL(event.request.url);
+
+  // Only cache static assets (images, manifest, fonts)
+  const isStaticAsset =
+    url.pathname.startsWith("/images/") ||
+    url.pathname === "/manifest.json" ||
+    url.pathname.startsWith("/_next/static/");
+
+  if (!isStaticAsset) return;
 
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Cache successful responses
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
         if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
-      })
-      .catch(() => {
-        // Serve from cache when offline
-        return caches.match(event.request);
-      })
+      });
+    })
   );
 });
