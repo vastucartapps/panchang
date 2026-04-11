@@ -71,6 +71,9 @@ export default function ChoghadiyaPage() {
           <p className="mt-4 text-base text-white/60 sm:text-lg">
             Find the best muhurta for your activities
           </p>
+          <p className="mt-2 text-sm text-white/40">
+            Also known as Chogadiya, Choghadya, or Chogdiya — auspicious and inauspicious time periods for the day.
+          </p>
         </div>
       </section>
 

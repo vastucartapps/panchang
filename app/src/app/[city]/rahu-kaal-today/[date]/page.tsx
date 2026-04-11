@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: { absolute: titleText },
-    description: `Rahu Kaal, Yamagandam, and Gulika Kalam timings for ${city.name}, ${city.state} on ${formattedDate}. Know the exact inauspicious periods to avoid.`,
+    description: `Rahu Kaal, Yamagandam, and Gulika Kalam timings for ${city.name}, ${city.state} on ${formattedDate}. Rahu Kalam timing for ${city.name} on ${shortDate}. Accurate Rahu Kala timings updated daily.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/rahu-kaal-today/${date}`,
     },

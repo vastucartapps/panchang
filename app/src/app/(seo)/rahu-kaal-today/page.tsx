@@ -61,6 +61,9 @@ export default function RahuKaalPage() {
           <p className="mt-4 text-base text-white/60 sm:text-lg">
             Know when to avoid starting new ventures
           </p>
+          <p className="mt-2 text-sm text-white/40">
+            Also known as Rahu Kalam, Rahu Kala, and Rahu Kalam Today across different regions of India.
+          </p>
         </div>
       </section>
 

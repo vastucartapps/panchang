@@ -3,6 +3,32 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  async redirects() {
+    return [
+      // ─── Rahu Kaal spelling variants (308 permanent) ─────
+      { source: "/rahu-kalam-today", destination: "/rahu-kaal-today", permanent: true },
+      { source: "/rahu-kala-today", destination: "/rahu-kaal-today", permanent: true },
+      { source: "/rahu-kal-today", destination: "/rahu-kaal-today", permanent: true },
+      { source: "/rahukalam-today", destination: "/rahu-kaal-today", permanent: true },
+      // City-level rahu kaal variants
+      { source: "/:city/rahu-kalam-today", destination: "/:city/rahu-kaal-today", permanent: true },
+      { source: "/:city/rahu-kalam-today/:date", destination: "/:city/rahu-kaal-today/:date", permanent: true },
+      { source: "/:city/rahu-kala-today", destination: "/:city/rahu-kaal-today", permanent: true },
+      { source: "/:city/rahu-kala-today/:date", destination: "/:city/rahu-kaal-today/:date", permanent: true },
+
+      // ─── Choghadiya spelling variants (308 permanent) ─────
+      { source: "/chogadiya-today", destination: "/choghadiya-today", permanent: true },
+      { source: "/chogdiya-today", destination: "/choghadiya-today", permanent: true },
+      // City-level choghadiya variants
+      { source: "/:city/chogadiya-today", destination: "/:city/choghadiya-today", permanent: true },
+      { source: "/:city/chogadiya-today/:date", destination: "/:city/choghadiya-today/:date", permanent: true },
+
+      // ─── Panchangam variants (308 permanent) ─────
+      { source: "/panchangam", destination: "/", permanent: true },
+      { source: "/panchangam/:city", destination: "/:city", permanent: true },
+      { source: "/:city/panchangam", destination: "/:city", permanent: true },
+    ];
+  },
   async rewrites() {
     return [
       {

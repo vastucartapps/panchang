@@ -65,6 +65,18 @@ export const RAHU_KAAL_FAQS: FaqItem[] = [
     question: "Can I continue existing work during Rahu Kaal?",
     answer: "Yes. Rahu Kaal specifically applies to starting new activities. Work already in progress, routine daily tasks, and ongoing projects can safely continue during Rahu Kaal without any concern.",
   },
+  {
+    question: "What is Rahu Kalam today?",
+    answer: "Rahu Kalam is another name for Rahu Kaal — the daily inauspicious period in Vedic astrology ruled by the shadow planet Rahu. The timings differ by city and day of the week. Select your city above to see today's Rahu Kalam timing.",
+  },
+  {
+    question: "What is the difference between Rahu Kaal and Rahu Kalam?",
+    answer: "There is no difference — Rahu Kaal and Rahu Kalam refer to the same inauspicious daily period. Rahu Kaal is the North Indian term while Rahu Kalam is commonly used in South India, particularly in Tamil Nadu, Andhra Pradesh, Karnataka, and Kerala.",
+  },
+  {
+    question: "What is Rahu Kala today?",
+    answer: "Rahu Kala (also spelled Rahu Kaal or Rahu Kalam) is the daily period ruled by the shadow planet Rahu, considered inauspicious for starting new activities. Check your city above for today's exact Rahu Kala timing.",
+  },
 ];
 
 export const CHOGHADIYA_FAQS: FaqItem[] = [
@@ -87,6 +99,14 @@ export const CHOGHADIYA_FAQS: FaqItem[] = [
   {
     question: "Should I avoid all work during Rog, Kaal, or Udveg Choghadiya?",
     answer: "Rog, Kaal, and Udveg are considered inauspicious periods. It is best to avoid starting important new activities during these times. However, Udveg Choghadiya is considered acceptable for government-related work and dealings with authority.",
+  },
+  {
+    question: "What is Chogadiya today?",
+    answer: "Chogadiya is another spelling of Choghadiya — the Vedic system of dividing the day into auspicious and inauspicious periods. Each Choghadiya period is approximately 1.5 hours long. The spellings Chogadiya, Choghadiya, and Choughadia all refer to the same system.",
+  },
+  {
+    question: "What is the difference between Choghadiya and Chogadiya?",
+    answer: "Choghadiya and Chogadiya are different spellings of the same word. Both refer to the traditional Vedic time-keeping system used to identify auspicious periods (Amrit, Shubh, Labh, Chal) and inauspicious periods (Rog, Kaal, Udveg) throughout the day.",
   },
 ];
 
