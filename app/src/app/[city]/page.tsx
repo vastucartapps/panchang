@@ -37,13 +37,13 @@ export async function generateMetadata({
   const today = formatDate(getTodayISO());
 
   return {
-    title: `Panchang Today in ${city.name} | Tithi, Nakshatra, Rahu Kaal`,
+    title: { absolute: `Panchang Today ${city.name} — Tithi, Nakshatra, Rahu Kaal | VastuCart` },
     description: `Today's Panchang for ${city.name}, ${city.state} - ${today}. Get accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings. Updated daily.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}`,
     },
     openGraph: {
-      title: `Panchang Today in ${city.name}`,
+      title: `Panchang Today ${city.name} — Tithi, Nakshatra, Rahu Kaal`,
       description: `Accurate daily Panchang for ${city.name}. Tithi, Nakshatra, Rahu Kaal, Choghadiya timings.`,
       url: `${SITE_CONFIG.url}/${city.slug}`,
       siteName: SITE_CONFIG.name,
@@ -59,7 +59,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `Panchang Today in ${city.name}`,
+      title: `Panchang Today ${city.name} — Tithi, Nakshatra, Rahu Kaal`,
       description: `Tithi, Nakshatra, Rahu Kaal for ${city.name} today.`,
       images: [`${SITE_CONFIG.url}/api/og/${city.slug}/${getTodayISO()}`],
     },

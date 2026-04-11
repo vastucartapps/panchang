@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShieldAlert, MapPin, Clock } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateLong, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityRahuKaalFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -35,15 +35,36 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const shortDate = formatDateLong(date);
+
+  // Fetch data for rahu kaal times in title (Next.js deduplicates with page fetch)
+  let rahuStart = "";
+  let rahuEnd = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    rahuStart = formatTime12h(data.timing.rahu_kalam.start_time);
+    rahuEnd = formatTime12h(data.timing.rahu_kalam.end_time);
+  } catch {
+    // Fallback handled below
+  }
+
+  const titleText = rahuStart && rahuEnd
+    ? `Rahu Kaal ${city.name} ${shortDate} — ${rahuStart} to ${rahuEnd} | VastuCart`
+    : `Rahu Kaal ${city.name} ${shortDate} | VastuCart`;
 
   return {
-    title: `Rahu Kaal in ${city.name} on ${formattedDate} - Accurate Timings`,
+    title: { absolute: titleText },
     description: `Rahu Kaal, Yamagandam, and Gulika Kalam timings for ${city.name}, ${city.state} on ${formattedDate}. Know the exact inauspicious periods to avoid.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/rahu-kaal-today/${date}`,
     },
     openGraph: {
-      title: `Rahu Kaal in ${city.name} - ${formattedDate} | VastuCart Panchang`,
+      title: titleText,
       description: `Accurate Rahu Kaal timings for ${city.name} on ${formattedDate}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/rahu-kaal-today/${date}`,
       siteName: SITE_CONFIG.name,

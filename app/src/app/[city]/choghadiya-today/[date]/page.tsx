@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Clock, MapPin } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, formatTime12h, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateLong, formatTime12h, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityChoghadiyaFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -35,15 +35,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const shortDate = formatDateLong(date);
+  const titleText = `Choghadiya ${city.name} ${shortDate} — Shubh & Ashubh Timings | VastuCart`;
 
   return {
-    title: `Choghadiya in ${city.name} on ${formattedDate} - Auspicious Timings`,
+    title: { absolute: titleText },
     description: `Choghadiya timings for ${city.name}, ${city.state} on ${formattedDate}. Find Amrit, Shubh, Labh, Chal, Rog, Kaal, and Udveg periods.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/choghadiya-today/${date}`,
     },
     openGraph: {
-      title: `Choghadiya in ${city.name} - ${formattedDate} | VastuCart Panchang`,
+      title: titleText,
       description: `Day and night Choghadiya timings for ${city.name} on ${formattedDate}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/choghadiya-today/${date}`,
       siteName: SITE_CONFIG.name,
