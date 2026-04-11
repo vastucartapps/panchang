@@ -4,9 +4,9 @@ import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, getTodayISO } from "@/lib/format";
 import { format, parseISO } from "date-fns";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
-import { getLocale } from "@/lib/i18n";
+import { getLocale, getTranslations } from "@/lib/i18n";
 import { HeroSection } from "@/components/hero/hero-section";
 import { TimeQualitySection } from "@/components/time-quality/time-quality-section";
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
@@ -109,6 +109,7 @@ export default async function CityDatePanchangPage({
   if (!isValidDate(date)) notFound();
 
   const locale = await getLocale();
+  const t = getTranslations(locale);
   const faqs = getCityFaqs(city.name, city.state);
 
   let data;
@@ -132,6 +133,10 @@ export default async function CityDatePanchangPage({
       </div>
     );
   }
+
+  const nakshatraKey = data.panchang.nakshatra.nakshatra.toLowerCase().replace(/\s+/g, "_");
+  const nakshatraSign = NAKSHATRA_TO_SIGN[nakshatraKey];
+  const nakshatraDisplayName = data.day_quality.breakdown.nakshatra.name;
 
   return (
     <>
@@ -225,6 +230,16 @@ export default async function CityDatePanchangPage({
           <div className="min-w-0 space-y-8">
             <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} cityName={city.name} date={date} />
             <PanchangGrid data={data} locale={locale} cityName={city.name} date={date} />
+            {nakshatraSign && (
+              <a
+                href={locale === "hi"
+                  ? `https://horoscope.vastucart.in/hi/rashi/${nakshatraSign}/daily/${date}`
+                  : `https://horoscope.vastucart.in/${nakshatraSign}/daily/${date}`}
+                className="text-[13px] text-muted-foreground hover:underline"
+              >
+                {t("clusterLinks.horoscopeLink").replace("{nakshatra}", nakshatraDisplayName)}
+              </a>
+            )}
             {data.muhurta_yogas && (
               <MuhurtaYogasSection muhurtaYogas={data.muhurta_yogas} locale={locale} cityName={city.name} date={date} />
             )}

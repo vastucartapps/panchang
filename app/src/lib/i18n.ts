@@ -125,6 +125,9 @@ const en = {
   "cta.today": "Today",
   "cta.prev": "Previous",
   "cta.next": "Next",
+
+  // Cluster links
+  "clusterLinks.horoscopeLink": "See how {nakshatra} affects your sign today →",
 } as const;
 
 const hi: Record<keyof typeof en, string> = {
@@ -231,6 +234,9 @@ const hi: Record<keyof typeof en, string> = {
   "cta.today": "आज",
   "cta.prev": "पिछला",
   "cta.next": "अगला",
+
+  // Cluster links
+  "clusterLinks.horoscopeLink": "आज {nakshatra} नक्षत्र में आपकी राशि पर प्रभाव देखें →",
 };
 
 type TranslationKey = keyof typeof en;

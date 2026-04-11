@@ -125,3 +125,19 @@ export function getScoreNature(score: number): string {
   if (score >= 20) return "below average";
   return "poor";
 }
+
+export const NAKSHATRA_TO_SIGN: Record<string, string> = {
+  ashwini: "aries", bharani: "aries",
+  krittika: "taurus",
+  rohini: "taurus", mrigashira: "taurus",
+  ardra: "gemini", punarvasu: "gemini",
+  pushya: "cancer", ashlesha: "cancer",
+  magha: "leo", purva_phalguni: "leo",
+  uttara_phalguni: "virgo", hasta: "virgo", chitra: "virgo",
+  swati: "libra", vishakha: "libra",
+  anuradha: "scorpio", jyeshtha: "scorpio",
+  mula: "sagittarius", purva_ashadha: "sagittarius",
+  uttara_ashadha: "capricorn", shravana: "capricorn", dhanishtha: "capricorn",
+  shatabhisha: "aquarius", purva_bhadrapada: "aquarius",
+  uttara_bhadrapada: "pisces", revati: "pisces",
+};
