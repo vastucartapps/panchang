@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, getTodayISO } from "@/lib/format";
+import { format, parseISO } from "date-fns";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
 import { getLocale } from "@/lib/i18n";
@@ -46,15 +47,37 @@ export async function generateMetadata({
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const dayName = format(parseISO(date), "EEEE");
+  const shortDate = format(parseISO(date), "d MMMM yyyy");
+
+  // Fetch panchang data for data-rich title (Next.js deduplicates with page fetch)
+  let tithi = "";
+  let nakshatra = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    tithi = data.day_quality.breakdown.tithi.name;
+    nakshatra = data.day_quality.breakdown.nakshatra.name;
+  } catch {
+    // Fallback handled below
+  }
+
+  const titleText = tithi && nakshatra
+    ? `${city.name} Panchang ${dayName} ${shortDate} — ${tithi}, ${nakshatra} | VastuCart`
+    : `${city.name} Panchang ${dayName} ${shortDate} | VastuCart`;
 
   return {
-    title: `Panchang for ${city.name} on ${formattedDate} | Tithi, Nakshatra, Rahu Kaal`,
+    title: { absolute: titleText },
     description: `Panchang for ${city.name}, ${city.state} on ${formattedDate}. Accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for ${city.name}.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/${date}`,
     },
     openGraph: {
-      title: `Panchang for ${city.name} - ${formattedDate}`,
+      title: `${city.name} Panchang ${dayName} ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
       description: `Accurate Panchang for ${city.name} on ${formattedDate}. Tithi, Nakshatra, Rahu Kaal, Choghadiya timings.`,
       url: `${SITE_CONFIG.url}/${city.slug}/${date}`,
       siteName: SITE_CONFIG.name,
@@ -70,7 +93,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `Panchang for ${city.name} - ${formattedDate}`,
+      title: `${city.name} Panchang ${dayName} ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
       description: `Tithi, Nakshatra, Rahu Kaal for ${city.name} on ${formattedDate}.`,
       images: [`${SITE_CONFIG.url}/api/og/${city.slug}/${date}`],
     },
@@ -151,6 +174,32 @@ export default async function CityDatePanchangPage({
             { name: formatDate(date), url: `${SITE_CONFIG.url}/${city.slug}/${date}` },
           ]}
           faqs={faqs}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: `${city.name} Panchang for ${formatDate(date)}`,
+              datePublished: `${date}T00:00:00+05:30`,
+              dateModified: `${date}T01:00:00+05:30`,
+              author: {
+                "@type": "Organization",
+                name: SITE_CONFIG.brandName,
+                url: SITE_CONFIG.brandUrl,
+              },
+              publisher: {
+                "@type": "Organization",
+                name: SITE_CONFIG.brandName,
+                url: SITE_CONFIG.brandUrl,
+              },
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id": `${SITE_CONFIG.url}/${city.slug}/${date}`,
+              },
+            }).replace(/</g, "\\u003c"),
+          }}
         />
         <HeroSection data={data} locale={locale} />
 
