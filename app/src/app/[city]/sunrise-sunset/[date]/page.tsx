@@ -35,10 +35,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  const isOld = date < cutoff;
 
   return {
     title: `Sunrise & Sunset in ${city.name} on ${formattedDate} - Sun Timings`,
     description: `Sunrise and sunset times for ${city.name}, ${city.state} on ${formattedDate}. Accurate day duration, Brahma Muhurta, and Abhijit Muhurta timings.`,
+    ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/sunrise-sunset/${date}`,
     },

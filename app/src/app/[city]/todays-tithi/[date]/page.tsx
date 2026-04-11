@@ -36,10 +36,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  const isOld = date < cutoff;
 
   return {
     title: `Today's Tithi in ${city.name} on ${formattedDate} - Lunar Day Details`,
     description: `Tithi details for ${city.name}, ${city.state} on ${formattedDate}. Know the current lunar day, Paksha, deity, and its influence on activities.`,
+    ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/todays-tithi/${date}`,
     },

@@ -36,10 +36,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  const isOld = date < cutoff;
 
   return {
     title: `Moon Phase in ${city.name} on ${formattedDate} - Illumination & Paksha`,
     description: `Moon phase details for ${city.name}, ${city.state} on ${formattedDate}. Current lunar phase, illumination percentage, Paksha, and age.`,
+    ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/moon-phase-today/${date}`,
     },

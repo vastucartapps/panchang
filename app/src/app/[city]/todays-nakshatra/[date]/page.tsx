@@ -36,10 +36,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  const isOld = date < cutoff;
 
   return {
     title: `Today's Nakshatra in ${city.name} on ${formattedDate} - Lunar Mansion`,
     description: `Nakshatra details for ${city.name}, ${city.state} on ${formattedDate}. Know the current lunar mansion, Pada, Lord, Deity, and Gana.`,
+    ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/todays-nakshatra/${date}`,
     },

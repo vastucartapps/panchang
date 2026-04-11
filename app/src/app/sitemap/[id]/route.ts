@@ -14,8 +14,8 @@ const SEO_TOPICS = [
 ];
 
 const PAST_DAYS = 7;
-const FUTURE_DAYS = 30;
-const MAX_SITEMAP_ID = 8;
+const FUTURE_DAYS = 7;
+const MAX_SITEMAP_ID = 7;
 
 export const dynamic = "force-dynamic";
 
@@ -171,24 +171,8 @@ export async function GET(
     }
   }
 
-  // ─── Sitemap 7: City sunrise-sunset pages ─────
+  // ─── Sitemap 7: Calendar + weekly pages ─────
   else if (sitemapId === 7) {
-    for (const slug of slugs) {
-      for (const date of dates) {
-        const isToday = date === todayStr;
-        entries.push(
-          urlEntry(
-            `${SITE_URL}/${slug}/sunrise-sunset/${date}`,
-            isToday ? "daily" : "weekly",
-            isToday ? 0.7 : 0.5
-          )
-        );
-      }
-    }
-  }
-
-  // ─── Sitemap 8: Calendar + weekly pages ─────
-  else if (sitemapId === 8) {
     const months = getMonthRange();
     const weeks = getWeekRange();
 
