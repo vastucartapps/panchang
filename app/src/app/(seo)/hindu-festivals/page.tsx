@@ -14,8 +14,8 @@ const currentYear = new Date().getFullYear();
 const nextYear = currentYear + 1;
 
 export const metadata: Metadata = {
-  title: `Hindu Festivals & Vrat Dates ${currentYear}-${nextYear} | Complete Calendar`,
-  description: `Complete list of Hindu festivals, vrat dates, and auspicious days for ${currentYear}-${nextYear}. Diwali, Holi, Navratri, Ekadashi, Karwa Chauth dates with Panchang details.`,
+  title: `Hindu Festivals ${currentYear}–${nextYear} — Dates, Vrat & Panchang`,
+  description: `Hindu festivals & vrat dates ${currentYear}–${nextYear}. Diwali, Holi, Navratri, Ekadashi, Karwa Chauth — complete calendar with accurate Panchang details.`,
   alternates: {
     canonical: `${SITE_CONFIG.url}/hindu-festivals`,
   },

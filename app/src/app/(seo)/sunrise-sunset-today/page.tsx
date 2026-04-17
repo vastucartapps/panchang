@@ -11,9 +11,9 @@ import { FaqSection } from "@/components/seo/faq-section";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Sunrise & Sunset Today - Accurate Timings for All Indian Cities",
+  title: "Sunrise & Sunset Today — Timings for Indian Cities 2026",
   description:
-    "Check today's sunrise and sunset times for your city. Accurate timings with day duration, Brahma Muhurta, and Abhijit Muhurta for 200+ Indian cities.",
+    "Today's sunrise and sunset times for your city. Includes Brahma Muhurta, Abhijit Muhurta & day duration for 200+ Indian cities. Updated daily.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/sunrise-sunset-today`,
   },
