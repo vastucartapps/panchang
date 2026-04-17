@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Sunrise, Sunset, MapPin, Sun } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCitySunriseSunsetFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -34,20 +34,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = getCityBySlug(citySlug);
   if (!city || !isValidDate(date)) return {};
 
-  const formattedDate = formatDate(date);
+  const shortDate = formatDateShort(date);
   const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
   const isOld = date < cutoff;
 
+  let sunriseTime = "";
+  let sunsetTime = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    sunriseTime = formatTime12h(data.timing.sunrise);
+    sunsetTime = formatTime12h(data.timing.sunset);
+  } catch {}
+
+  const titleText = sunriseTime
+    ? `Sunrise ${sunriseTime}, Sunset ${sunsetTime} — ${city.name} ${shortDate}`
+    : `Sunrise & Sunset ${city.name} ${shortDate} — Sun Timings`;
+
   return {
-    title: `Sunrise & Sunset in ${city.name} on ${formattedDate} - Sun Timings`,
-    description: `Sunrise and sunset times for ${city.name}, ${city.state} on ${formattedDate}. Accurate day duration, Brahma Muhurta, and Abhijit Muhurta timings.`,
+    title: titleText,
+    description: sunriseTime
+      ? `Sunrise ${sunriseTime}, sunset ${sunsetTime} in ${city.name} on ${shortDate}. Day duration, Brahma Muhurta & Abhijit Muhurta timings.`
+      : `Sunrise and sunset times for ${city.name} on ${shortDate}. Day duration, Brahma Muhurta & Abhijit Muhurta timings.`,
     ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/sunrise-sunset/${date}`,
     },
     openGraph: {
-      title: `Sunrise & Sunset in ${city.name} - ${formattedDate} | VastuCart Panchang`,
-      description: `Sun timings for ${city.name} on ${formattedDate}. Sunrise, sunset, day duration.`,
+      title: `Sunrise & Sunset ${city.name} — ${shortDate}`,
+      description: `Sun timings for ${city.name} on ${shortDate}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/sunrise-sunset/${date}`,
       siteName: SITE_CONFIG.name,
       type: "website",

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Moon, MapPin } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityMoonPhaseFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -35,20 +35,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = getCityBySlug(citySlug);
   if (!city || !isValidDate(date)) return {};
 
-  const formattedDate = formatDate(date);
+  const shortDate = formatDateShort(date);
   const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
   const isOld = date < cutoff;
 
+  let phaseName = "";
+  let illumination = 0;
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    phaseName = data.moon_phase.phase_name;
+    illumination = Math.round(data.moon_phase.illumination_percent);
+  } catch {}
+
+  const titleText = phaseName
+    ? `Moon Phase ${city.name} ${shortDate} — ${phaseName}`
+    : `Moon Phase ${city.name} ${shortDate} — Illumination & Paksha`;
+
   return {
-    title: `Moon Phase in ${city.name} on ${formattedDate} - Illumination & Paksha`,
-    description: `Moon phase details for ${city.name}, ${city.state} on ${formattedDate}. Current lunar phase, illumination percentage, Paksha, and age.`,
+    title: titleText,
+    description: phaseName
+      ? `${phaseName} (${illumination}% illumination) in ${city.name} on ${shortDate}. Lunar phase, Paksha & age. Vedic significance updated daily.`
+      : `Moon phase details for ${city.name} on ${shortDate}. Illumination, Paksha & lunar age. Vedic significance updated daily.`,
     ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/moon-phase-today/${date}`,
     },
     openGraph: {
-      title: `Moon Phase in ${city.name} - ${formattedDate} | VastuCart Panchang`,
-      description: `Current moon phase and illumination for ${city.name} on ${formattedDate}.`,
+      title: `Moon Phase ${city.name} — ${shortDate}`,
+      description: `Lunar phase and illumination for ${city.name} on ${shortDate}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/moon-phase-today/${date}`,
       siteName: SITE_CONFIG.name,
       type: "website",

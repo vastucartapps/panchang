@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Star, MapPin } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
 import { getCityNakshatraFaqs } from "@/lib/faqs";
@@ -35,20 +35,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = getCityBySlug(citySlug);
   if (!city || !isValidDate(date)) return {};
 
-  const formattedDate = formatDate(date);
+  const shortDate = formatDateShort(date);
   const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
   const isOld = date < cutoff;
 
+  let nakshatraName = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    nakshatraName = data.day_quality.breakdown.nakshatra.name;
+  } catch {}
+
+  const titleText = nakshatraName
+    ? `Aaj Ka Nakshatra ${city.name} ${shortDate} — ${nakshatraName}`
+    : `Aaj Ka Nakshatra ${city.name} ${shortDate} — Lunar Mansion`;
+
   return {
-    title: `Today's Nakshatra in ${city.name} on ${formattedDate} - Lunar Mansion`,
-    description: `Nakshatra details for ${city.name}, ${city.state} on ${formattedDate}. Know the current lunar mansion, Pada, Lord, Deity, and Gana.`,
+    title: titleText,
+    description: nakshatraName
+      ? `${nakshatraName} Nakshatra in ${city.name} on ${shortDate}. Pada, deity, lord & Gana details. Essential for Vedic astrology and daily planning.`
+      : `Nakshatra details for ${city.name} on ${shortDate}. Pada, deity, lord & Gana. Essential for Vedic astrology and daily planning.`,
     ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/todays-nakshatra/${date}`,
     },
     openGraph: {
-      title: `Nakshatra in ${city.name} - ${formattedDate} | VastuCart Panchang`,
-      description: `Current Nakshatra and Pada details for ${city.name} on ${formattedDate}.`,
+      title: `Aaj Ka Nakshatra ${city.name} — ${shortDate}`,
+      description: `Nakshatra and Pada details for ${city.name} on ${shortDate}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/todays-nakshatra/${date}`,
       siteName: SITE_CONFIG.name,
       type: "website",

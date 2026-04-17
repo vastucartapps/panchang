@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CalendarDays, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { fetchPanchangBatch } from "@/lib/api";
 import { getCityBySlug, getAllCities } from "@/lib/cities";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatDateShort } from "@/lib/format";
 import { SITE_CONFIG, getNatureStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 import type { PanchangResponse } from "@/schemas/panchang";
@@ -64,14 +64,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const dates = getWeekDates(weekId);
   const weekRange = formatWeekRange(dates);
 
+  const compactRange = `${formatDateShort(dates[0])} – ${formatDateShort(dates[dates.length - 1])}`;
+
   return {
-    title: `Weekly Panchang for ${city.name} - ${weekRange}`,
+    title: `Weekly Panchang ${city.name} — ${compactRange}`,
     description: `7-day Panchang planner for ${city.name}, ${city.state}. Day quality, Tithi, Nakshatra, and Rahu Kaal for the entire week at a glance.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/week/${weekId}`,
     },
     openGraph: {
-      title: `Weekly Panchang - ${city.name} - ${weekRange}`,
+      title: `Weekly Panchang ${city.name} — ${compactRange}`,
       description: `Plan your week with daily Panchang for ${city.name}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/week/${weekId}`,
       siteName: SITE_CONFIG.name,

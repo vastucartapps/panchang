@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Moon, MapPin } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
 import { getCityTithiFaqs } from "@/lib/faqs";
@@ -35,20 +35,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = getCityBySlug(citySlug);
   if (!city || !isValidDate(date)) return {};
 
-  const formattedDate = formatDate(date);
+  const shortDate = formatDateShort(date);
   const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
   const isOld = date < cutoff;
 
+  let tithiName = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    tithiName = data.day_quality.breakdown.tithi.name;
+  } catch {}
+
+  const titleText = tithiName
+    ? `Aaj Ki Tithi ${city.name} ${shortDate} — ${tithiName}`
+    : `Aaj Ki Tithi ${city.name} ${shortDate} — Lunar Day`;
+
   return {
-    title: `Today's Tithi in ${city.name} on ${formattedDate} - Lunar Day Details`,
-    description: `Tithi details for ${city.name}, ${city.state} on ${formattedDate}. Know the current lunar day, Paksha, deity, and its influence on activities.`,
+    title: titleText,
+    description: tithiName
+      ? `${tithiName} in ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi details for Vedic rituals and fasting.`
+      : `Tithi details for ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi for Vedic rituals and fasting.`,
     ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/todays-tithi/${date}`,
     },
     openGraph: {
-      title: `Tithi in ${city.name} - ${formattedDate} | VastuCart Panchang`,
-      description: `Current Tithi and Paksha details for ${city.name} on ${formattedDate}.`,
+      title: `Aaj Ki Tithi ${city.name} — ${shortDate}`,
+      description: `Tithi and Paksha details for ${city.name} on ${shortDate}.`,
       url: `${SITE_CONFIG.url}/${city.slug}/todays-tithi/${date}`,
       siteName: SITE_CONFIG.name,
       type: "website",

@@ -60,14 +60,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const monthYear = formatMonthYear(month);
 
   return {
-    title: `Panchang Calendar for ${city.name} - ${monthYear}`,
-    description: `Monthly Panchang calendar for ${city.name}, ${city.state} - ${monthYear}. Daily Tithi, Nakshatra, Day Quality score, and auspicious timings at a glance.`,
+    title: `Panchang Calendar ${city.name} — ${monthYear}`,
+    description: `Monthly Panchang calendar for ${city.name}, ${city.state} — ${monthYear}. Daily Tithi, Nakshatra, Day Quality score, and auspicious timings at a glance.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/calendar/${month}`,
     },
     openGraph: {
-      title: `Panchang Calendar - ${city.name} - ${monthYear}`,
-      description: `Hindu calendar for ${city.name} - ${monthYear}. Tithi, Nakshatra, and day quality for every day.`,
+      title: `Panchang Calendar ${city.name} — ${monthYear}`,
+      description: `Hindu calendar for ${city.name} — ${monthYear}. Tithi, Nakshatra, and day quality for every day.`,
       url: `${SITE_CONFIG.url}/${city.slug}/calendar/${month}`,
       siteName: SITE_CONFIG.name,
       type: "website",
