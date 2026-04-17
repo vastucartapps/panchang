@@ -11,9 +11,9 @@ import { FaqSection } from "@/components/seo/faq-section";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Moon Phase Today - Current Lunar Phase, Illumination & Paksha",
+  title: "Moon Phase Today — Illumination & Paksha | VastuCart",
   description:
-    "Today's Moon phase with illumination percentage, Paksha (waxing/waning), and phase name. Visual moon tracker for Vedic calendar and astronomy enthusiasts.",
+    "Today's Moon phase with illumination, Paksha & phase name. Visual lunar tracker for Vedic calendar and astronomy. Updated daily for 200+ cities.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/moon-phase-today`,
   },

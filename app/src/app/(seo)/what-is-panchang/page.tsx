@@ -7,9 +7,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
 export const metadata: Metadata = {
-  title: "What is Panchang? - Complete Guide to the Vedic Calendar System",
+  title: "What is Panchang? Complete Vedic Calendar Guide",
   description:
-    "Learn about Panchang, the ancient Hindu calendar system with its five limbs: Tithi, Nakshatra, Yoga, Karana, and Vara. Understand Rahu Kaal, Choghadiya, Hora, Muhurta selection, and how Panchang guides daily life.",
+    "What is Panchang? The ancient Vedic calendar with five limbs — Tithi, Nakshatra, Yoga, Karana & Vara. Learn how Panchang guides daily rituals.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/what-is-panchang`,
   },

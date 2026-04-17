@@ -7,10 +7,7 @@ import "./globals.css";
 const GA_ID = "G-JTDVTTMPVE";
 
 export const metadata: Metadata = {
-  title: {
-    default: "Panchang Today | Accurate Vedic Calendar | VastuCart",
-    template: "%s | VastuCart Panchang",
-  },
+  title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
   description:
     "Accurate daily Panchang with Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for 200+ Indian cities. Free Vedic calendar by VastuCart.",
   metadataBase: new URL(

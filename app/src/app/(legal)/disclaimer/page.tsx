@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Disclaimer",
+  title: "Disclaimer | VastuCart",
   description:
     "Disclaimer for VastuCart Panchang. Astrological information is for spiritual guidance only and not a substitute for professional advice.",
   alternates: {

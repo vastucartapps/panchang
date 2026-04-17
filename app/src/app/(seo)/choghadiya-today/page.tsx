@@ -11,9 +11,9 @@ import { FaqSection } from "@/components/seo/faq-section";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Choghadiya Today - Auspicious Time Periods for Every Activity",
+  title: "Choghadiya Today — Shubh Muhurat Timings 2026",
   description:
-    "Today's Choghadiya timings for your city. Find the most auspicious muhurta for travel, business, and important decisions using this ancient Vedic time-quality system.",
+    "Today's Choghadiya timings — find the best Shubh muhurat for travel, business & decisions. Accurate Vedic time-quality system for 200+ Indian cities.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/choghadiya-today`,
   },

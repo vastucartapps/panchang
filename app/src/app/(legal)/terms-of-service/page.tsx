@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
+  title: "Terms of Service | VastuCart",
   description:
     "Terms of Service for VastuCart Panchang. Read the terms and conditions governing use of panchang.vastucart.in.",
   alternates: {

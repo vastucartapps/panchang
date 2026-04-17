@@ -11,9 +11,9 @@ import { FaqSection } from "@/components/seo/faq-section";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Today's Nakshatra - Current Lunar Constellation & Pada",
+  title: "Aaj Ka Nakshatra Today — Constellation & Pada 2026",
   description:
-    "Find today's Nakshatra (lunar mansion) with pada, deity, lord, gana, and activity type. Key element of Vedic Panchang for daily planning and astrology.",
+    "Today's Nakshatra with pada, deity, lord & activity type. Key element of Vedic Panchang for daily planning and astrology. Check your city now.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/todays-nakshatra`,
   },

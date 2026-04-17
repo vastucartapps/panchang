@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Privacy Policy | VastuCart",
   description:
     "Privacy Policy for VastuCart Panchang. Learn how we handle your data, cookies, and browsing information on panchang.vastucart.in.",
   alternates: {

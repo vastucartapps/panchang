@@ -11,9 +11,9 @@ import { FaqSection } from "@/components/seo/faq-section";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Today's Tithi - Current Lunar Day in Hindu Calendar",
+  title: "Aaj Ki Tithi Today — Lunar Day, Paksha & Deity",
   description:
-    "Check today's Tithi (lunar day) with Paksha, deity, nature, and elapsed percentage. Essential for Vedic rituals, festivals, and daily spiritual observances.",
+    "Today's Tithi with Paksha, deity, nature & elapsed percentage. Essential for Vedic rituals, festivals & daily spiritual observances. Check your city.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/todays-tithi`,
   },

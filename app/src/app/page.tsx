@@ -28,16 +28,16 @@ export async function generateMetadata(): Promise<Metadata> {
   const ogImage = `${SITE_CONFIG.url}/api/og/${DEFAULT_LOCATION.slug}/${today}`;
 
   return {
-    title: "Panchang Today | Accurate Vedic Calendar for India | VastuCart",
+    title: "Aaj Ka Panchang Today — Tithi, Nakshatra & Rahu Kaal 2026",
     description:
-      "Today's Panchang — Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for 200+ Indian cities. Free accurate Vedic calendar updated daily.",
+      "Today's Panchang with Tithi, Nakshatra, Rahu Kaal & Choghadiya for 200+ Indian cities. Accurate Vedic calendar, updated daily at sunrise.",
     alternates: {
       canonical: SITE_CONFIG.url,
     },
     openGraph: {
-      title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
+      title: "Aaj Ka Panchang Today — Tithi, Nakshatra & Rahu Kaal 2026",
       description:
-        "Today's Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities. Updated daily.",
+        "Today's Panchang with Tithi, Nakshatra, Rahu Kaal & Choghadiya for 200+ Indian cities. Accurate Vedic calendar, updated daily at sunrise.",
       url: SITE_CONFIG.url,
       siteName: SITE_CONFIG.name,
       type: "website",
@@ -52,9 +52,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Panchang Today | Accurate Vedic Calendar | VastuCart",
+      title: "Aaj Ka Panchang Today — Tithi, Nakshatra & Rahu Kaal 2026",
       description:
-        "Today's Panchang with Tithi, Nakshatra, Rahu Kaal, Choghadiya for 200+ Indian cities.",
+        "Today's Panchang with Tithi, Nakshatra, Rahu Kaal & Choghadiya for 200+ Indian cities. Accurate Vedic calendar, updated daily at sunrise.",
       images: [ogImage],
     },
   };
@@ -112,7 +112,7 @@ export default async function HomePage() {
           <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
             <div className="flex flex-col items-center text-center">
               <h1 className="animate-fade-in-up heading-display text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-                Today&apos;s Panchang
+                Aaj Ka Panchang — Today&apos;s Vedic Calendar
               </h1>
               <div className="mt-4 h-px w-24 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
               <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">

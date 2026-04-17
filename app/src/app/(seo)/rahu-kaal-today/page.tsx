@@ -11,9 +11,9 @@ import { FaqSection } from "@/components/seo/faq-section";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Rahu Kaal Today - Accurate Rahu Kalam Timings for All Indian Cities",
+  title: "Rahu Kaal Today — Rahu Kalam Time for Your City 2026",
   description:
-    "Check today's Rahu Kaal timings for your city. Rahu Kalam is an inauspicious period ruled by Rahu — avoid starting new work, travel, or important activities during this time.",
+    "Today's Rahu Kaal timings for your city. Know the inauspicious Rahu Kalam period and avoid starting new work or travel. Check 200+ cities.",
   alternates: {
     canonical: `${SITE_CONFIG.url}/rahu-kaal-today`,
   },
