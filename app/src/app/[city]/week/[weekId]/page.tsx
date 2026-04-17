@@ -5,48 +5,50 @@ import { CalendarDays, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { fetchPanchangBatch } from "@/lib/api";
 import { getCityBySlug, getAllCities } from "@/lib/cities";
 import { formatDate, formatDateShort } from "@/lib/format";
+import { format, parseISO } from "date-fns";
 import { SITE_CONFIG, getNatureStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 import type { PanchangResponse } from "@/schemas/panchang";
 
 export const revalidate = 3600;
 
-// Week ID format: 2026-W07
-const WEEK_REGEX = /^\d{4}-W\d{2}$/;
+// Week ID format: YYYY-MM-DD (Monday of the week)
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 interface PageProps {
   params: Promise<{ city: string; weekId: string }>;
 }
 
-function isValidWeek(w: string): boolean {
-  if (!WEEK_REGEX.test(w)) return false;
-  const [year, week] = w.split("-W").map(Number);
-  return year >= 2020 && year <= 2030 && week >= 1 && week <= 53;
+function toISO(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function getWeekDates(weekId: string): string[] {
-  const [year, week] = weekId.split("-W").map(Number);
-  // ISO week: Jan 4th is always in week 1
-  const jan4 = new Date(year, 0, 4);
-  const dayOfWeek = jan4.getDay() || 7; // ISO: Mon=1, Sun=7
-  const monday = new Date(jan4);
-  monday.setDate(jan4.getDate() - dayOfWeek + 1 + (week - 1) * 7);
+function isValidWeekStart(dateStr: string): boolean {
+  if (!DATE_REGEX.test(dateStr)) return false;
+  const d = new Date(dateStr + "T00:00:00");
+  if (isNaN(d.getTime())) return false;
+  if (d.getDay() !== 1) return false; // Must be Monday
+  return d.getFullYear() >= 2020 && d.getFullYear() <= 2030;
+}
 
+function getWeekDates(mondayDate: string): string[] {
+  const monday = new Date(mondayDate + "T00:00:00");
   const dates: string[] = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    dates.push(iso);
+    dates.push(toISO(d));
   }
   return dates;
 }
 
-function getAdjacentWeeks(weekId: string): { prev: string; next: string } {
-  const [year, week] = weekId.split("-W").map(Number);
-  const prevWeek = week === 1 ? `${year - 1}-W52` : `${year}-W${String(week - 1).padStart(2, "0")}`;
-  const nextWeek = week >= 52 ? `${year + 1}-W01` : `${year}-W${String(week + 1).padStart(2, "0")}`;
-  return { prev: prevWeek, next: nextWeek };
+function getAdjacentWeeks(mondayDate: string): { prev: string; next: string } {
+  const monday = new Date(mondayDate + "T00:00:00");
+  const prevMonday = new Date(monday);
+  prevMonday.setDate(monday.getDate() - 7);
+  const nextMonday = new Date(monday);
+  nextMonday.setDate(monday.getDate() + 7);
+  return { prev: toISO(prevMonday), next: toISO(nextMonday) };
 }
 
 function formatWeekRange(dates: string[]): string {
@@ -59,12 +61,15 @@ function formatWeekRange(dates: string[]): string {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, weekId } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidWeek(weekId)) return {};
+  if (!city || !isValidWeekStart(weekId)) return {};
 
   const dates = getWeekDates(weekId);
-  const weekRange = formatWeekRange(dates);
-
-  const compactRange = `${formatDateShort(dates[0])} – ${formatDateShort(dates[dates.length - 1])}`;
+  const startDate = parseISO(dates[0]);
+  const endDate = parseISO(dates[dates.length - 1]);
+  const sameMonth = startDate.getMonth() === endDate.getMonth();
+  const compactRange = sameMonth
+    ? `${format(startDate, "MMM d")}–${format(endDate, "d, yyyy")}`
+    : `${format(startDate, "MMM d")} – ${format(endDate, "MMM d, yyyy")}`;
 
   return {
     title: `Weekly Panchang ${city.name} — ${compactRange}`,
@@ -148,7 +153,7 @@ export default async function CityWeekPage({ params }: PageProps) {
   const { city: citySlug, weekId } = await params;
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
-  if (!isValidWeek(weekId)) notFound();
+  if (!isValidWeekStart(weekId)) notFound();
 
   const dates = getWeekDates(weekId);
   const dataMap = await fetchPanchangBatch(dates, {
@@ -172,7 +177,7 @@ export default async function CityWeekPage({ params }: PageProps) {
         breadcrumbs={[
           { name: "Home", url: SITE_CONFIG.url },
           { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
-          { name: `Week ${weekId}`, url: `${SITE_CONFIG.url}/${city.slug}/week/${weekId}` },
+          { name: `Week of ${formatDateShort(weekId)}`, url: `${SITE_CONFIG.url}/${city.slug}/week/${weekId}` },
         ]}
       />
 

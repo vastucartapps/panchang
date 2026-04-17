@@ -41,26 +41,17 @@ function getMonthRange(): string[] {
 
 function getWeekRange(): string[] {
   const now = new Date();
+  const day = now.getDay() || 7; // ISO: Mon=1, Sun=7
+  const thisMonday = new Date(now);
+  thisMonday.setDate(now.getDate() - day + 1);
+
   const weeks: string[] = [];
   // Current week + 7 forward + 1 back
   for (let i = -1; i <= 7; i++) {
-    const d = addDays(now, i * 7);
-    const jan4 = new Date(d.getFullYear(), 0, 4);
-    const dayOfYear =
-      Math.floor(
-        (d.getTime() - new Date(d.getFullYear(), 0, 1).getTime()) / 86400000
-      ) + 1;
-    const dayOfWeek = jan4.getDay() || 7;
-    const weekNum = Math.min(
-      Math.ceil((dayOfYear + dayOfWeek - 1) / 7),
-      52
-    );
-    weeks.push(
-      `${d.getFullYear()}-W${String(weekNum).padStart(2, "0")}`
-    );
+    const monday = addDays(thisMonday, i * 7);
+    weeks.push(format(monday, "yyyy-MM-dd"));
   }
-  // Deduplicate
-  return [...new Set(weeks)];
+  return weeks;
 }
 
 function urlEntry(

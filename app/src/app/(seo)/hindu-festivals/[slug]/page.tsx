@@ -40,6 +40,7 @@ import {
   shiftDate,
   formatPanchangKey,
 } from "@/lib/format";
+import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import { getAllCities } from "@/lib/cities";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -266,18 +267,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const festival = getFestivalBySlug(slug);
   if (!festival) return {};
 
-  const formattedDate = formatDate(festival.date);
-  const content = getFestivalContent(slug);
+  const shortMonthDay = format(parseISO(festival.date), "MMM d");
 
   return {
-    title: `${festival.name} ${festival.year} — Date, Tithi, Significance, Story & Panchang Details`,
-    description: `${festival.name} (${festival.nameHindi}) falls on ${formattedDate}. Know the exact Tithi, Nakshatra, Rahu Kaal, sunrise time, significance, traditions, and complete Panchang details for ${festival.name} ${festival.year}.${content?.story ? ` ${content.story.slice(0, 80)}...` : ""}`,
+    title: `${festival.name} ${festival.year} — ${shortMonthDay}, Tithi & Panchang`,
+    description: `${festival.name} (${festival.nameHindi}) on ${shortMonthDay} ${festival.year}. Tithi, Nakshatra, Rahu Kaal, significance & rituals. Complete Panchang guide.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/hindu-festivals/${slug}`,
     },
     openGraph: {
-      title: `${festival.name} ${festival.year} — Date, Significance & Panchang`,
-      description: `${festival.name} (${festival.nameHindi}) on ${formattedDate}. Complete Panchang details, significance, traditions, and FAQs.`,
+      title: `${festival.name} ${festival.year} — ${shortMonthDay}, Tithi & Panchang`,
+      description: `${festival.name} (${festival.nameHindi}) on ${shortMonthDay} ${festival.year}. Panchang details, significance & traditions.`,
       url: `${SITE_CONFIG.url}/hindu-festivals/${slug}`,
       siteName: SITE_CONFIG.name,
       type: "article",
@@ -292,8 +292,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${festival.name} ${festival.year} — Date & Panchang`,
-      description: `${festival.name} on ${formattedDate}. Tithi, Nakshatra, Rahu Kaal & more.`,
+      title: `${festival.name} ${festival.year} — ${shortMonthDay} & Panchang`,
+      description: `${festival.name} on ${shortMonthDay} ${festival.year}. Tithi, Nakshatra, Rahu Kaal & more.`,
       images: [`${SITE_CONFIG.url}/api/og/${DEFAULT_LOCATION.slug}/${festival.date}`],
     },
   };

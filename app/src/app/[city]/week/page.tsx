@@ -7,13 +7,12 @@ interface PageProps {
   params: Promise<{ city: string }>;
 }
 
-function getCurrentWeekId(): string {
+function getCurrentWeekMonday(): string {
   const now = new Date();
-  const jan4 = new Date(now.getFullYear(), 0, 4);
-  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / 86400000) + 1;
-  const dayOfWeek = jan4.getDay() || 7;
-  const weekNum = Math.ceil((dayOfYear + dayOfWeek - 1) / 7);
-  return `${now.getFullYear()}-W${String(Math.min(weekNum, 52)).padStart(2, "0")}`;
+  const day = now.getDay() || 7; // ISO: Mon=1, Sun=7
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - day + 1);
+  return `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, "0")}-${String(monday.getDate()).padStart(2, "0")}`;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city) return {};
   return {
     alternates: {
-      canonical: `${SITE_CONFIG.url}/${citySlug}/week/${getCurrentWeekId()}`,
+      canonical: `${SITE_CONFIG.url}/${citySlug}/week/${getCurrentWeekMonday()}`,
     },
   };
 }
@@ -31,5 +30,5 @@ export default async function WeekRedirect({ params }: PageProps) {
   const { city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
-  redirect(`/${citySlug}/week/${getCurrentWeekId()}`);
+  redirect(`/${citySlug}/week/${getCurrentWeekMonday()}`);
 }
