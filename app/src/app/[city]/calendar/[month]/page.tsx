@@ -188,6 +188,7 @@ export default async function CityCalendarPage({ params }: PageProps) {
               <Link
                 key={c.slug}
                 href={`/${c.slug}/calendar/${month}`}
+                prefetch={false}
                 className="flex items-center gap-1.5 rounded-[14px] px-3 py-2.5 text-[13px] font-medium transition-all hover:-translate-y-0.5"
                 style={{
                   background: "#ffffff",

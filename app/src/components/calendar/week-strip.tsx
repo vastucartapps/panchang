@@ -43,6 +43,7 @@ export async function WeekStrip({ city, todayISO }: { city: City; todayISO: stri
           <Link
             key={d}
             href={`/${city.slug}/${d}`}
+            prefetch={false}
             className="group flex min-w-[92px] flex-col rounded-[14px] px-3 pb-3 pt-2 transition-all hover:-translate-y-0.5 hover:border-[--hover-teal]"
             style={{
               background: bg,

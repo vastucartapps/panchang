@@ -68,6 +68,7 @@ export function DayCell({
   return (
     <Link
       href={`/${citySlug}/${date}`}
+      prefetch={false}
       aria-label={a11y}
       className="group relative flex flex-col rounded-[14px] transition-all hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2"
       style={{
