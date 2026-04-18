@@ -2,8 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, getTodayISO } from "@/lib/format";
-import { format, parseISO } from "date-fns";
+import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
 import { getLocale, getTranslations } from "@/lib/i18n";
@@ -47,8 +46,7 @@ export async function generateMetadata({
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
-  const dayName = format(parseISO(date), "EEEE");
-  const shortDate = format(parseISO(date), "d MMMM yyyy");
+  const shortDate = formatDateShort(date);
 
   // Fetch panchang data for data-rich title (Next.js deduplicates with page fetch)
   let tithi = "";
@@ -67,8 +65,8 @@ export async function generateMetadata({
   }
 
   const titleText = tithi && nakshatra
-    ? `${city.name} Panchang ${dayName} ${shortDate} — ${tithi}, ${nakshatra} | VastuCart`
-    : `${city.name} Panchang ${dayName} ${shortDate} | VastuCart`;
+    ? `${city.name} Panchang ${shortDate} — ${tithi}, ${nakshatra}`
+    : `${city.name} Panchang ${shortDate}`;
 
   return {
     title: { absolute: titleText },
@@ -77,7 +75,7 @@ export async function generateMetadata({
       canonical: `${SITE_CONFIG.url}/${city.slug}/${date}`,
     },
     openGraph: {
-      title: `${city.name} Panchang ${dayName} ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
+      title: `${city.name} Panchang ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
       description: `Accurate Panchang for ${city.name} on ${formattedDate}. Tithi, Nakshatra, Rahu Kaal, Choghadiya timings.`,
       url: `${SITE_CONFIG.url}/${city.slug}/${date}`,
       siteName: SITE_CONFIG.name,
@@ -93,7 +91,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${city.name} Panchang ${dayName} ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
+      title: `${city.name} Panchang ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
       description: `Tithi, Nakshatra, Rahu Kaal for ${city.name} on ${formattedDate}.`,
       images: [`${SITE_CONFIG.url}/api/og/${city.slug}/${date}`],
     },

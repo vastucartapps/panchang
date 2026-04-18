@@ -62,7 +62,7 @@ export async function fetchPanchangBatch(
   dates: string[],
   location: { latitude: number; longitude: number; timezone: string }
 ): Promise<Map<string, PanchangResponse>> {
-  const BATCH_SIZE = 5;
+  const BATCH_SIZE = 15;
   const CACHE_TTL = 3600; // 1 hour for batch/calendar data
   const map = new Map<string, PanchangResponse>();
 

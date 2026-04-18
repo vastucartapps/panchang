@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Clock, MapPin } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, formatDateLong, formatTime12h, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, formatTime12h, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityChoghadiyaFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
-  const shortDate = formatDateLong(date);
-  const titleText = `Choghadiya ${city.name} ${shortDate} — Shubh & Ashubh Timings | VastuCart`;
+  const shortDate = formatDateShort(date);
+  const titleText = `Choghadiya ${city.name} ${shortDate} — Shubh & Ashubh Timings`;
 
   return {
     title: { absolute: titleText },

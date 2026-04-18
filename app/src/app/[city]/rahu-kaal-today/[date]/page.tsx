@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShieldAlert, MapPin, Clock } from "lucide-react";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, formatDateLong, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityRahuKaalFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const formattedDate = formatDate(date);
-  const shortDate = formatDateLong(date);
+  const shortDate = formatDateShort(date);
 
   // Fetch data for rahu kaal times in title (Next.js deduplicates with page fetch)
   let rahuStart = "";
@@ -54,8 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const titleText = rahuStart && rahuEnd
-    ? `Rahu Kaal ${city.name} ${shortDate} — ${rahuStart} to ${rahuEnd} | VastuCart`
-    : `Rahu Kaal ${city.name} ${shortDate} | VastuCart`;
+    ? `Rahu Kaal ${city.name} ${shortDate} — ${rahuStart} to ${rahuEnd}`
+    : `Rahu Kaal ${city.name} ${shortDate}`;
 
   return {
     title: { absolute: titleText },

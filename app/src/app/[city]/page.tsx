@@ -35,22 +35,40 @@ export async function generateMetadata({
   if (!city) return {};
 
   const today = formatDate(getTodayISO());
+  const todayISO = getTodayISO();
+
+  let tithi = "";
+  let nakshatra = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: todayISO,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    tithi = data.day_quality.breakdown.tithi.name;
+    nakshatra = data.day_quality.breakdown.nakshatra.name;
+  } catch {}
+
+  const titleText = tithi && nakshatra
+    ? `Panchang Today ${city.name} — ${tithi}, ${nakshatra}`
+    : `Panchang Today ${city.name} — Tithi, Nakshatra & Rahu Kaal`;
 
   return {
-    title: { absolute: `Panchang Today ${city.name} — Tithi, Nakshatra, Rahu Kaal | VastuCart` },
+    title: { absolute: titleText },
     description: `Today's Panchang for ${city.name}, ${city.state} - ${today}. Get accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings. Updated daily.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}`,
     },
     openGraph: {
-      title: `Panchang Today ${city.name} — Tithi, Nakshatra, Rahu Kaal`,
+      title: titleText,
       description: `Accurate daily Panchang for ${city.name}. Tithi, Nakshatra, Rahu Kaal, Choghadiya timings.`,
       url: `${SITE_CONFIG.url}/${city.slug}`,
       siteName: SITE_CONFIG.name,
       type: "website",
       images: [
         {
-          url: `${SITE_CONFIG.url}/api/og/${city.slug}/${getTodayISO()}`,
+          url: `${SITE_CONFIG.url}/api/og/${city.slug}/${todayISO}`,
           width: 1200,
           height: 630,
           alt: `Panchang for ${city.name} today`,
@@ -59,9 +77,9 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `Panchang Today ${city.name} — Tithi, Nakshatra, Rahu Kaal`,
+      title: titleText,
       description: `Tithi, Nakshatra, Rahu Kaal for ${city.name} today.`,
-      images: [`${SITE_CONFIG.url}/api/og/${city.slug}/${getTodayISO()}`],
+      images: [`${SITE_CONFIG.url}/api/og/${city.slug}/${todayISO}`],
     },
   };
 }
