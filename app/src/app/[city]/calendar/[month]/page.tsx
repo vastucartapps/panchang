@@ -4,12 +4,12 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { fetchPanchangBatch } from "@/lib/api";
+import type { DayEntry } from "@/lib/api";
 import { getCityBySlug, getAllCities } from "@/lib/cities";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { PanchangResponse } from "@/schemas/panchang";
 
 export const revalidate = 3600;
 
@@ -79,25 +79,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 function DayCell({
   date,
-  data,
+  entry,
   citySlug,
   isToday,
 }: {
   date: string;
-  data: PanchangResponse | undefined;
+  entry: DayEntry;
   citySlug: string;
   isToday: boolean;
 }) {
   const dayNum = parseInt(date.split("-")[2], 10);
 
-  if (!data) {
+  // Upstream failed — explicit "unavailable" state (non-clickable, dimmed, em-dash).
+  if (!entry.ok) {
     return (
-      <div className="min-h-[90px] rounded-xl border border-border/50 bg-card/50 p-2 opacity-50">
-        <span className="text-xs font-bold text-muted-foreground">{dayNum}</span>
+      <div
+        className="flex min-h-[90px] flex-col rounded-xl border border-border/40 bg-card/40 p-2 opacity-60 sm:min-h-[100px] sm:p-2.5"
+        aria-label={`Data unavailable for ${date}`}
+      >
+        <span className="text-xs font-bold text-muted-foreground sm:text-sm">{dayNum}</span>
+        <p className="mt-1 text-[10px] font-semibold leading-tight text-muted-foreground sm:text-xs">—</p>
+        <p className="mt-0.5 text-[9px] text-muted-foreground sm:text-[10px]">—</p>
       </div>
     );
   }
 
+  const data = entry.data;
   const score = Math.round(data.day_quality.score);
   const scoreColor = score >= 70 ? "text-green-500" : score >= 40 ? "text-[#C4973B]" : "text-red-400";
   const tithiStyle = getNatureStyle(data.panchang.tithi.nature);
@@ -166,7 +173,7 @@ async function CalendarGrid({
         <DayCell
           key={date}
           date={date}
-          data={dataMap.get(date)}
+          entry={dataMap.get(date) ?? { ok: false }}
           citySlug={citySlug}
           isToday={date === todayISO}
         />

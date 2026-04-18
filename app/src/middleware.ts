@@ -70,6 +70,28 @@ const ALLOWED_BOT_PATTERNS = [
 // Old week URL pattern: /city/week/YYYY-Www — migrated to /city/week/YYYY-MM-DD
 const OLD_WEEK_PATTERN = /^\/[^/]+\/week\/\d{4}-W\d{2}$/;
 
+// Calendar month route: /{city}/calendar/{YYYY-MM}
+const CALENDAR_MONTH_PATTERN = /^\/[^/]+\/calendar\/(\d{4})-(\d{2})$/;
+
+function currentYearMonth(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function applyEdgeCacheForCalendar(response: NextResponse, pathname: string): void {
+  const m = pathname.match(CALENDAR_MONTH_PATTERN);
+  if (!m) return;
+  const yearMonth = `${m[1]}-${m[2]}`;
+  const now = currentYearMonth();
+  // Past months are immutable Panchang data → 30-day edge cache + long browser cache.
+  // Current/future months can update (festival data, etc.) → short browser, 6h edge.
+  const header =
+    yearMonth < now
+      ? "public, max-age=3600, s-maxage=2592000, stale-while-revalidate=86400, immutable"
+      : "public, max-age=300, s-maxage=21600, stale-while-revalidate=600";
+  response.headers.set("cache-control", header);
+}
+
 export function middleware(request: NextRequest) {
   // Return 404 for old ISO week URLs (soft 404 prevention)
   if (OLD_WEEK_PATTERN.test(request.nextUrl.pathname)) {
@@ -89,13 +111,17 @@ export function middleware(request: NextRequest) {
         return new NextResponse("Forbidden", { status: 403 });
       }
     }
-    return NextResponse.next();
+    const response = NextResponse.next();
+    applyEdgeCacheForCalendar(response, request.nextUrl.pathname);
+    return response;
   }
 
   // For non-browser user agents, only allow Google bots
   const isAllowedBot = ALLOWED_BOT_PATTERNS.some((bot) => ua.includes(bot));
   if (isAllowedBot) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    applyEdgeCacheForCalendar(response, request.nextUrl.pathname);
+    return response;
   }
 
   // Block everything else

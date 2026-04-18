@@ -32,6 +32,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Pre-create .next/cache so runtime ISR writes succeed even before a mount exists.
+# In production, mount a persistent volume at /app/.next/cache via Coolify so
+# ISR survives deploys. Without that mount, cache is ephemeral per container.
+RUN mkdir -p ./.next/cache && chown -R nextjs:nodejs ./.next/cache
+
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000

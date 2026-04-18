@@ -3,12 +3,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarDays, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { fetchPanchangBatch } from "@/lib/api";
+import type { DayEntry } from "@/lib/api";
 import { getCityBySlug, getAllCities } from "@/lib/cities";
 import { formatDate, formatDateShort } from "@/lib/format";
 import { format, parseISO } from "date-fns";
 import { SITE_CONFIG, getNatureStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
-import type { PanchangResponse } from "@/schemas/panchang";
 
 export const revalidate = 3600;
 
@@ -87,20 +87,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function DayRow({ date, data, citySlug, isToday }: {
+function DayRow({ date, entry, citySlug, isToday }: {
   date: string;
-  data: PanchangResponse | undefined;
+  entry: DayEntry;
   citySlug: string;
   isToday: boolean;
 }) {
-  if (!data) {
+  if (!entry.ok) {
     return (
-      <div className="rounded-2xl border border-border/50 bg-card/50 p-4 opacity-50">
+      <div className="rounded-2xl border border-border/40 bg-card/40 p-4 opacity-60">
         <p className="text-sm text-muted-foreground">Data unavailable for {date}</p>
       </div>
     );
   }
 
+  const data = entry.data;
   const score = Math.round(data.day_quality.score);
   const scoreColor = score >= 70 ? "#22c55e" : score >= 40 ? "#C4973B" : "#ef4444";
   const tithiStyle = getNatureStyle(data.panchang.tithi.nature);
@@ -225,7 +226,7 @@ export default async function CityWeekPage({ params }: PageProps) {
             <DayRow
               key={date}
               date={date}
-              data={dataMap.get(date)}
+              entry={dataMap.get(date) ?? { ok: false }}
               citySlug={citySlug}
               isToday={date === todayISO}
             />

@@ -5,6 +5,16 @@ import type { PanchangResponse } from "@/schemas/panchang";
 const API_BASE = process.env.API_BASE_URL || "https://api.vastucart.in";
 const API_KEY = process.env.ASTROENGINE_API_KEY || "";
 
+// Only apply AbortController during `next build` to prevent build hangs.
+// At runtime, no signal → fetch is fully cacheable by Next.js data cache
+// and route stays classified as static-with-ISR (edge-cacheable).
+const IS_BUILDING = process.env.NEXT_PHASE === "phase-production-build";
+const BUILD_TIMEOUT_MS = 25000;
+
+// TTLs
+const ONE_HOUR = 3600;
+const ONE_YEAR = 31536000; // past Panchang data is immutable
+
 interface FetchPanchangParams {
   targetDate: string;
   latitude: number;
@@ -12,11 +22,11 @@ interface FetchPanchangParams {
   timezone: string;
 }
 
-// React cache() dedupes identical calls within a single request render.
-// Primitive args compare by value, so generateMetadata and the page
-// component calling with the same (date, lat, lng, tz, ttl) share one
-// underlying network request — even though the AbortController signal
-// disables Next.js's built-in fetch memoization.
+function getCacheTtlForDate(dateStr: string): number {
+  const today = new Date().toISOString().slice(0, 10);
+  return dateStr < today ? ONE_YEAR : ONE_HOUR;
+}
+
 const fetchPanchangInner = cache(async (
   targetDate: string,
   latitude: number,
@@ -33,29 +43,29 @@ const fetchPanchangInner = cache(async (
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
+  if (API_KEY) headers["X-API-Key"] = API_KEY;
 
-  if (API_KEY) {
-    headers["X-API-Key"] = API_KEY;
+  const fetchOptions: RequestInit & { next?: { revalidate?: number } } = {
+    headers,
+    next: { revalidate: cacheTtl },
+  };
+
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  if (IS_BUILDING) {
+    const controller = new AbortController();
+    timeoutId = setTimeout(() => controller.abort(), BUILD_TIMEOUT_MS);
+    fetchOptions.signal = controller.signal;
   }
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 25000);
 
   let res;
   try {
-    res = await fetch(url.toString(), {
-      headers,
-      signal: controller.signal,
-      next: { revalidate: cacheTtl },
-    });
+    res = await fetch(url.toString(), fetchOptions);
   } finally {
-    clearTimeout(timeoutId);
+    if (timeoutId) clearTimeout(timeoutId);
   }
 
   if (!res.ok) {
-    throw new Error(
-      `Panchang API error: ${res.status} ${res.statusText}`
-    );
+    throw new Error(`Panchang API error: ${res.status} ${res.statusText}`);
   }
 
   const json = await res.json();
@@ -64,28 +74,37 @@ const fetchPanchangInner = cache(async (
 
 export function fetchPanchang(
   params: FetchPanchangParams,
-  cacheTtl = 300
+  cacheTtl?: number
 ): Promise<PanchangResponse> {
+  const ttl = cacheTtl ?? getCacheTtlForDate(params.targetDate);
   return fetchPanchangInner(
     params.targetDate,
     params.latitude,
     params.longitude,
     params.timezone,
-    cacheTtl
+    ttl
   );
 }
 
+export type DayEntry =
+  | { ok: true; data: PanchangResponse }
+  | { ok: false };
+
 /**
- * Fetch panchang for multiple dates with concurrency throttle.
- * Uses longer cache TTL (1 hour) since calendar data is relatively static.
+ * Batch fetch with guaranteed entries for every requested date.
+ * Failed fetches produce { ok: false } entries (never missing or undefined),
+ * so the rendering layer can cleanly distinguish "unavailable" from "loading"
+ * and Next.js sees the page as fully rendered regardless of upstream failures.
  */
 export async function fetchPanchangBatch(
   dates: string[],
   location: { latitude: number; longitude: number; timezone: string }
-): Promise<Map<string, PanchangResponse>> {
+): Promise<Map<string, DayEntry>> {
   const BATCH_SIZE = 10;
-  const CACHE_TTL = 3600; // 1 hour for batch/calendar data
-  const map = new Map<string, PanchangResponse>();
+  const map = new Map<string, DayEntry>();
+
+  // Seed every date with { ok: false } so failures become explicit entries.
+  for (const date of dates) map.set(date, { ok: false });
 
   for (let i = 0; i < dates.length; i += BATCH_SIZE) {
     const batch = dates.slice(i, i + BATCH_SIZE);
@@ -98,15 +117,16 @@ export async function fetchPanchangBatch(
             longitude: location.longitude,
             timezone: location.timezone,
           },
-          CACHE_TTL
+          getCacheTtlForDate(date)
         )
       )
     );
 
     results.forEach((result, index) => {
       if (result.status === "fulfilled") {
-        map.set(batch[index], result.value);
+        map.set(batch[index], { ok: true, data: result.value });
       }
+      // status === "rejected" leaves the pre-seeded { ok: false } in place
     });
   }
 
