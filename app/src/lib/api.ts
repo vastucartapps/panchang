@@ -29,10 +29,19 @@ export async function fetchPanchang(
     headers["X-API-Key"] = API_KEY;
   }
 
-  const res = await fetch(url.toString(), {
-    headers,
-    next: { revalidate: cacheTtl },
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+  let res;
+  try {
+    res = await fetch(url.toString(), {
+      headers,
+      signal: controller.signal,
+      next: { revalidate: cacheTtl },
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!res.ok) {
     throw new Error(
