@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { DEFAULT_LOCATION, SITE_CONFIG, NETWORK_LINKS } from "@/lib/constants";
+import { getTopCitySlugs, getCityBySlug } from "@/lib/cities";
 import { getTodayISO, formatDate } from "@/lib/format";
 import { getNatureStyle, getScoreLabel } from "@/lib/constants";
 import { NetworkHeader } from "@/components/layout/network-header";
@@ -19,6 +20,53 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { HeroActions } from "@/components/hero/hero-actions";
+
+const HOMEPAGE_FAQS = [
+  {
+    question: "What is Panchang?",
+    answer:
+      "Panchang is the traditional Hindu calendar system comprising five 'limbs' (panch-anga): Tithi (lunar day), Nakshatra (lunar mansion), Yoga (sun-moon combination), Karana (half of a Tithi), and Vara (weekday). It guides Vedic rituals, festival dates, auspicious muhurtas for weddings and business decisions, and daily spiritual observances.",
+  },
+  {
+    question: "How is Panchang calculated?",
+    answer:
+      "Panchang is calculated from the astronomical positions of the Sun and Moon relative to the Earth, using sunrise at a specific location as the start of each day. Because sunrise time differs by city, the same date's Tithi or Nakshatra can differ between cities — that's why VastuCart Panchang is computed individually for 200+ Indian cities.",
+  },
+  {
+    question: "What is Rahu Kaal and why should I avoid it?",
+    answer:
+      "Rahu Kaal is an inauspicious 90-minute window each day associated with the shadow planet Rahu. Starting new work, travel, or important ceremonies during this time is traditionally considered unfavorable. The window shifts daily based on sunrise/sunset times. VastuCart Panchang shows Rahu Kaal, Yamagandam, and Gulika Kalam for every city, every day.",
+  },
+  {
+    question: "What is Choghadiya?",
+    answer:
+      "Choghadiya is a Vedic time-quality system that divides the day into eight 90-minute periods, each classified as auspicious (Amrit, Shubh, Labh), neutral (Char), or inauspicious (Rog, Kaal, Udveg). It's widely used in Gujarat, Maharashtra, and Rajasthan for picking muhurat for travel, business, and daily activities.",
+  },
+  {
+    question: "Does the Tithi change at midnight?",
+    answer:
+      "No. Hindu Tithis run from sunrise to sunrise, not midnight to midnight. A Tithi can also span multiple days or end within a single day, because it's defined by the angular separation between the Moon and Sun (12° = one Tithi). The 'prevailing at sunrise' rule determines which Tithi governs a given day for festivals and rituals.",
+  },
+  {
+    question: "Is Panchang accurate across all 200+ cities?",
+    answer:
+      "Yes. VastuCart Panchang uses each city's latitude, longitude, and timezone to compute sunrise, sunset, and all five Panchang limbs individually. Sunrise differs by several minutes across India (earlier in the east, later in the west), so Tithi transition timings are location-specific — not a one-size-fits-all national value.",
+  },
+  {
+    question: "What is Aaj Ka Panchang?",
+    answer:
+      "'Aaj Ka Panchang' (आज का पंचांग) means 'today's Panchang' in Hindi. It shows the current day's Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya, sunrise, sunset, and moon phase for your city. VastuCart updates Aaj Ka Panchang daily at sunrise for 200+ Indian cities.",
+  },
+];
+
+const GLOSSARY_LINKS = [
+  { href: "/todays-tithi", title: "Aaj Ki Tithi", desc: "Current lunar day, Paksha & deity" },
+  { href: "/todays-nakshatra", title: "Aaj Ka Nakshatra", desc: "27 lunar mansions with Pada" },
+  { href: "/rahu-kaal-today", title: "Rahu Kaal Today", desc: "Inauspicious Rahu Kalam timing" },
+  { href: "/choghadiya-today", title: "Choghadiya Today", desc: "Shubh & Ashubh muhurat periods" },
+  { href: "/moon-phase-today", title: "Moon Phase Today", desc: "Illumination, Paksha, lunar age" },
+  { href: "/what-is-panchang", title: "What is Panchang?", desc: "Complete Vedic calendar guide" },
+];
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
@@ -102,6 +150,7 @@ export default async function HomePage() {
         <JsonLd
           city={city.name}
           breadcrumbs={[{ name: "Home", url: SITE_CONFIG.url }]}
+          faqs={HOMEPAGE_FAQS}
         />
 
         {/* Hero Banner */}
@@ -307,6 +356,97 @@ export default async function HomePage() {
                 See All Timings <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* Panchang glossary — 6 topic hub links, gives Google a clear
+            topical map + helps users discover individual explainers. */}
+        <section className="mx-auto px-4 pt-8 pb-4 sm:px-6" style={{ maxWidth: "92%" }}>
+          <div className="mb-6 text-center">
+            <h2 className="heading-display text-2xl font-bold text-[var(--color-vedic)] sm:text-3xl">
+              Panchang, in detail
+            </h2>
+            <div className="mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+            <p className="mt-3 text-sm text-[var(--color-foreground)]/60">
+              Each limb of the Vedic calendar, explained for today
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+            {GLOSSARY_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex flex-col rounded-2xl border border-[#013f47]/10 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#C4973B]/40 hover:shadow-md sm:p-5"
+              >
+                <h3 className="text-base font-bold text-[var(--color-vedic)] sm:text-lg">{item.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-[var(--color-foreground)]/60 sm:text-sm">{item.desc}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-[#8B6914]">
+                  Explore <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Cities directory — top 20 Indian cities, clear internal-linking
+            path for Google from homepage into the 216 city landing pages. */}
+        <section className="mx-auto px-4 pt-8 pb-4 sm:px-6" style={{ maxWidth: "92%" }}>
+          <div className="mb-6 text-center">
+            <h2 className="heading-display text-2xl font-bold text-[var(--color-vedic)] sm:text-3xl">
+              Aaj Ka Panchang for Indian cities
+            </h2>
+            <div className="mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+            <p className="mt-3 text-sm text-[var(--color-foreground)]/60">
+              Sunrise, Tithi, and Nakshatra vary by location — pick yours
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5">
+            {getTopCitySlugs().map((slug) => {
+              const c = getCityBySlug(slug);
+              if (!c) return null;
+              return (
+                <Link
+                  key={slug}
+                  href={`/${slug}`}
+                  prefetch={false}
+                  className="rounded-xl border border-[#013f47]/10 bg-white px-3 py-2.5 text-sm font-medium text-[var(--color-foreground)] transition-all hover:-translate-y-0.5 hover:border-[#C4973B]/40 hover:shadow-sm"
+                >
+                  {c.name}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="mt-5 text-center">
+            <p className="text-xs text-[var(--color-foreground)]/50">
+              Over 200 cities supported. Open any and see today&apos;s full Panchang.
+            </p>
+          </div>
+        </section>
+
+        {/* FAQ — matches HOMEPAGE_FAQS already emitted as FAQPage JSON-LD
+            (at the top of main). Visible to humans + rich-result eligible. */}
+        <section className="mx-auto px-4 pt-8 pb-4 sm:px-6" style={{ maxWidth: "92%" }}>
+          <div className="mb-6 text-center">
+            <h2 className="heading-display text-2xl font-bold text-[var(--color-vedic)] sm:text-3xl">
+              Frequently asked questions
+            </h2>
+            <div className="mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
+          </div>
+          <div className="mx-auto max-w-3xl space-y-3">
+            {HOMEPAGE_FAQS.map((faq) => (
+              <details
+                key={faq.question}
+                className="group rounded-2xl border border-[#013f47]/10 bg-white px-5 py-4 shadow-sm transition-all hover:border-[#C4973B]/40 sm:px-6"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-sm font-bold text-[var(--color-vedic)] sm:text-base">
+                  {faq.question}
+                  <span className="flex-shrink-0 text-[#8B6914] transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-foreground)]/80 sm:text-[15px]">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
           </div>
         </section>
 
