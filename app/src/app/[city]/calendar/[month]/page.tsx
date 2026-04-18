@@ -12,6 +12,15 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const revalidate = 3600;
+export const dynamicParams = true;
+
+// Empty array = pre-render nothing at build; opt the route into static-with-ISR
+// classification so first-hit generates HTML once and caches it. Without this,
+// Next.js 16 treats dynamic routes ([city]/[month]) as pure SSR — no HTML cache,
+// revalidate is ignored, every request re-renders.
+export function generateStaticParams() {
+  return [];
+}
 
 const MONTH_REGEX = /^\d{4}-\d{2}$/;
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
