@@ -67,7 +67,15 @@ const ALLOWED_BOT_PATTERNS = [
   "pinterestbot",
 ];
 
+// Old week URL pattern: /city/week/YYYY-Www — migrated to /city/week/YYYY-MM-DD
+const OLD_WEEK_PATTERN = /^\/[^/]+\/week\/\d{4}-W\d{2}$/;
+
 export function middleware(request: NextRequest) {
+  // Return 404 for old ISO week URLs (soft 404 prevention)
+  if (OLD_WEEK_PATTERN.test(request.nextUrl.pathname)) {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
   const ua = request.headers.get("user-agent")?.toLowerCase() || "";
 
   // Allow all normal browser requests (no bot filtering)

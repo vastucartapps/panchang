@@ -268,8 +268,8 @@ export const FESTIVALS: Festival[] = [
   },
   {
     slug: "dussehra-2025",
-    name: "Dussehra (Vijayadashami)",
-    nameHindi: "दशहरा (विजयादशमी)",
+    name: "Dussehra",
+    nameHindi: "दशहरा",
     date: "2025-10-02",
     year: 2025,
     category: "major",
@@ -308,7 +308,7 @@ export const FESTIVALS: Festival[] = [
   },
   {
     slug: "diwali-2025",
-    name: "Diwali (Deepavali)",
+    name: "Diwali",
     nameHindi: "दीपावली",
     date: "2025-10-20",
     year: 2025,
@@ -648,8 +648,8 @@ export const FESTIVALS: Festival[] = [
   },
   {
     slug: "dussehra-2026",
-    name: "Dussehra (Vijayadashami)",
-    nameHindi: "दशहरा (विजयादशमी)",
+    name: "Dussehra",
+    nameHindi: "दशहरा",
     date: "2026-10-20",
     year: 2026,
     category: "major",
@@ -688,7 +688,7 @@ export const FESTIVALS: Festival[] = [
   },
   {
     slug: "diwali-2026",
-    name: "Diwali (Deepavali)",
+    name: "Diwali",
     nameHindi: "दीपावली",
     date: "2026-11-08",
     year: 2026,
@@ -830,7 +830,7 @@ export const FESTIVALS: Festival[] = [
   },
   {
     slug: "pradosh-vrat-feb-2026",
-    name: "Pradosh Vrat (Phalguna)",
+    name: "Pradosh Vrat",
     nameHindi: "प्रदोष व्रत",
     date: "2026-03-01",
     year: 2026,
