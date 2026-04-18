@@ -1,29 +1,27 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
-import { fetchPanchangBatch } from "@/lib/api";
-import type { DayEntry } from "@/lib/api";
 import { getCityBySlug, getAllCities } from "@/lib/cities";
 import { SITE_CONFIG } from "@/lib/constants";
-import { getNatureStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
-import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { MapPin } from "lucide-react";
+import { HeroCard } from "@/components/calendar/hero-card";
+import { WeekStrip, WeekStripSkeleton } from "@/components/calendar/week-strip";
+import { UpcomingFestivals } from "@/components/calendar/upcoming-festivals";
+import { MonthNav } from "@/components/calendar/month-nav";
+import { MonthGrid, MonthGridSkeleton } from "@/components/calendar/month-grid";
+import { Legend } from "@/components/calendar/legend";
+import { CAL_COLORS } from "@/lib/panchang-helpers";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-// Empty array = pre-render nothing at build; opt the route into static-with-ISR
-// classification so first-hit generates HTML once and caches it. Without this,
-// Next.js 16 treats dynamic routes ([city]/[month]) as pure SSR — no HTML cache,
-// revalidate is ignored, every request re-renders.
 export function generateStaticParams() {
   return [];
 }
 
 const MONTH_REGEX = /^\d{4}-\d{2}$/;
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -86,131 +84,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function DayCell({
-  date,
-  entry,
-  citySlug,
-  isToday,
-}: {
-  date: string;
-  entry: DayEntry;
-  citySlug: string;
-  isToday: boolean;
-}) {
-  const dayNum = parseInt(date.split("-")[2], 10);
-
-  // Upstream failed — explicit "unavailable" state (non-clickable, dimmed, em-dash).
-  if (!entry.ok) {
-    return (
-      <div
-        className="flex min-h-[90px] flex-col rounded-xl border border-border/40 bg-card/40 p-2 opacity-60 sm:min-h-[100px] sm:p-2.5"
-        aria-label={`Data unavailable for ${date}`}
-      >
-        <span className="text-xs font-bold text-muted-foreground sm:text-sm">{dayNum}</span>
-        <p className="mt-1 text-[10px] font-semibold leading-tight text-muted-foreground sm:text-xs">—</p>
-        <p className="mt-0.5 text-[9px] text-muted-foreground sm:text-[10px]">—</p>
-      </div>
-    );
-  }
-
-  const data = entry.data;
-  const score = Math.round(data.day_quality.score);
-  const scoreColor = score >= 70 ? "text-green-500" : score >= 40 ? "text-[#C4973B]" : "text-red-400";
-  const tithiStyle = getNatureStyle(data.panchang.tithi.nature);
-  const tithi = data.panchang.tithi.tithi.replace(/_/g, " ").split(" ").map((w: string) => w.charAt(0) + w.slice(1).toLowerCase()).join(" ");
-  const nakshatra = data.panchang.nakshatra.nakshatra.replace(/_/g, " ").split(" ").map((w: string) => w.charAt(0) + w.slice(1).toLowerCase()).join(" ");
-
-  return (
-    <Link
-      href={`/${citySlug}/${date}`}
-      className={`group flex min-h-[90px] flex-col rounded-xl border p-2 transition-all hover:-translate-y-0.5 hover:shadow-lg sm:min-h-[100px] sm:p-2.5 ${
-        isToday
-          ? "border-[#C4973B]/50 bg-[#C4973B]/5 shadow-md"
-          : "border-border/50 bg-card hover:border-[#C4973B]/30"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <span className={`text-xs font-bold sm:text-sm ${isToday ? "text-[#C4973B]" : "text-foreground"}`}>
-          {dayNum}
-        </span>
-        <span className={`text-xs font-bold ${scoreColor}`}>{score}</span>
-      </div>
-      <p className="mt-1 truncate text-[10px] font-semibold leading-tight text-foreground sm:text-xs">
-        {tithi}
-      </p>
-      <p className="mt-0.5 truncate text-[9px] text-muted-foreground sm:text-[10px]">
-        {nakshatra}
-      </p>
-      <span className={`mt-auto inline-block w-fit rounded-full px-1.5 py-0.5 text-[8px] font-bold sm:text-[9px] ${tithiStyle.bg} ${tithiStyle.text}`}>
-        {data.panchang.tithi.paksha.slice(0, 2)}
-      </span>
-    </Link>
-  );
-}
-
-// Grid is wrapped in Suspense — async fetch runs inside, shell renders instantly.
-// All runtime-clock reads live here (inside the async boundary) so the outer
-// shell is fully deterministic and Next.js can classify the route as
-// static-with-ISR (enabling x-nextjs-cache).
-async function CalendarGrid({
-  city,
-  dates,
-  citySlug,
-  firstDayOfWeek,
-}: {
-  city: { name: string; state: string; lat: number; lng: number; tz: string; slug: string };
-  dates: string[];
-  citySlug: string;
-  firstDayOfWeek: number;
-}) {
-  const todayISO = new Date().toISOString().slice(0, 10);
-  const dataMap = await fetchPanchangBatch(dates, {
-    latitude: city.lat,
-    longitude: city.lng,
-    timezone: city.tz,
-  });
-
-  return (
-    <div className="grid grid-cols-7 gap-1 sm:gap-2">
-      {WEEKDAYS.map((day) => (
-        <div key={day} className="pb-2 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">
-          {day}
-        </div>
-      ))}
-      {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-        <div key={`empty-${i}`} />
-      ))}
-      {dates.map((date) => (
-        <DayCell
-          key={date}
-          date={date}
-          entry={dataMap.get(date) ?? { ok: false }}
-          citySlug={citySlug}
-          isToday={date === todayISO}
-        />
-      ))}
-    </div>
-  );
-}
-
-function CalendarGridSkeleton({ firstDayOfWeek, dayCount }: { firstDayOfWeek: number; dayCount: number }) {
-  return (
-    <div className="grid grid-cols-7 gap-1 sm:gap-2">
-      {WEEKDAYS.map((day) => (
-        <div key={day} className="pb-2 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">
-          {day}
-        </div>
-      ))}
-      {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-        <div key={`empty-${i}`} />
-      ))}
-      {Array.from({ length: dayCount }).map((_, i) => (
-        <Skeleton key={i} className="min-h-[90px] w-full rounded-xl sm:min-h-[100px]" />
-      ))}
-    </div>
-  );
-}
-
 export default async function CityCalendarPage({ params }: PageProps) {
   const { city: citySlug, month } = await params;
   const city = getCityBySlug(citySlug);
@@ -221,7 +94,7 @@ export default async function CityCalendarPage({ params }: PageProps) {
   const { prev, next } = getAdjacentMonths(month);
   const monthYear = formatMonthYear(month);
 
-  // Calculate first day of month for grid offset (param-derived, deterministic)
+  // URL-derived only — fully deterministic, doesn't opt route out of static
   const [year, mo] = month.split("-").map(Number);
   const firstDayOfWeek = new Date(year, mo - 1, 1).getDay();
 
@@ -240,92 +113,89 @@ export default async function CityCalendarPage({ params }: PageProps) {
         ]}
       />
 
-      <section
-        className="py-12 sm:py-16"
-        style={{ background: "linear-gradient(165deg, #013f47 0%, #004D40 40%, #1B3A2D 70%, #2C1810 100%)" }}
-      >
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <CalendarDays className="mx-auto h-10 w-10 text-[#C4973B]" />
-          <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl heading-display">
-            Panchang Calendar
-          </h1>
-          <div className="mt-4 h-px w-24 mx-auto bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
-          <p className="mt-4 text-base text-white/60 sm:text-lg">
-            {city.name} &middot; {city.state}
-          </p>
-        </div>
-      </section>
+      {/* Soft cream page background; keeps site-wide chrome intact. */}
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8" style={{ color: CAL_COLORS.text.primary }}>
+        {/* Breadcrumb-ish city label (subtle, above hero) */}
+        <p
+          className="mb-4 text-[10.5px] font-medium uppercase"
+          style={{ letterSpacing: "1.2px", color: CAL_COLORS.text.secondary }}
+        >
+          Panchang Calendar · {city.name}, {city.state}
+        </p>
 
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        {/* Month navigation */}
-        <div className="mb-6 flex items-center justify-between">
-          <Link
-            href={`/${citySlug}/calendar/${prev}`}
-            className="flex items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium text-foreground transition-all hover:border-[#C4973B]/30 hover:shadow-md"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">{formatMonthYear(prev)}</span>
-            <span className="sm:hidden">Prev</span>
-          </Link>
-          <h2 className="text-xl font-bold text-[var(--color-vedic)] sm:text-2xl heading-display">
-            {monthYear}
-          </h2>
-          <Link
-            href={`/${citySlug}/calendar/${next}`}
-            className="flex items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium text-foreground transition-all hover:border-[#C4973B]/30 hover:shadow-md"
-          >
-            <span className="hidden sm:inline">{formatMonthYear(next)}</span>
-            <span className="sm:hidden">Next</span>
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        {/* Calendar grid — streams in when data is ready, shell renders instantly */}
-        <Suspense fallback={<CalendarGridSkeleton firstDayOfWeek={firstDayOfWeek} dayCount={dates.length} />}>
-          <CalendarGrid
-            city={city}
-            dates={dates}
-            citySlug={citySlug}
-            firstDayOfWeek={firstDayOfWeek}
-          />
+        {/* ZONE 1: Hero card — streams independently (~same latency as /[city] today fetch) */}
+        <Suspense fallback={<HeroCardShell />}>
+          <HeroCardWrapper citySlug={citySlug} />
         </Suspense>
 
-        {/* Legend */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-green-500" /> Score 70+
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#C4973B]" /> Score 40-69
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-400" /> Score &lt;40
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full border-2 border-[#C4973B]" /> Today
-          </span>
+        {/* ZONE 2: Week strip — 7 days, Suspense */}
+        <div className="mt-6">
+          <Suspense fallback={<WeekStripSkeleton />}>
+            <WeekStripWrapper citySlug={citySlug} />
+          </Suspense>
         </div>
 
+        {/* Upcoming festivals row — wrapped in Suspense so the new Date() read
+            inside happens in the deferred render phase, keeping the outer
+            shell prerenderable. */}
+        <div className="mt-6">
+          <Suspense fallback={null}>
+            <UpcomingFestivalsWrapper />
+          </Suspense>
+        </div>
+
+        {/* Month nav */}
+        <div className="mt-10">
+          <MonthNav citySlug={citySlug} month={month} prev={prev} next={next} />
+        </div>
+
+        {/* ZONE 3: Month grid — streams in separately */}
+        <div className="mt-6">
+          <Suspense fallback={<MonthGridSkeleton firstDayOfWeek={firstDayOfWeek} dayCount={dates.length} />}>
+            <MonthGrid
+              city={city}
+              dates={dates}
+              citySlug={citySlug}
+              firstDayOfWeek={firstDayOfWeek}
+            />
+          </Suspense>
+        </div>
+
+        {/* Legend */}
+        <div className="mt-8">
+          <Legend />
+        </div>
+
+        {/* CTA + other cities (preserved from prior design) */}
         <div className="mt-10 space-y-6">
           <div className="flex items-center justify-center">
             <Link
               href={`/${city.slug}`}
-              className="rounded-full px-6 py-2.5 text-sm font-bold text-white transition-all hover:opacity-90"
-              style={{ background: "linear-gradient(135deg, #013f47, #004D40)" }}
+              className="rounded-full px-6 py-2.5 text-[13px] font-medium transition-all hover:-translate-y-0.5"
+              style={{
+                background: CAL_COLORS.teal.border,
+                color: "#ffffff",
+              }}
             >
               Today&apos;s Panchang for {city.name}
             </Link>
           </div>
-
-          <h2 className="text-xl font-bold text-[var(--color-vedic)]">Calendar for Other Cities</h2>
+          <h2 className="font-heading text-[20px] font-medium" style={{ color: CAL_COLORS.teal.textDark }}>
+            Calendar for other cities
+          </h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
             {otherCities.map((c) => (
               <Link
                 key={c.slug}
                 href={`/${c.slug}/calendar/${month}`}
-                className="flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--color-saffron)]/30 hover:shadow-md"
+                className="flex items-center gap-1.5 rounded-[14px] px-3 py-2.5 text-[13px] font-medium transition-all hover:-translate-y-0.5"
+                style={{
+                  background: "#ffffff",
+                  border: `1px solid ${CAL_COLORS.text.secondary}22`,
+                  color: CAL_COLORS.text.primary,
+                }}
               >
-                <MapPin className="h-3 w-3 text-[var(--color-saffron)]" />
+                <MapPin className="h-3 w-3" style={{ color: CAL_COLORS.teal.border }} />
                 {c.name}
               </Link>
             ))}
@@ -334,4 +204,40 @@ export default async function CityCalendarPage({ params }: PageProps) {
       </div>
     </>
   );
+}
+
+// Wrappers that resolve city from slug inside Suspense boundaries — each zone
+// can fail/recover independently.
+
+async function HeroCardWrapper({ citySlug }: { citySlug: string }) {
+  const city = getCityBySlug(citySlug)!;
+  const todayISO = new Date().toISOString().slice(0, 10);
+  return <HeroCard city={city} todayISO={todayISO} />;
+}
+
+function HeroCardShell() {
+  return (
+    <section
+      aria-label="Today's Panchang loading"
+      style={{
+        background: CAL_COLORS.heroGradient,
+        border: `1px solid ${CAL_COLORS.teal.border}`,
+        borderRadius: 18,
+        padding: "22px 24px",
+        minHeight: 180,
+      }}
+      className="animate-pulse"
+    />
+  );
+}
+
+async function WeekStripWrapper({ citySlug }: { citySlug: string }) {
+  const city = getCityBySlug(citySlug)!;
+  const todayISO = new Date().toISOString().slice(0, 10);
+  return <WeekStrip city={city} todayISO={todayISO} />;
+}
+
+async function UpcomingFestivalsWrapper() {
+  const todayISO = new Date().toISOString().slice(0, 10);
+  return <UpcomingFestivals todayISO={todayISO} />;
 }
