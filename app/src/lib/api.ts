@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { PanchangResponseSchema } from "@/schemas/panchang";
 import type { PanchangResponse } from "@/schemas/panchang";
 
@@ -11,15 +12,23 @@ interface FetchPanchangParams {
   timezone: string;
 }
 
-export async function fetchPanchang(
-  params: FetchPanchangParams,
-  cacheTtl = 300
-): Promise<PanchangResponse> {
+// React cache() dedupes identical calls within a single request render.
+// Primitive args compare by value, so generateMetadata and the page
+// component calling with the same (date, lat, lng, tz, ttl) share one
+// underlying network request — even though the AbortController signal
+// disables Next.js's built-in fetch memoization.
+const fetchPanchangInner = cache(async (
+  targetDate: string,
+  latitude: number,
+  longitude: number,
+  timezone: string,
+  cacheTtl: number
+): Promise<PanchangResponse> => {
   const url = new URL(`${API_BASE}/api/v1/panchang/v2/comprehensive`);
-  url.searchParams.set("target_date", params.targetDate);
-  url.searchParams.set("latitude", String(params.latitude));
-  url.searchParams.set("longitude", String(params.longitude));
-  url.searchParams.set("timezone", params.timezone);
+  url.searchParams.set("target_date", targetDate);
+  url.searchParams.set("latitude", String(latitude));
+  url.searchParams.set("longitude", String(longitude));
+  url.searchParams.set("timezone", timezone);
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -51,12 +60,24 @@ export async function fetchPanchang(
 
   const json = await res.json();
   return PanchangResponseSchema.parse(json);
+});
+
+export function fetchPanchang(
+  params: FetchPanchangParams,
+  cacheTtl = 300
+): Promise<PanchangResponse> {
+  return fetchPanchangInner(
+    params.targetDate,
+    params.latitude,
+    params.longitude,
+    params.timezone,
+    cacheTtl
+  );
 }
 
 /**
  * Fetch panchang for multiple dates with concurrency throttle.
  * Uses longer cache TTL (1 hour) since calendar data is relatively static.
- * Processes in batches of 5 to avoid hammering the API.
  */
 export async function fetchPanchangBatch(
   dates: string[],
