@@ -17,7 +17,17 @@ const PAST_DAYS = 7;
 const FUTURE_DAYS = 7;
 const MAX_SITEMAP_ID = 7;
 
+// Fixed lastmod for immutable static content — updated only when that
+// content actually changes. Avoids the "everything changed today"
+// anti-pattern that Google ignores.
+const LEGAL_LASTMOD = "2026-04-01"; // bump when privacy/terms/disclaimer change
+const STATIC_HUB_LASTMOD = "2026-04-18"; // bump on meaningful hub-page rewrites
+
 export const dynamic = "force-dynamic";
+
+function todayISO(): string {
+  return format(new Date(), "yyyy-MM-dd");
+}
 
 function getDateRange(): string[] {
   const today = new Date();
@@ -31,7 +41,6 @@ function getDateRange(): string[] {
 function getMonthRange(): string[] {
   const now = new Date();
   const months: string[] = [];
-  // Current month + 5 forward + 1 back
   for (let i = -1; i <= 5; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
     months.push(format(d, "yyyy-MM"));
@@ -41,12 +50,11 @@ function getMonthRange(): string[] {
 
 function getWeekRange(): string[] {
   const now = new Date();
-  const day = now.getDay() || 7; // ISO: Mon=1, Sun=7
+  const day = now.getDay() || 7;
   const thisMonday = new Date(now);
   thisMonday.setDate(now.getDate() - day + 1);
 
   const weeks: string[] = [];
-  // Current week + 7 forward + 1 back
   for (let i = -1; i <= 7; i++) {
     const monday = addDays(thisMonday, i * 7);
     weeks.push(format(monday, "yyyy-MM-dd"));
@@ -54,12 +62,18 @@ function getWeekRange(): string[] {
   return weeks;
 }
 
+/**
+ * Build a sitemap <url> entry with a CONTEXTUAL lastmod.
+ * Google treats lastmod as a hint for prioritization; setting it to "today"
+ * on every URL is a known no-op. Better: reflect when the underlying content
+ * last meaningfully changed.
+ */
 function urlEntry(
   url: string,
+  lastmod: string,
   changefreq: string,
   priority: number
 ): string {
-  const lastmod = format(new Date(), "yyyy-MM-dd");
   return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 }
 
@@ -68,6 +82,17 @@ function wrapUrlset(entries: string[]): string {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries.join("\n")}
 </urlset>`;
+}
+
+/**
+ * Pick a lastmod for a (city, date) pair.
+ * - date ≤ today: the page represents immutable Panchang for that past date
+ *   → lastmod = the date itself
+ * - date > today: content becomes meaningful as the day approaches
+ *   → lastmod = today
+ */
+function lastmodForDate(date: string, todayStr: string): string {
+  return date <= todayStr ? date : todayStr;
 }
 
 export async function GET(
@@ -83,50 +108,43 @@ export async function GET(
 
   const slugs = getCitySlugs();
   const dates = getDateRange();
-  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const todayStr = todayISO();
   const entries: string[] = [];
 
   // ─── Sitemap 0: Main pages + festivals + hub pages ─────
   if (sitemapId === 0) {
-    entries.push(urlEntry(SITE_URL, "daily", 1));
-
-    // City home pages
+    // Root + city landings: always today (updated daily with live panchang)
+    entries.push(urlEntry(SITE_URL, todayStr, "daily", 1));
     for (const slug of slugs) {
-      entries.push(urlEntry(`${SITE_URL}/${slug}`, "daily", 0.9));
+      entries.push(urlEntry(`${SITE_URL}/${slug}`, todayStr, "daily", 0.9));
     }
 
-    // SEO topic hubs
-    for (const topic of [...SEO_TOPICS, "what-is-panchang"]) {
-      entries.push(urlEntry(`${SITE_URL}/${topic}`, "daily", 0.8));
+    // SEO topic hubs with daily-refreshing content
+    for (const topic of [...SEO_TOPICS]) {
+      entries.push(urlEntry(`${SITE_URL}/${topic}`, todayStr, "daily", 0.8));
+    }
+    entries.push(urlEntry(`${SITE_URL}/sunrise-sunset-today`, todayStr, "daily", 0.8));
+
+    // Static educational hub — lastmod bumped manually when rewritten
+    entries.push(urlEntry(`${SITE_URL}/what-is-panchang`, STATIC_HUB_LASTMOD, "yearly", 0.8));
+
+    // Festival hub index
+    entries.push(urlEntry(`${SITE_URL}/hindu-festivals`, todayStr, "weekly", 0.8));
+
+    // Individual festival pages: lastmod = Jan 1 of festival year (fixed
+    // for the year the festival belongs to, stable signal for Google)
+    for (const f of getAllFestivals()) {
+      const festLastmod = `${f.year}-01-01`;
+      entries.push(urlEntry(`${SITE_URL}/hindu-festivals/${f.slug}`, festLastmod, "monthly", 0.6));
     }
 
-    // New hub pages
-    entries.push(
-      urlEntry(`${SITE_URL}/sunrise-sunset-today`, "daily", 0.8)
-    );
-    entries.push(
-      urlEntry(`${SITE_URL}/hindu-festivals`, "weekly", 0.8)
-    );
-
-    // Festival individual pages
-    const festivals = getAllFestivals();
-    for (const f of festivals) {
-      entries.push(
-        urlEntry(`${SITE_URL}/hindu-festivals/${f.slug}`, "monthly", 0.6)
-      );
-    }
-
-    // Legal pages
-    for (const page of [
-      "privacy-policy",
-      "terms-of-service",
-      "disclaimer",
-    ]) {
-      entries.push(urlEntry(`${SITE_URL}/${page}`, "yearly", 0.3));
+    // Legal pages: fixed lastmod, bump when policies actually change
+    for (const page of ["privacy-policy", "terms-of-service", "disclaimer"]) {
+      entries.push(urlEntry(`${SITE_URL}/${page}`, LEGAL_LASTMOD, "yearly", 0.3));
     }
   }
 
-  // ─── Sitemap 1: City/date panchang pages (/city/date) ─────
+  // ─── Sitemap 1: City/date panchang pages ─────
   else if (sitemapId === 1) {
     for (const slug of slugs) {
       for (const date of dates) {
@@ -134,6 +152,7 @@ export async function GET(
         entries.push(
           urlEntry(
             `${SITE_URL}/${slug}/${date}`,
+            lastmodForDate(date, todayStr),
             isToday ? "daily" : "weekly",
             isToday ? 0.8 : 0.6
           )
@@ -153,6 +172,7 @@ export async function GET(
           entries.push(
             urlEntry(
               `${SITE_URL}/${slug}/${topic}/${date}`,
+              lastmodForDate(date, todayStr),
               isToday ? "daily" : "weekly",
               isToday ? 0.7 : 0.5
             )
@@ -166,35 +186,26 @@ export async function GET(
   else if (sitemapId === 7) {
     const months = getMonthRange();
     const weeks = getWeekRange();
+    const thisMonthStr = todayStr.slice(0, 7);
 
-    // Calendar pages: /city/calendar/YYYY-MM
     for (const slug of slugs) {
       for (const month of months) {
-        entries.push(
-          urlEntry(
-            `${SITE_URL}/${slug}/calendar/${month}`,
-            "weekly",
-            0.6
-          )
-        );
+        // Past months are immutable → lastmod = month's first day
+        // Current/future months get today's date (data refreshes)
+        const lastmod = month < thisMonthStr ? `${month}-01` : todayStr;
+        entries.push(urlEntry(`${SITE_URL}/${slug}/calendar/${month}`, lastmod, "weekly", 0.6));
       }
     }
 
-    // Weekly pages: /city/week/YYYY-WNN
     for (const slug of slugs) {
       for (const week of weeks) {
-        entries.push(
-          urlEntry(
-            `${SITE_URL}/${slug}/week/${week}`,
-            "weekly",
-            0.6
-          )
-        );
+        // Weeks use their Monday date — past Mondays are immutable content
+        const lastmod = lastmodForDate(week, todayStr);
+        entries.push(urlEntry(`${SITE_URL}/${slug}/week/${week}`, lastmod, "weekly", 0.6));
       }
     }
   }
 
-  // Safety: Google sitemaps have a 50K URL limit per file
   if (entries.length > 45000) {
     console.warn(`[SITEMAP] Sitemap ${sitemapId} has ${entries.length} URLs — approaching 50K limit. Consider splitting.`);
   }

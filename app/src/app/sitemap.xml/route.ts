@@ -5,9 +5,18 @@ const SITEMAP_COUNT = 8;
 
 export const dynamic = "force-dynamic";
 
+function todayISO(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export function GET() {
+  // Every child sitemap contains at least some URLs whose lastmod is "today"
+  // (the daily-refreshing hub and city-landing pages), so the sitemap index
+  // entries advertise today's date as their lastmod.
+  const lastmod = todayISO();
   const sitemaps = Array.from({ length: SITEMAP_COUNT }, (_, i) =>
-    `  <sitemap>\n    <loc>${SITE_URL}/sitemap/${i}.xml</loc>\n  </sitemap>`
+    `  <sitemap>\n    <loc>${SITE_URL}/sitemap/${i}.xml</loc>\n    <lastmod>${lastmod}</lastmod>\n  </sitemap>`
   ).join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
