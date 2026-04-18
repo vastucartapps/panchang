@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug } from "@/lib/cities";
-import { getTodayISO, formatDate } from "@/lib/format";
+import { getTodayISO, formatDate, formatDateShort } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
 import { getLocale, getTranslations } from "@/lib/i18n";
@@ -34,8 +34,8 @@ export async function generateMetadata({
   const city = getCityBySlug(citySlug);
   if (!city) return {};
 
-  const today = formatDate(getTodayISO());
   const todayISO = getTodayISO();
+  const shortToday = formatDateShort(todayISO);
 
   let tithi = "";
   let nakshatra = "";
@@ -56,7 +56,7 @@ export async function generateMetadata({
 
   return {
     title: { absolute: titleText },
-    description: `Today's Panchang for ${city.name}, ${city.state} - ${today}. Get accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings. Updated daily.`,
+    description: `Today's Panchang for ${city.name} on ${shortToday}. Tithi, Nakshatra, Rahu Kaal & Choghadiya timings. Accurate Vedic calendar updated daily.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}`,
     },
