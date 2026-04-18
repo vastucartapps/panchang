@@ -22,9 +22,9 @@ interface FetchPanchangParams {
   timezone: string;
 }
 
-function getCacheTtlForDate(dateStr: string): number {
-  const today = new Date().toISOString().slice(0, 10);
-  return dateStr < today ? ONE_YEAR : ONE_HOUR;
+function getCacheTtlForDate(dateStr: string, today?: string): number {
+  const t = today ?? new Date().toISOString().slice(0, 10);
+  return dateStr < t ? ONE_YEAR : ONE_HOUR;
 }
 
 const fetchPanchangInner = cache(async (
@@ -103,6 +103,9 @@ export async function fetchPanchangBatch(
   const BATCH_SIZE = 10;
   const map = new Map<string, DayEntry>();
 
+  // Compute "today" once per batch — avoids 30 separate clock reads.
+  const today = new Date().toISOString().slice(0, 10);
+
   // Seed every date with { ok: false } so failures become explicit entries.
   for (const date of dates) map.set(date, { ok: false });
 
@@ -117,7 +120,7 @@ export async function fetchPanchangBatch(
             longitude: location.longitude,
             timezone: location.timezone,
           },
-          getCacheTtlForDate(date)
+          getCacheTtlForDate(date, today)
         )
       )
     );

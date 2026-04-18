@@ -140,19 +140,21 @@ function DayCell({
 }
 
 // Grid is wrapped in Suspense — async fetch runs inside, shell renders instantly.
+// All runtime-clock reads live here (inside the async boundary) so the outer
+// shell is fully deterministic and Next.js can classify the route as
+// static-with-ISR (enabling x-nextjs-cache).
 async function CalendarGrid({
   city,
   dates,
   citySlug,
   firstDayOfWeek,
-  todayISO,
 }: {
   city: { name: string; state: string; lat: number; lng: number; tz: string; slug: string };
   dates: string[];
   citySlug: string;
   firstDayOfWeek: number;
-  todayISO: string;
 }) {
+  const todayISO = new Date().toISOString().slice(0, 10);
   const dataMap = await fetchPanchangBatch(dates, {
     latitude: city.lat,
     longitude: city.lng,
@@ -209,9 +211,8 @@ export default async function CityCalendarPage({ params }: PageProps) {
   const dates = getDaysInMonth(month);
   const { prev, next } = getAdjacentMonths(month);
   const monthYear = formatMonthYear(month);
-  const todayISO = new Date().toISOString().slice(0, 10);
 
-  // Calculate first day of month for grid offset
+  // Calculate first day of month for grid offset (param-derived, deterministic)
   const [year, mo] = month.split("-").map(Number);
   const firstDayOfWeek = new Date(year, mo - 1, 1).getDay();
 
@@ -277,7 +278,6 @@ export default async function CityCalendarPage({ params }: PageProps) {
             dates={dates}
             citySlug={citySlug}
             firstDayOfWeek={firstDayOfWeek}
-            todayISO={todayISO}
           />
         </Suspense>
 
