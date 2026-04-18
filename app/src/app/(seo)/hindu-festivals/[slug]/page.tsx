@@ -44,6 +44,7 @@ import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import { getAllCities } from "@/lib/cities";
 import { JsonLd } from "@/components/seo/json-ld";
+import { EventJsonLd } from "@/components/seo/event-json-ld";
 
 // ─── Festival Hero Image Mapping ─────────────────────────
 const FESTIVAL_HERO_IMAGES: Record<string, string> = {
@@ -337,6 +338,10 @@ export default async function FestivalDetailPage({ params }: PageProps) {
           { name: `${festival.name} ${festival.year}`, url: `${SITE_CONFIG.url}/hindu-festivals/${slug}` },
         ]}
         faqs={faqs}
+      />
+      <EventJsonLd
+        festival={festival}
+        canonicalUrl={`${SITE_CONFIG.url}/hindu-festivals/${slug}`}
       />
 
       {/* ── Hero Section ────────────────────────────────── */}
