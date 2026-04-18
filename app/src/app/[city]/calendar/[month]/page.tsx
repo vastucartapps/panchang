@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { fetchPanchangBatch } from "@/lib/api";
 import { getCityBySlug, getAllCities } from "@/lib/cities";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { PanchangResponse } from "@/schemas/panchang";
 
 export const revalidate = 3600;
@@ -130,6 +132,67 @@ function DayCell({
   );
 }
 
+// Grid is wrapped in Suspense — async fetch runs inside, shell renders instantly.
+async function CalendarGrid({
+  city,
+  dates,
+  citySlug,
+  firstDayOfWeek,
+  todayISO,
+}: {
+  city: { name: string; state: string; lat: number; lng: number; tz: string; slug: string };
+  dates: string[];
+  citySlug: string;
+  firstDayOfWeek: number;
+  todayISO: string;
+}) {
+  const dataMap = await fetchPanchangBatch(dates, {
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
+
+  return (
+    <div className="grid grid-cols-7 gap-1 sm:gap-2">
+      {WEEKDAYS.map((day) => (
+        <div key={day} className="pb-2 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">
+          {day}
+        </div>
+      ))}
+      {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+        <div key={`empty-${i}`} />
+      ))}
+      {dates.map((date) => (
+        <DayCell
+          key={date}
+          date={date}
+          data={dataMap.get(date)}
+          citySlug={citySlug}
+          isToday={date === todayISO}
+        />
+      ))}
+    </div>
+  );
+}
+
+function CalendarGridSkeleton({ firstDayOfWeek, dayCount }: { firstDayOfWeek: number; dayCount: number }) {
+  return (
+    <div className="grid grid-cols-7 gap-1 sm:gap-2">
+      {WEEKDAYS.map((day) => (
+        <div key={day} className="pb-2 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">
+          {day}
+        </div>
+      ))}
+      {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+        <div key={`empty-${i}`} />
+      ))}
+      {Array.from({ length: dayCount }).map((_, i) => (
+        <Skeleton key={i} className="min-h-[90px] w-full rounded-xl sm:min-h-[100px]" />
+      ))}
+    </div>
+  );
+}
+
 export default async function CityCalendarPage({ params }: PageProps) {
   const { city: citySlug, month } = await params;
   const city = getCityBySlug(citySlug);
@@ -137,12 +200,6 @@ export default async function CityCalendarPage({ params }: PageProps) {
   if (!isValidMonth(month)) notFound();
 
   const dates = getDaysInMonth(month);
-  const dataMap = await fetchPanchangBatch(dates, {
-    latitude: city.lat,
-    longitude: city.lng,
-    timezone: city.tz,
-  });
-
   const { prev, next } = getAdjacentMonths(month);
   const monthYear = formatMonthYear(month);
   const todayISO = new Date().toISOString().slice(0, 10);
@@ -206,31 +263,16 @@ export default async function CityCalendarPage({ params }: PageProps) {
           </Link>
         </div>
 
-        {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {/* Weekday headers */}
-          {WEEKDAYS.map((day) => (
-            <div key={day} className="pb-2 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">
-              {day}
-            </div>
-          ))}
-
-          {/* Empty cells before first day */}
-          {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-            <div key={`empty-${i}`} />
-          ))}
-
-          {/* Day cells */}
-          {dates.map((date) => (
-            <DayCell
-              key={date}
-              date={date}
-              data={dataMap.get(date)}
-              citySlug={citySlug}
-              isToday={date === todayISO}
-            />
-          ))}
-        </div>
+        {/* Calendar grid — streams in when data is ready, shell renders instantly */}
+        <Suspense fallback={<CalendarGridSkeleton firstDayOfWeek={firstDayOfWeek} dayCount={dates.length} />}>
+          <CalendarGrid
+            city={city}
+            dates={dates}
+            citySlug={citySlug}
+            firstDayOfWeek={firstDayOfWeek}
+            todayISO={todayISO}
+          />
+        </Suspense>
 
         {/* Legend */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground">
