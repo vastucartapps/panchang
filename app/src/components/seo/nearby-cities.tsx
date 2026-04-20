@@ -5,6 +5,7 @@ import type { City } from "@/schemas/city";
 interface NearbyCitiesBlockProps {
   cities: City[];
   currentDate?: string; // YYYY-MM-DD; when present, links point to /{city}/{date}; else /{city}
+  linkPrefix?: string; // when present, links point to /{linkPrefix}/{city.slug} — overrides currentDate
   heading?: string;
   subheading?: string;
 }
@@ -19,6 +20,7 @@ interface NearbyCitiesBlockProps {
 export function NearbyCitiesBlock({
   cities,
   currentDate,
+  linkPrefix,
   heading = "Nearby Cities",
   subheading = "Panchang for cities closest to yours",
 }: NearbyCitiesBlockProps) {
@@ -35,9 +37,11 @@ export function NearbyCitiesBlock({
       <p className="mt-1 text-xs text-muted-foreground">{subheading}</p>
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
         {cities.map((c) => {
-          const href = currentDate
-            ? `/${c.slug}/${currentDate}`
-            : `/${c.slug}`;
+          const href = linkPrefix
+            ? `/${linkPrefix}/${c.slug}`
+            : currentDate
+              ? `/${c.slug}/${currentDate}`
+              : `/${c.slug}`;
           return (
             <Link
               key={c.slug}

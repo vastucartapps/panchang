@@ -9,3 +9,4 @@ export { buildCityPageGraph } from "./cityPageGraph";
 export { buildFestivalEventSchema, type FestivalEventInput } from "./event";
 export { buildFestivalAnnouncementSchema, type FestivalAnnouncementInput } from "./specialAnnouncement";
 export { buildCityTopicQAPageSchema, type CityTopicQAInput } from "./qaPage";
+export { buildProgrammaticCityHubGraph, type ProgrammaticCityHubInput, type ProgrammaticTopic } from "./programmaticCityHub";

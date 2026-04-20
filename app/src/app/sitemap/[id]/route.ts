@@ -22,7 +22,16 @@ const DATE_TOPICS = [
   "sunrise-sunset",
 ] as const;
 
-const MAX_SITEMAP_ID = 14 + 2; // 0 core + 2 city/date + 12 topics × period + calendar + weeks
+const MAX_SITEMAP_ID = 17; // 0 core + 2 city/date + 12 topics × period + calendar + weeks + programmatic hubs
+
+// Programmatic city hubs (topic-first URLs) per Reference Files/05 §C.4.
+// Each entry = 1 route family × N cities.
+const PROGRAMMATIC_HUB_TOPICS = [
+  "rahu-kaal",
+  "choghadiya",
+  "todays-tithi",
+  "todays-nakshatra",
+] as const;
 
 // Fixed lastmod for content that only changes on explicit rewrites.
 const LEGAL_LASTMOD = "2026-04-01";
@@ -206,6 +215,14 @@ export async function GET(
       for (const week of weeks) {
         const lastmod = lastmodForDate(week, today);
         entries.push(urlEntry(`${SITE_URL}/${slug}/week/${week}`, lastmod, "weekly", 0.6));
+      }
+    }
+  } else if (sitemapId === 17) {
+    // Programmatic topic-first hubs: /{topic}/{city}. 4 × ~200 cities = ~800
+    // URLs. Content refreshes with today's panchang per city.
+    for (const topic of PROGRAMMATIC_HUB_TOPICS) {
+      for (const slug of slugs) {
+        entries.push(urlEntry(`${SITE_URL}/${topic}/${slug}`, today, "daily", 0.7));
       }
     }
   }

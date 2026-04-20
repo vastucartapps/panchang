@@ -27,6 +27,7 @@ const SITEMAPS: Array<{ id: number; lastmodKind: "today" | "yesterday" }> = [
   { id: 14, lastmodKind: "today" },      // sunrise-sunset/[date] today + future
   { id: 15, lastmodKind: "today" },      // calendar months
   { id: 16, lastmodKind: "today" },      // weeks
+  { id: 17, lastmodKind: "today" },      // programmatic hubs: /{topic}/{city} × 4 topics
 ];
 
 function todayISO(): string {
