@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { fetchPanchang } from "@/lib/api";
+import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
+import { redirect } from "next/navigation";
 import { DEFAULT_LOCATION, SITE_CONFIG, NETWORK_LINKS } from "@/lib/constants";
 import { getTopCitySlugs, getCityBySlug } from "@/lib/cities";
 import { getTodayISO, formatDate } from "@/lib/format";
@@ -112,12 +113,16 @@ export default async function HomePage() {
   const targetDate = getTodayISO();
   const today = formatDate(targetDate);
 
-  const data = await fetchPanchang({
+  const data = await fetchPanchangBuildSafe({
     targetDate,
     latitude: city.lat,
     longitude: city.lng,
     timezone: city.tz,
   });
+  // Build-time safety net: if upstream is unreachable after retries, redirect
+  // to the Delhi city page — which is ISR-lazy (not prebuilt) and will render
+  // at first runtime request. Keeps the build from failing outright.
+  if (!data) redirect(`/${city.slug}`);
 
   const scoreLabel = getScoreLabel(data.day_quality.score);
   const scoreStyle = getNatureStyle(scoreLabel.toLowerCase());

@@ -22,8 +22,10 @@ import { FestivalVratSection } from "@/components/panchang-details/festival-vrat
 export const revalidate = 3600;
 
 export function generateStaticParams() {
-  const today = getTodayISO();
-  return getTopCitySlugs().map((city) => ({ city, date: today }));
+  // Zero build-time prerender — all URLs are ISR-lazy. Warmer cron pre-populates
+  // hot URLs after deploy. Prevents upstream-API concurrency failures from
+  // crashing the build (see commit fc884cb context).
+  return [];
 }
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;

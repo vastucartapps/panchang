@@ -9,7 +9,42 @@ const API_KEY = process.env.ASTROENGINE_API_KEY || "";
 // At runtime, no signal → fetch is fully cacheable by Next.js data cache
 // and route stays classified as static-with-ISR (edge-cacheable).
 const IS_BUILDING = process.env.NEXT_PHASE === "phase-production-build";
-const BUILD_TIMEOUT_MS = 25000;
+// Tuned so max per-URL time (timeout × attempts + backoff) stays under
+// Next's staticPageGenerationTimeout (set to 180s in next.config.ts).
+const BUILD_TIMEOUT_MS = 30000;
+const BUILD_MAX_ATTEMPTS = 3;
+const BUILD_MAX_CONCURRENT = 2; // matches upstream api.vastucart.in 2-concurrent limit
+
+// Build-time semaphore: Coolify runs 11 parallel Next.js build workers which
+// easily overwhelm the upstream API. Limit to BUILD_MAX_CONCURRENT in-flight
+// fetches so upstream can keep up. At runtime this is a no-op (IS_BUILDING false).
+let buildInflight = 0;
+const buildQueue: Array<() => void> = [];
+
+function acquireBuildSlot(): Promise<void> {
+  if (!IS_BUILDING) return Promise.resolve();
+  if (buildInflight < BUILD_MAX_CONCURRENT) {
+    buildInflight++;
+    return Promise.resolve();
+  }
+  return new Promise<void>((resolve) => {
+    buildQueue.push(() => {
+      buildInflight++;
+      resolve();
+    });
+  });
+}
+
+function releaseBuildSlot(): void {
+  if (!IS_BUILDING) return;
+  buildInflight--;
+  const next = buildQueue.shift();
+  if (next) next();
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // TTLs
 const ONE_HOUR = 3600;
@@ -27,24 +62,11 @@ function getCacheTtlForDate(dateStr: string, today?: string): number {
   return dateStr < t ? ONE_YEAR : ONE_HOUR;
 }
 
-const fetchPanchangInner = cache(async (
-  targetDate: string,
-  latitude: number,
-  longitude: number,
-  timezone: string,
+async function doFetch(
+  url: URL,
+  headers: Record<string, string>,
   cacheTtl: number
-): Promise<PanchangResponse> => {
-  const url = new URL(`${API_BASE}/api/v1/panchang/v2/comprehensive`);
-  url.searchParams.set("target_date", targetDate);
-  url.searchParams.set("latitude", String(latitude));
-  url.searchParams.set("longitude", String(longitude));
-  url.searchParams.set("timezone", timezone);
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  if (API_KEY) headers["X-API-Key"] = API_KEY;
-
+): Promise<PanchangResponse> {
   const fetchOptions: RequestInit & { next?: { revalidate?: number } } = {
     headers,
     next: { revalidate: cacheTtl },
@@ -70,6 +92,53 @@ const fetchPanchangInner = cache(async (
 
   const json = await res.json();
   return PanchangResponseSchema.parse(json);
+}
+
+const fetchPanchangInner = cache(async (
+  targetDate: string,
+  latitude: number,
+  longitude: number,
+  timezone: string,
+  cacheTtl: number
+): Promise<PanchangResponse> => {
+  const url = new URL(`${API_BASE}/api/v1/panchang/v2/comprehensive`);
+  url.searchParams.set("target_date", targetDate);
+  url.searchParams.set("latitude", String(latitude));
+  url.searchParams.set("longitude", String(longitude));
+  url.searchParams.set("timezone", timezone);
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (API_KEY) headers["X-API-Key"] = API_KEY;
+
+  // Runtime: single fetch, no retry, no concurrency limit — Next.js data
+  // cache + ISR stale-if-error handle resilience.
+  if (!IS_BUILDING) {
+    return doFetch(url, headers, cacheTtl);
+  }
+
+  // Build phase: throttle to upstream's concurrency cap, retry transient
+  // failures. Prevents the Coolify build (11 workers) from saturating
+  // upstream's 2-concurrent limit and aborting every fetch.
+  await acquireBuildSlot();
+  try {
+    let lastErr: unknown;
+    for (let attempt = 1; attempt <= BUILD_MAX_ATTEMPTS; attempt++) {
+      try {
+        return await doFetch(url, headers, cacheTtl);
+      } catch (err) {
+        lastErr = err;
+        if (attempt < BUILD_MAX_ATTEMPTS) {
+          const backoff = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
+          await sleep(backoff);
+        }
+      }
+    }
+    throw lastErr;
+  } finally {
+    releaseBuildSlot();
+  }
 });
 
 export function fetchPanchang(

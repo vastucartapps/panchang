@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  // Upstream api.vastucart.in's 2-concurrent limit + 11 Next.js build workers
+  // means some fetches queue for 30s+. With retries (3 attempts × 30s + 3s
+  // backoff = 93s max per URL in lib/api.ts), the default 60s static-gen
+  // timeout would trip. 180s gives the retry budget + render overhead room.
+  staticPageGenerationTimeout: 180,
   async redirects() {
     return [
       // ─── Rahu Kaal spelling variants (308 permanent) ─────

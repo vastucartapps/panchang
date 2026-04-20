@@ -14,8 +14,7 @@ import { MoonPhaseVisualizer } from "@/components/hero/moon-phase-visualizer";
 export const revalidate = 3600;
 
 export function generateStaticParams() {
-  const today = getTodayISO();
-  return getTopCitySlugs().map((city) => ({ city, date: today }));
+  return []; // ISR-lazy; warmer pre-populates after deploy
 }
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
