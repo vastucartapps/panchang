@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { fetchPanchang } from "@/lib/api";
+import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
 import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
@@ -110,12 +110,13 @@ export default async function CityDatePanchangPage({
   const t = getTranslations(locale);
   const faqs = getCityFaqs(city.name, city.state);
 
-  const data = await fetchPanchang({
+  const data = await fetchPanchangBuildSafe({
     targetDate: date,
     latitude: city.lat,
     longitude: city.lng,
     timezone: city.tz,
   });
+  if (!data) notFound();
 
   const nakshatraKey = data.panchang.nakshatra.nakshatra.toLowerCase().replace(/\s+/g, "_");
   const nakshatraSign = NAKSHATRA_TO_SIGN[nakshatraKey];

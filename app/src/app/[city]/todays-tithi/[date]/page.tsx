@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Moon, MapPin } from "lucide-react";
-import { fetchPanchang } from "@/lib/api";
+import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
 import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
@@ -76,12 +76,13 @@ export default async function CityTithiDatePage({ params }: PageProps) {
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
 
-  const data = await fetchPanchang({
+  const data = await fetchPanchangBuildSafe({
     targetDate: date,
     latitude: city.lat,
     longitude: city.lng,
     timezone: city.tz,
   });
+  if (!data) notFound();
 
   const { tithi } = data.panchang;
   const style = getNatureStyle(tithi.nature);

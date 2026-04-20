@@ -86,6 +86,34 @@ export function fetchPanchang(
   );
 }
 
+/**
+ * Build-safe wrapper. At `next build` phase, transient upstream failures
+ * return null so the caller can `notFound()` and let ISR regenerate the
+ * page on first runtime request. At runtime, errors propagate normally to
+ * Next.js's error boundary for a proper 500 + ISR stale-if-error behavior.
+ *
+ * This is the correct primitive for pages that prebuild via
+ * `generateStaticParams` or are fully static at the route level — without it,
+ * any upstream hiccup during build fails the entire deployment.
+ */
+export async function fetchPanchangBuildSafe(
+  params: FetchPanchangParams,
+  cacheTtl?: number
+): Promise<PanchangResponse | null> {
+  try {
+    return await fetchPanchang(params, cacheTtl);
+  } catch (err) {
+    if (IS_BUILDING) {
+      console.warn(
+        `[fetchPanchangBuildSafe] build-time fetch failed for ${params.targetDate} @ ${params.latitude},${params.longitude} — URL will regenerate at runtime:`,
+        err instanceof Error ? err.message : String(err)
+      );
+      return null;
+    }
+    throw err;
+  }
+}
+
 export type DayEntry =
   | { ok: true; data: PanchangResponse }
   | { ok: false };
