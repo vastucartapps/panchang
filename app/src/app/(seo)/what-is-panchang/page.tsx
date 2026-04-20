@@ -88,6 +88,8 @@ export default function WhatIsPanchangPage() {
     hasPartRefs: [
       IDS.subPillarTithi,
       IDS.subPillarNakshatra,
+      IDS.subPillarYoga,
+      IDS.subPillarKarana,
       IDS.subPillarRahuKaal,
       IDS.subPillarChoghadiya,
       IDS.subPillarMuhurta,

@@ -44,7 +44,7 @@ import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import { getAllCities } from "@/lib/cities";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildFestivalEventSchema, buildFestivalAnnouncementSchema } from "@/lib/schema";
+import { buildFestivalEventSchema, buildFestivalAnnouncementSchema, buildFestivalHowToSchema } from "@/lib/schema";
 
 // ─── Festival Hero Image Mapping ─────────────────────────
 const FESTIVAL_HERO_IMAGES: Record<string, string> = {
@@ -358,6 +358,14 @@ export default async function FestivalDetailPage({ params }: PageProps) {
           date: festival.date,
           description: festival.description,
         });
+        const howToSchema = content
+          ? buildFestivalHowToSchema({
+              slug: festival.slug,
+              festivalName: festival.name,
+              year: festival.year,
+              content,
+            })
+          : null;
         return (
           <>
             {eventSchema && (
@@ -373,6 +381,14 @@ export default async function FestivalDetailPage({ params }: PageProps) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
                   __html: JSON.stringify(announcementSchema).replace(/</g, "\\u003c"),
+                }}
+              />
+            )}
+            {howToSchema && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify(howToSchema).replace(/</g, "\\u003c"),
                 }}
               />
             )}
