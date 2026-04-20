@@ -68,7 +68,6 @@ const GLOSSARY_LINKS = [
   { href: "/what-is-panchang", title: "What is Panchang?", desc: "Complete Vedic calendar guide" },
 ];
 
-export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -113,30 +112,12 @@ export default async function HomePage() {
   const targetDate = getTodayISO();
   const today = formatDate(targetDate);
 
-  let data;
-  try {
-    data = await fetchPanchang({
-      targetDate,
-      latitude: city.lat,
-      longitude: city.lng,
-      timezone: city.tz,
-    });
-  } catch {
-    return (
-      <div className="flex min-h-screen flex-col">
-        <NetworkHeader />
-        <main className="flex-1">
-          <div className="mx-auto px-4 py-16 text-center" style={{ maxWidth: "92%" }}>
-            <h1 className="mb-4 text-2xl font-bold text-[var(--color-vedic)]">
-              Unable to Load Panchang
-            </h1>
-            <p className="text-muted-foreground">Please try again shortly.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  const data = await fetchPanchang({
+    targetDate,
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
 
   const scoreLabel = getScoreLabel(data.day_quality.score);
   const scoreStyle = getNatureStyle(scoreLabel.toLowerCase());

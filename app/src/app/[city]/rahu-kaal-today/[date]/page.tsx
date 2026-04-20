@@ -79,22 +79,12 @@ export default async function CityRahuKaalDatePage({ params }: PageProps) {
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
 
-  let data;
-  try {
-    data = await fetchPanchang({
-      targetDate: date,
-      latitude: city.lat,
-      longitude: city.lng,
-      timezone: city.tz,
-    });
-  } catch {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-bold text-[var(--color-vedic)]">Unable to Load Data</h1>
-        <p className="text-muted-foreground">Please try again shortly.</p>
-      </div>
-    );
-  }
+  const data = await fetchPanchang({
+    targetDate: date,
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
 
   const { timing } = data;
   const timings = [timing.rahu_kalam, timing.yamagandam, timing.gulika_kalam];

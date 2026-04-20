@@ -36,8 +36,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const shortDate = formatDateShort(date);
-  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
-  const isOld = date < cutoff;
 
   let tithiName = "";
   try {
@@ -59,7 +57,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: tithiName
       ? `${tithiName} in ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi details for Vedic rituals and fasting.`
       : `Tithi details for ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi for Vedic rituals and fasting.`,
-    ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/todays-tithi/${date}`,
     },
@@ -79,22 +76,12 @@ export default async function CityTithiDatePage({ params }: PageProps) {
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
 
-  let data;
-  try {
-    data = await fetchPanchang({
-      targetDate: date,
-      latitude: city.lat,
-      longitude: city.lng,
-      timezone: city.tz,
-    });
-  } catch {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-bold text-[var(--color-vedic)]">Unable to Load Data</h1>
-        <p className="text-muted-foreground">Please try again shortly.</p>
-      </div>
-    );
-  }
+  const data = await fetchPanchang({
+    targetDate: date,
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
 
   const { tithi } = data.panchang;
   const style = getNatureStyle(tithi.nature);

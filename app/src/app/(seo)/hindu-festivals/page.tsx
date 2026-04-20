@@ -8,7 +8,7 @@ import { getTodayISO, formatDateShort } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getAllCities } from "@/lib/cities";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const currentYear = new Date().getFullYear();
 const nextYear = currentYear + 1;

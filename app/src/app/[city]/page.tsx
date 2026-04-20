@@ -19,7 +19,6 @@ import { DailySummary } from "@/components/panchang-details/daily-summary";
 import { MuhurtaYogasSection } from "@/components/panchang-details/muhurta-yogas";
 import { FestivalVratSection } from "@/components/panchang-details/festival-vrat-section";
 
-export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 interface CityPageProps {
@@ -103,27 +102,12 @@ export default async function CityPanchangPage({
   const t = getTranslations(locale);
   const faqs = getCityFaqs(city.name, city.state);
 
-  let data;
-  try {
-    data = await fetchPanchang({
-      targetDate,
-      latitude: city.lat,
-      longitude: city.lng,
-      timezone: city.tz,
-    });
-  } catch {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-bold text-[var(--color-vedic)]">
-          Unable to Load Panchang
-        </h1>
-        <p className="text-muted-foreground">
-          We&apos;re having trouble fetching today&apos;s Panchang data for{" "}
-          {city.name}. Please try again shortly.
-        </p>
-      </div>
-    );
-  }
+  const data = await fetchPanchang({
+    targetDate,
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
 
   const nakshatraKey = data.panchang.nakshatra.nakshatra.toLowerCase().replace(/\s+/g, "_");
   const nakshatraSign = NAKSHATRA_TO_SIGN[nakshatraKey];

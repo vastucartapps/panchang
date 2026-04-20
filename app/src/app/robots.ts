@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/internal/", "/api/panchang"],
       },
       {
         userAgent: "Googlebot-Image",
@@ -25,7 +25,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "Bingbot",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/internal/", "/api/panchang"],
       },
       {
         userAgent: "Yandex",
@@ -86,7 +86,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/internal/", "/api/panchang"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

@@ -36,8 +36,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!city || !isValidDate(date)) return {};
 
   const shortDate = formatDateShort(date);
-  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
-  const isOld = date < cutoff;
 
   let phaseName = "";
   let illumination = 0;
@@ -61,7 +59,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: phaseName
       ? `${phaseName} (${illumination}% illumination) in ${city.name} on ${shortDate}. Lunar phase, Paksha & age. Vedic significance updated daily.`
       : `Moon phase details for ${city.name} on ${shortDate}. Illumination, Paksha & lunar age. Vedic significance updated daily.`,
-    ...(isOld && { robots: { index: false, follow: true } }),
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/moon-phase-today/${date}`,
     },
@@ -81,22 +78,12 @@ export default async function CityMoonPhaseDatePage({ params }: PageProps) {
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
 
-  let data;
-  try {
-    data = await fetchPanchang({
-      targetDate: date,
-      latitude: city.lat,
-      longitude: city.lng,
-      timezone: city.tz,
-    });
-  } catch {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-bold text-[var(--color-vedic)]">Unable to Load Data</h1>
-        <p className="text-muted-foreground">Please try again shortly.</p>
-      </div>
-    );
-  }
+  const data = await fetchPanchang({
+    targetDate: date,
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
 
   const { moon_phase } = data;
   const cityFaqs = getCityMoonPhaseFaqs(city.name, city.state);

@@ -8,7 +8,7 @@ import { getTodayISO } from "@/lib/format";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Sunrise & Sunset Today — Timings for Indian Cities 2026",

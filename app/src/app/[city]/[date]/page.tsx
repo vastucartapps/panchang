@@ -110,27 +110,12 @@ export default async function CityDatePanchangPage({
   const t = getTranslations(locale);
   const faqs = getCityFaqs(city.name, city.state);
 
-  let data;
-  try {
-    data = await fetchPanchang({
-      targetDate: date,
-      latitude: city.lat,
-      longitude: city.lng,
-      timezone: city.tz,
-    });
-  } catch {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="mb-4 text-2xl font-bold text-[var(--color-vedic)]">
-          Unable to Load Panchang
-        </h1>
-        <p className="text-muted-foreground">
-          We&apos;re having trouble fetching Panchang data for {city.name} on{" "}
-          {date}. Please try again shortly.
-        </p>
-      </div>
-    );
-  }
+  const data = await fetchPanchang({
+    targetDate: date,
+    latitude: city.lat,
+    longitude: city.lng,
+    timezone: city.tz,
+  });
 
   const nakshatraKey = data.panchang.nakshatra.nakshatra.toLowerCase().replace(/\s+/g, "_");
   const nakshatraSign = NAKSHATRA_TO_SIGN[nakshatraKey];
