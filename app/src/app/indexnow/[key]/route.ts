@@ -3,19 +3,11 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 /**
- * IndexNow key-file endpoint. Bing and Yandex fetch this URL to verify
- * that the domain owner controls the submitted IndexNow key. The key is
- * stored in INDEXNOW_KEY env var (generate via `openssl rand -hex 32`
- * and rotate quarterly).
- *
- * Expected URL: /indexnow/{INDEXNOW_KEY}.txt
- * Response body: the key itself (plain text).
- *
- * Setup:
- *   1. Generate key: openssl rand -hex 32
- *   2. Set INDEXNOW_KEY in Coolify env vars.
- *   3. Redeploy.
- *   4. Verify: curl https://panchang.vastucart.in/indexnow/{KEY}.txt → 200
+ * Legacy IndexNow key-file endpoint at /indexnow/{KEY}.txt. Kept as a
+ * backup path, but the canonical location is now ROOT /{KEY}.txt
+ * (served by middleware) because IndexNow requires submitted URLs to
+ * share the path prefix of keyLocation. A subpath key would constrain
+ * submissions to that subpath only.
  */
 export async function GET(
   _req: Request,

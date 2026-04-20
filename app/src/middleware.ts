@@ -92,7 +92,30 @@ function applyEdgeCacheForCalendar(response: NextResponse, pathname: string): vo
   response.headers.set("cache-control", header);
 }
 
+// IndexNow requires the key-location path prefix to match the path of
+// every submitted URL. To allow submitting any URL under the domain, the
+// key file must live at the ROOT (e.g., /{KEY}.txt). Next.js routing
+// can't serve a dynamic single-segment file at root without conflicting
+// with /[city], so middleware intercepts the request instead.
+const INDEXNOW_KEY_PATTERN = /^\/([0-9a-f]{32,128})\.txt$/i;
+
 export function middleware(request: NextRequest) {
+  // Serve IndexNow key file at /{INDEXNOW_KEY}.txt when the path matches
+  // the configured env var. This must run before other routing logic.
+  const expectedKey = process.env.INDEXNOW_KEY || "";
+  if (expectedKey) {
+    const m = request.nextUrl.pathname.match(INDEXNOW_KEY_PATTERN);
+    if (m && m[1] === expectedKey) {
+      return new NextResponse(expectedKey, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        },
+      });
+    }
+  }
+
   // Return 404 for old ISO week URLs (soft 404 prevention)
   if (OLD_WEEK_PATTERN.test(request.nextUrl.pathname)) {
     return new NextResponse("Not Found", { status: 404 });

@@ -53,7 +53,10 @@ export async function POST(request: NextRequest) {
   }
 
   const urls = body.urls.slice(0, MAX_URLS_PER_SUBMISSION);
-  const keyLocation = `https://${HOST}/indexnow/${INDEXNOW_KEY}.txt`;
+  // keyLocation at ROOT — required so IndexNow accepts URL submissions
+  // across the entire domain (not just the /indexnow/ subpath). The
+  // middleware serves the key file at this root path.
+  const keyLocation = `https://${HOST}/${INDEXNOW_KEY}.txt`;
 
   const payload = {
     host: HOST,
