@@ -6,3 +6,5 @@ export { buildContactPageGraph } from "./contactPage";
 export { buildCityDatasetSchema, type CityDatasetInput } from "./dataset";
 export { buildCityServiceSchema, type CityServiceInput } from "./service";
 export { buildCityPageGraph } from "./cityPageGraph";
+export { buildFestivalEventSchema, type FestivalEventInput } from "./event";
+export { buildFestivalAnnouncementSchema, type FestivalAnnouncementInput } from "./specialAnnouncement";

@@ -44,7 +44,7 @@ import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import { getAllCities } from "@/lib/cities";
 import { JsonLd } from "@/components/seo/json-ld";
-import { EventJsonLd } from "@/components/seo/event-json-ld";
+import { buildFestivalEventSchema, buildFestivalAnnouncementSchema } from "@/lib/schema";
 
 // ─── Festival Hero Image Mapping ─────────────────────────
 const FESTIVAL_HERO_IMAGES: Record<string, string> = {
@@ -339,10 +339,46 @@ export default async function FestivalDetailPage({ params }: PageProps) {
         ]}
         faqs={faqs}
       />
-      <EventJsonLd
-        festival={festival}
-        canonicalUrl={`${SITE_CONFIG.url}/hindu-festivals/${slug}`}
-      />
+      {(() => {
+        const eventSchema = buildFestivalEventSchema({
+          slug: festival.slug,
+          name: festival.name,
+          nameHindi: festival.nameHindi,
+          year: festival.year,
+          date: festival.date,
+          description: festival.description,
+          imageUrl: heroImage
+            ? `${SITE_CONFIG.url}${heroImage}`
+            : `${SITE_CONFIG.url}/api/og/${DEFAULT_LOCATION.slug}/${festival.date}`,
+        });
+        const announcementSchema = buildFestivalAnnouncementSchema({
+          slug: festival.slug,
+          name: festival.name,
+          year: festival.year,
+          date: festival.date,
+          description: festival.description,
+        });
+        return (
+          <>
+            {eventSchema && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify(eventSchema).replace(/</g, "\\u003c"),
+                }}
+              />
+            )}
+            {announcementSchema && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify(announcementSchema).replace(/</g, "\\u003c"),
+                }}
+              />
+            )}
+          </>
+        );
+      })()}
 
       {/* ── Hero Section ────────────────────────────────── */}
       <section className="relative overflow-hidden py-20 sm:py-28">
