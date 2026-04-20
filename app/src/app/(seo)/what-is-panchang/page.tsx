@@ -89,6 +89,8 @@ export default function WhatIsPanchangPage() {
       IDS.subPillarTithi,
       IDS.subPillarNakshatra,
       IDS.subPillarRahuKaal,
+      IDS.subPillarChoghadiya,
+      IDS.subPillarMuhurta,
     ],
   });
 

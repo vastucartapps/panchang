@@ -17,6 +17,8 @@ export const IDS = {
   subPillarTithi: `${PANCHANG_ORIGIN}/what-is-tithi#article`,
   subPillarNakshatra: `${PANCHANG_ORIGIN}/what-is-nakshatra#article`,
   subPillarRahuKaal: `${PANCHANG_ORIGIN}/what-is-rahu-kaal#article`,
+  subPillarChoghadiya: `${PANCHANG_ORIGIN}/what-is-choghadiya#article`,
+  subPillarMuhurta: `${PANCHANG_ORIGIN}/what-is-muhurta#article`,
 } as const;
 
 // Entities emitted canonically elsewhere; only referenced from this project.

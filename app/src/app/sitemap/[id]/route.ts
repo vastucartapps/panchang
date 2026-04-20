@@ -127,6 +127,8 @@ function buildCoreEntries(slugs: string[], today: string): string[] {
   entries.push(urlEntry(`${SITE_URL}/what-is-tithi`, STATIC_HUB_LASTMOD, "yearly", 0.7));
   entries.push(urlEntry(`${SITE_URL}/what-is-nakshatra`, STATIC_HUB_LASTMOD, "yearly", 0.7));
   entries.push(urlEntry(`${SITE_URL}/what-is-rahu-kaal`, STATIC_HUB_LASTMOD, "yearly", 0.7));
+  entries.push(urlEntry(`${SITE_URL}/what-is-choghadiya`, STATIC_HUB_LASTMOD, "yearly", 0.7));
+  entries.push(urlEntry(`${SITE_URL}/what-is-muhurta`, STATIC_HUB_LASTMOD, "yearly", 0.7));
   entries.push(urlEntry(`${SITE_URL}/about`, STATIC_HUB_LASTMOD, "yearly", 0.6));
   entries.push(urlEntry(`${SITE_URL}/contact`, STATIC_HUB_LASTMOD, "yearly", 0.4));
   // RSS feed — sitemap entry signals "this exists" to crawlers; feed's own
