@@ -10,6 +10,9 @@ import { TimeQualitySection } from "@/components/time-quality/time-quality-secti
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
 import { WidgetSidebar } from "@/components/network-widgets/widget-sidebar";
 import { JsonLd } from "@/components/seo/json-ld";
+import { NearbyCitiesBlock } from "@/components/seo/nearby-cities";
+import { TopicHubLinks } from "@/components/seo/topic-hub-links";
+import { getNearbyCities } from "@/lib/cities";
 import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
 import { FaqSection } from "@/components/seo/faq-section";
@@ -108,6 +111,7 @@ export default async function CityDatePanchangPage({
   if (!isValidDate(date)) notFound();
 
   const faqs = getCityFaqs(city.name, city.state);
+  const nearbyCities = getNearbyCities(citySlug, 8);
 
   const data = await fetchPanchangBuildSafe({
     targetDate: date,
@@ -229,6 +233,15 @@ export default async function CityDatePanchangPage({
             <WidgetSidebar />
           </aside>
         </div>
+
+        <TopicHubLinks citySlug={city.slug} cityName={city.name} date={date} />
+
+        <NearbyCitiesBlock
+          cities={nearbyCities}
+          currentDate={date}
+          heading={`Panchang for cities near ${city.name} on ${formatDateShort(date)}`}
+          subheading="Same date, neighboring cities — compare Tithi and sunrise timings"
+        />
 
         <FaqSection faqs={faqs} cityName={city.name} />
       </div>

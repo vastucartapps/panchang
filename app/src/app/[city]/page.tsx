@@ -10,7 +10,10 @@ import { TimeQualitySection } from "@/components/time-quality/time-quality-secti
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
 import { WidgetSidebar } from "@/components/network-widgets/widget-sidebar";
 import { JsonLd } from "@/components/seo/json-ld";
+import { NearbyCitiesBlock } from "@/components/seo/nearby-cities";
+import { TopicHubLinks } from "@/components/seo/topic-hub-links";
 import { buildCityPageGraph } from "@/lib/schema";
+import { getNearbyCities } from "@/lib/cities";
 import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
 import { FaqSection } from "@/components/seo/faq-section";
@@ -100,6 +103,7 @@ export default async function CityPanchangPage({
 
   const targetDate = getTodayISO();
   const faqs = getCityFaqs(city.name, city.state);
+  const nearbyCities = getNearbyCities(city.slug, 8);
 
   const data = await fetchPanchang({
     targetDate,
@@ -213,6 +217,14 @@ export default async function CityPanchangPage({
             <WidgetSidebar />
           </aside>
         </div>
+
+        <TopicHubLinks citySlug={city.slug} cityName={city.name} date={targetDate} />
+
+        <NearbyCitiesBlock
+          cities={nearbyCities}
+          heading={`Panchang for cities near ${city.name}`}
+          subheading="Sunrise-specific timings for your geographic cluster"
+        />
 
         <FaqSection faqs={faqs} cityName={city.name} />
       </div>
