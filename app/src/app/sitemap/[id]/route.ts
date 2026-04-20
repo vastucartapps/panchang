@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCitySlugs } from "@/lib/cities";
 import { getAllFestivals } from "@/data/festivals";
 import { getAllNakshatras } from "@/data/nakshatras";
+import { getAllTithis } from "@/data/tithis";
 import { format, addDays } from "date-fns";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://panchang.vastucart.in";
@@ -23,7 +24,7 @@ const DATE_TOPICS = [
   "sunrise-sunset",
 ] as const;
 
-const MAX_SITEMAP_ID = 18; // 0 core + 2 city/date + 12 topics × period + calendar + weeks + programmatic hubs + nakshatra evergreens
+const MAX_SITEMAP_ID = 19; // ... + tithi evergreens
 
 // Programmatic city hubs (topic-first URLs) per Reference Files/05 §C.4.
 // Each entry = 1 route family × N cities.
@@ -240,6 +241,12 @@ export async function GET(
     entries.push(urlEntry(`${SITE_URL}/nakshatra`, STATIC_HUB_LASTMOD, "monthly", 0.8));
     for (const n of getAllNakshatras()) {
       entries.push(urlEntry(`${SITE_URL}/nakshatra/${n.slug}`, STATIC_HUB_LASTMOD, "yearly", 0.7));
+    }
+  } else if (sitemapId === 19) {
+    // Tithi evergreens: /tithi hub + 16 /tithi/[slug] pages.
+    entries.push(urlEntry(`${SITE_URL}/tithi`, STATIC_HUB_LASTMOD, "monthly", 0.8));
+    for (const t of getAllTithis()) {
+      entries.push(urlEntry(`${SITE_URL}/tithi/${t.slug}`, STATIC_HUB_LASTMOD, "yearly", 0.7));
     }
   }
 

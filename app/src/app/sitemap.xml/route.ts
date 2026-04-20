@@ -29,6 +29,7 @@ const SITEMAPS: Array<{ id: number; lastmodKind: "today" | "yesterday" }> = [
   { id: 16, lastmodKind: "today" },      // weeks
   { id: 17, lastmodKind: "today" },      // programmatic hubs: /{topic}/{city} × 4 topics
   { id: 18, lastmodKind: "today" },      // Nakshatra evergreens: /nakshatra + 27 /nakshatra/[slug]
+  { id: 19, lastmodKind: "today" },      // Tithi evergreens: /tithi + 16 /tithi/[slug]
 ];
 
 function todayISO(): string {

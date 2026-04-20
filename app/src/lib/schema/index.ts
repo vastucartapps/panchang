@@ -11,3 +11,4 @@ export { buildFestivalAnnouncementSchema, type FestivalAnnouncementInput } from 
 export { buildCityTopicQAPageSchema, type CityTopicQAInput } from "./qaPage";
 export { buildProgrammaticCityHubGraph, type ProgrammaticCityHubInput, type ProgrammaticTopic } from "./programmaticCityHub";
 export { buildNakshatraPageGraph, buildNakshatraHubGraph } from "./nakshatraPage";
+export { buildTithiPageGraph, buildTithiHubGraph } from "./tithiPage";
