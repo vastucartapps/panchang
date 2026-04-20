@@ -10,6 +10,7 @@ import { TimeQualitySection } from "@/components/time-quality/time-quality-secti
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
 import { WidgetSidebar } from "@/components/network-widgets/widget-sidebar";
 import { JsonLd } from "@/components/seo/json-ld";
+import { buildCityPageGraph } from "@/lib/schema";
 import { HeroActions } from "@/components/hero/hero-actions";
 import { DateNavigator } from "@/components/hero/date-navigator";
 import { FaqSection } from "@/components/seo/faq-section";
@@ -111,6 +112,18 @@ export default async function CityPanchangPage({
   const nakshatraSign = NAKSHATRA_TO_SIGN[nakshatraKey];
   const nakshatraDisplayName = data.day_quality.breakdown.nakshatra.name;
 
+  // Dataset + Service + WebPage @graph. dateModified uses IST so past-date
+  // crawl comparisons match the civil-calendar freshness model. Gate handled
+  // inside builder — returns null if lat/lng missing (data-quality issue).
+  const cityGraph = buildCityPageGraph({
+    slug: city.slug,
+    name: city.name,
+    state: city.state,
+    lat: city.lat,
+    lng: city.lng,
+    dateModified: `${targetDate}T00:00:00+05:30`,
+  });
+
   return (
     <>
       {/* Hero Banner */}
@@ -144,6 +157,14 @@ export default async function CityPanchangPage({
       </section>
 
       <div className="mx-auto max-w-[92%] overflow-hidden px-4 py-6 sm:px-6">
+        {cityGraph && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(cityGraph).replace(/</g, "\\u003c"),
+            }}
+          />
+        )}
         <JsonLd
           city={city.name}
           breadcrumbs={[

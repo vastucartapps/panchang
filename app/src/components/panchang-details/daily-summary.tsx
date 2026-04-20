@@ -14,7 +14,7 @@ export function DailySummary({ data, cityName, date }: DailySummaryProps) {
   const dateSuffix = date ? ` — ${cityName} | ${formatDateLong(date)}` : ` — ${cityName}`;
 
   return (
-    <section className="rounded-2xl border bg-card p-5 sm:p-6">
+    <section className="panchang-today-summary rounded-2xl border bg-card p-5 sm:p-6">
       <div className="flex items-center gap-2 mb-3">
         <BookOpen className="h-4 w-4 text-[#C4973B]" />
         <h2 className="text-base font-bold text-[var(--color-vedic)]">
