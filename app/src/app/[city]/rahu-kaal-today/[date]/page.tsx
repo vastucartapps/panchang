@@ -3,12 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShieldAlert, MapPin, Clock } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
-import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
+import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, formatDateShort, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityRahuKaalFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
+import { buildCityTopicQAPageSchema } from "@/lib/schema";
 
 export const revalidate = 3600;
 
@@ -89,12 +90,26 @@ export default async function CityRahuKaalDatePage({ params }: PageProps) {
   const { timing } = data;
   const timings = [timing.rahu_kalam, timing.yamagandam, timing.gulika_kalam];
   const cityFaqs = getCityRahuKaalFaqs(city.name, city.state);
-  const otherCities = getAllCities()
-    .filter((c) => c.slug !== citySlug)
-    .slice(0, 12);
+  const otherCities = getNearbyCities(citySlug, 8);
+  const qaSchema = buildCityTopicQAPageSchema({
+    cityName: city.name,
+    citySlug,
+    date,
+    topic: "rahu-kaal-today",
+    question: `What is Rahu Kaal in ${city.name} on ${formatDateShort(date)}?`,
+    answerText: `Rahu Kaal in ${city.name} on ${formatDate(date)} runs from ${formatTime12h(timing.rahu_kalam.start_time)} to ${formatTime12h(timing.rahu_kalam.end_time)} (duration ${formatDuration(timing.rahu_kalam.duration_minutes)}). During this ~90-minute window, avoid starting new work, travel, or auspicious ceremonies. Yamagandam runs from ${formatTime12h(timing.yamagandam.start_time)} to ${formatTime12h(timing.yamagandam.end_time)}, and Gulika Kaal from ${formatTime12h(timing.gulika_kalam.start_time)} to ${formatTime12h(timing.gulika_kalam.end_time)}.`,
+  });
 
   return (
     <>
+      {qaSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(qaSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         city={city.name}
         breadcrumbs={[

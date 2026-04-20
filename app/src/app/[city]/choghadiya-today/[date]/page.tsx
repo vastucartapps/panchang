@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Clock, MapPin } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
-import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
+import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
+import { buildCityTopicQAPageSchema } from "@/lib/schema";
 import { formatDate, formatDateShort, formatTime12h, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityChoghadiyaFaqs } from "@/lib/faqs";
@@ -75,12 +76,29 @@ export default async function CityChoghadiyaDatePage({ params }: PageProps) {
 
   const { choghadiya } = data;
   const cityFaqs = getCityChoghadiyaFaqs(city.name, city.state);
-  const otherCities = getAllCities()
-    .filter((c) => c.slug !== citySlug)
-    .slice(0, 12);
+  const otherCities = getNearbyCities(citySlug, 8);
+  const firstDayPeriod = choghadiya.day_periods?.[0];
+  const qaSchema = buildCityTopicQAPageSchema({
+    cityName: city.name,
+    citySlug,
+    date,
+    topic: "choghadiya-today",
+    question: `What is the Choghadiya in ${city.name} on ${formatDateShort(date)}?`,
+    answerText: firstDayPeriod
+      ? `Choghadiya in ${city.name} on ${formatDate(date)} divides the day into eight 90-minute periods classified as Amrit, Shubh, Labh (auspicious), Char (neutral), or Rog, Kaal, Udveg (inauspicious). The first period of the day is ${firstDayPeriod.name} (${firstDayPeriod.nature}) starting at ${firstDayPeriod.start_time}. Use auspicious Choghadiya windows for travel, business starts, and ceremonies; avoid inauspicious windows for important new undertakings.`
+      : `Choghadiya in ${city.name} on ${formatDate(date)} — the Vedic time-quality system dividing the day into eight 90-minute periods, each classified as auspicious, neutral, or inauspicious for activities like travel and business.`,
+  });
 
   return (
     <>
+      {qaSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(qaSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         city={city.name}
         breadcrumbs={[

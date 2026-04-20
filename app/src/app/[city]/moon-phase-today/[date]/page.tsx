@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Moon, MapPin } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
-import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
+import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
+import { buildCityTopicQAPageSchema } from "@/lib/schema";
 import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityMoonPhaseFaqs } from "@/lib/faqs";
@@ -87,12 +88,26 @@ export default async function CityMoonPhaseDatePage({ params }: PageProps) {
 
   const { moon_phase } = data;
   const cityFaqs = getCityMoonPhaseFaqs(city.name, city.state);
-  const otherCities = getAllCities()
-    .filter((c) => c.slug !== citySlug)
-    .slice(0, 12);
+  const otherCities = getNearbyCities(citySlug, 8);
+  const qaSchema = buildCityTopicQAPageSchema({
+    cityName: city.name,
+    citySlug,
+    date,
+    topic: "moon-phase-today",
+    question: `What is the Moon phase in ${city.name} on ${formatDateShort(date)}?`,
+    answerText: `The Moon phase in ${city.name} on ${formatDate(date)} is ${moon_phase.phase_name} with ${moon_phase.illumination_percent}% illumination, age ${moon_phase.age_days.toFixed(1)} days. Paksha: ${moon_phase.paksha}. Moon phase determines auspicious timings for rituals, with Purnima (full moon) and Amavasya (new moon) being most significant for Hindu observances.`,
+  });
 
   return (
     <>
+      {qaSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(qaSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         city={city.name}
         breadcrumbs={[

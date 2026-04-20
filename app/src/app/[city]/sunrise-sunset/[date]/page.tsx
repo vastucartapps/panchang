@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Sunrise, Sunset, MapPin, Sun } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
-import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
+import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
+import { buildCityTopicQAPageSchema } from "@/lib/schema";
 import { formatDate, formatDateShort, formatTime12h, formatDuration, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCitySunriseSunsetFaqs } from "@/lib/faqs";
@@ -86,15 +87,30 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
 
   const { timing } = data;
   const cityFaqs = getCitySunriseSunsetFaqs(city.name, city.state);
-  const otherCities = getAllCities()
-    .filter((c) => c.slug !== citySlug)
-    .slice(0, 12);
+  const otherCities = getNearbyCities(citySlug, 8);
 
   const dinamanaHours = Math.floor(timing.dinamana_hours);
   const dinamanaMinutes = Math.round((timing.dinamana_hours - dinamanaHours) * 60);
 
+  const qaSchema = buildCityTopicQAPageSchema({
+    cityName: city.name,
+    citySlug,
+    date,
+    topic: "sunrise-sunset",
+    question: `What time is sunrise and sunset in ${city.name} on ${formatDateShort(date)}?`,
+    answerText: `Sunrise in ${city.name} on ${formatDate(date)} is at ${formatTime12h(timing.sunrise)} and sunset is at ${formatTime12h(timing.sunset)}. Day duration (Dinamana): ${dinamanaHours}h ${dinamanaMinutes}m. Brahma Muhurta runs from ${timing.brahma_muhurta.start_time} to ${timing.brahma_muhurta.end_time} — the 96-minute window before sunrise ideal for meditation and spiritual practice.`,
+  });
+
   return (
     <>
+      {qaSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(qaSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         city={city.name}
         breadcrumbs={[

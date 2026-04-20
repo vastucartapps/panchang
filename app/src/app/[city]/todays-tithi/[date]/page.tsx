@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Moon, MapPin } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
-import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
+import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
+import { buildCityTopicQAPageSchema } from "@/lib/schema";
 import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
@@ -86,12 +87,26 @@ export default async function CityTithiDatePage({ params }: PageProps) {
   const { tithi } = data.panchang;
   const style = getNatureStyle(tithi.nature);
   const cityFaqs = getCityTithiFaqs(city.name, city.state);
-  const otherCities = getAllCities()
-    .filter((c) => c.slug !== citySlug)
-    .slice(0, 12);
+  const otherCities = getNearbyCities(citySlug, 8);
+  const qaSchema = buildCityTopicQAPageSchema({
+    cityName: city.name,
+    citySlug,
+    date,
+    topic: "todays-tithi",
+    question: `What is the Tithi in ${city.name} on ${formatDateShort(date)}?`,
+    answerText: `The Tithi in ${city.name} on ${formatDate(date)} is ${tithi.tithi} (${tithi.paksha} Paksha). Deity: ${tithi.deity}. Nature: ${tithi.nature}. Category: ${tithi.category}. Elapsed: ${tithi.percent_elapsed.toFixed(1)}%. Tithi is the lunar day — one of the five limbs of Panchang — calculated from the angular difference between the Sun and Moon (12° per Tithi).`,
+  });
 
   return (
     <>
+      {qaSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(qaSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         city={city.name}
         breadcrumbs={[

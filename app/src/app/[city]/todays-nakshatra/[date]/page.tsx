@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Star, MapPin } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
-import { getCityBySlug, getAllCities, getTopCitySlugs } from "@/lib/cities";
+import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
+import { buildCityTopicQAPageSchema } from "@/lib/schema";
 import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
@@ -86,12 +87,26 @@ export default async function CityNakshatraDatePage({ params }: PageProps) {
   const { nakshatra } = data.panchang;
   const style = getNatureStyle(nakshatra.nature);
   const cityFaqs = getCityNakshatraFaqs(city.name, city.state);
-  const otherCities = getAllCities()
-    .filter((c) => c.slug !== citySlug)
-    .slice(0, 12);
+  const otherCities = getNearbyCities(citySlug, 8);
+  const qaSchema = buildCityTopicQAPageSchema({
+    cityName: city.name,
+    citySlug,
+    date,
+    topic: "todays-nakshatra",
+    question: `What is the Nakshatra in ${city.name} on ${formatDateShort(date)}?`,
+    answerText: `The Nakshatra in ${city.name} on ${formatDate(date)} is ${nakshatra.nakshatra} (Pada ${nakshatra.pada}). Lord: ${nakshatra.lord}. Deity: ${nakshatra.deity}. Gana: ${nakshatra.gana}. Nature: ${nakshatra.nature}. Activity: ${nakshatra.activity_type}. Nakshatra is the lunar mansion occupied by the Moon — one of the 27 Vedic constellations each spanning 13°20' of the zodiac.`,
+  });
 
   return (
     <>
+      {qaSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(qaSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         city={city.name}
         breadcrumbs={[
