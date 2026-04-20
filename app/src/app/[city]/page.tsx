@@ -1,11 +1,10 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug } from "@/lib/cities";
 import { getTodayISO, formatDate, formatDateShort } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
-import { getLocale, getTranslations } from "@/lib/i18n";
 import { HeroSection } from "@/components/hero/hero-section";
 import { TimeQualitySection } from "@/components/time-quality/time-quality-section";
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
@@ -23,7 +22,6 @@ export const revalidate = 300;
 
 interface CityPageProps {
   params: Promise<{ city: string }>;
-  searchParams: Promise<{ date?: string }>;
 }
 
 export async function generateMetadata({
@@ -85,21 +83,12 @@ export async function generateMetadata({
 
 export default async function CityPanchangPage({
   params,
-  searchParams,
 }: CityPageProps) {
   const { city: citySlug } = await params;
-  const { date } = await searchParams;
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
 
-  // Redirect ?date= to clean /city/date path for SEO
-  if (date) {
-    redirect(`/${citySlug}/${date}`);
-  }
-
   const targetDate = getTodayISO();
-  const locale = await getLocale();
-  const t = getTranslations(locale);
   const faqs = getCityFaqs(city.name, city.state);
 
   const data = await fetchPanchang({
@@ -154,7 +143,7 @@ export default async function CityPanchangPage({
           ]}
           faqs={faqs}
         />
-        <HeroSection data={data} locale={locale} />
+        <HeroSection data={data} locale="en" />
 
         <div className="mt-6">
           <DailySummary data={data} cityName={city.name} date={targetDate} />
@@ -167,7 +156,7 @@ export default async function CityPanchangPage({
               festivals={data.festivals}
               vrat={data.vrat}
               hinduMonth={data.panchang.tithi.hindu_month}
-              locale={locale}
+              locale="en"
               cityName={city.name}
               date={targetDate}
             />
@@ -177,19 +166,17 @@ export default async function CityPanchangPage({
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0 space-y-8">
             <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} cityName={city.name} date={targetDate} />
-            <PanchangGrid data={data} locale={locale} cityName={city.name} date={targetDate} />
+            <PanchangGrid data={data} locale="en" cityName={city.name} date={targetDate} />
             {nakshatraSign && (
               <a
-                href={locale === "hi"
-                  ? `https://horoscope.vastucart.in/hi/rashi/${nakshatraSign}/daily/${targetDate}`
-                  : `https://horoscope.vastucart.in/${nakshatraSign}/daily/${targetDate}`}
+                href={`https://horoscope.vastucart.in/${nakshatraSign}/daily/${targetDate}`}
                 className="text-[13px] text-muted-foreground hover:underline"
               >
-                {t("clusterLinks.horoscopeLink").replace("{nakshatra}", nakshatraDisplayName)}
+                {`See how ${nakshatraDisplayName} affects your sign today →`}
               </a>
             )}
             {data.muhurta_yogas && (
-              <MuhurtaYogasSection muhurtaYogas={data.muhurta_yogas} locale={locale} cityName={city.name} date={targetDate} />
+              <MuhurtaYogasSection muhurtaYogas={data.muhurta_yogas} locale="en" cityName={city.name} date={targetDate} />
             )}
           </div>
           <aside className="lg:sticky lg:top-32 lg:self-start">

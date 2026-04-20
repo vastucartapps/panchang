@@ -32,6 +32,18 @@ const nextConfig: NextConfig = {
       { source: "/panchangam", destination: "/", permanent: true },
       { source: "/panchangam/:city", destination: "/:city", permanent: true },
       { source: "/:city/panchangam", destination: "/:city", permanent: true },
+
+      // Legacy /{city}?date=YYYY-MM-DD → /{city}/YYYY-MM-DD.
+      // Handled at the redirect layer (not in the page) so [city]/page.tsx
+      // stays statically renderable — reading searchParams in the page opts
+      // the whole route into dynamic rendering, which breaks ISR + emits
+      // `Cache-Control: private, no-store` and sinks SEO.
+      {
+        source: "/:city",
+        has: [{ type: "query", key: "date", value: "(?<date>\\d{4}-\\d{2}-\\d{2})" }],
+        destination: "/:city/:date",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

@@ -5,7 +5,6 @@ import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
 import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
-import { getLocale, getTranslations } from "@/lib/i18n";
 import { HeroSection } from "@/components/hero/hero-section";
 import { TimeQualitySection } from "@/components/time-quality/time-quality-section";
 import { PanchangGrid } from "@/components/panchang-details/panchang-grid";
@@ -108,8 +107,6 @@ export default async function CityDatePanchangPage({
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
 
-  const locale = await getLocale();
-  const t = getTranslations(locale);
   const faqs = getCityFaqs(city.name, city.state);
 
   const data = await fetchPanchangBuildSafe({
@@ -192,7 +189,7 @@ export default async function CityDatePanchangPage({
             }).replace(/</g, "\\u003c"),
           }}
         />
-        <HeroSection data={data} locale={locale} />
+        <HeroSection data={data} locale="en" />
 
         <div className="mt-6">
           <DailySummary data={data} cityName={city.name} date={date} />
@@ -205,7 +202,7 @@ export default async function CityDatePanchangPage({
               festivals={data.festivals}
               vrat={data.vrat}
               hinduMonth={data.panchang.tithi.hindu_month}
-              locale={locale}
+              locale="en"
               cityName={city.name}
               date={date}
             />
@@ -215,19 +212,17 @@ export default async function CityDatePanchangPage({
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0 space-y-8">
             <TimeQualitySection hora={data.hora} choghadiya={data.choghadiya} cityName={city.name} date={date} />
-            <PanchangGrid data={data} locale={locale} cityName={city.name} date={date} />
+            <PanchangGrid data={data} locale="en" cityName={city.name} date={date} />
             {nakshatraSign && (
               <a
-                href={locale === "hi"
-                  ? `https://horoscope.vastucart.in/hi/rashi/${nakshatraSign}/daily/${date}`
-                  : `https://horoscope.vastucart.in/${nakshatraSign}/daily/${date}`}
+                href={`https://horoscope.vastucart.in/${nakshatraSign}/daily/${date}`}
                 className="text-[13px] text-muted-foreground hover:underline"
               >
-                {t("clusterLinks.horoscopeLink").replace("{nakshatra}", nakshatraDisplayName)}
+                {`See how ${nakshatraDisplayName} affects your sign today →`}
               </a>
             )}
             {data.muhurta_yogas && (
-              <MuhurtaYogasSection muhurtaYogas={data.muhurta_yogas} locale={locale} cityName={city.name} date={date} />
+              <MuhurtaYogasSection muhurtaYogas={data.muhurta_yogas} locale="en" cityName={city.name} date={date} />
             )}
           </div>
           <aside className="lg:sticky lg:top-32 lg:self-start">
