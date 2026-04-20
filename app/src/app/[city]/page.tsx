@@ -20,6 +20,15 @@ import { FestivalVratSection } from "@/components/panchang-details/festival-vrat
 
 export const revalidate = 300;
 
+// Returning [] unlocks ISR classification for this dynamic route without
+// prebuilding any URL at build time. Without this, Next.js 16 treats the
+// route as fully dynamic (ƒ) and emits `Cache-Control: private, no-store`.
+// With this, every URL is lazy-ISR (generated on first request, cached per
+// revalidate). Warmer cron pre-populates hot URLs post-deploy.
+export function generateStaticParams() {
+  return [];
+}
+
 interface CityPageProps {
   params: Promise<{ city: string }>;
 }
