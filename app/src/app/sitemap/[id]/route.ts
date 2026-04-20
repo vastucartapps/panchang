@@ -115,6 +115,9 @@ function buildCoreEntries(slugs: string[], today: string): string[] {
   entries.push(urlEntry(`${SITE_URL}/what-is-panchang`, STATIC_HUB_LASTMOD, "yearly", 0.8));
   entries.push(urlEntry(`${SITE_URL}/about`, STATIC_HUB_LASTMOD, "yearly", 0.6));
   entries.push(urlEntry(`${SITE_URL}/contact`, STATIC_HUB_LASTMOD, "yearly", 0.4));
+  // RSS feed — sitemap entry signals "this exists" to crawlers; feed's own
+  // <item> entries drive freshness signals separately.
+  entries.push(urlEntry(`${SITE_URL}/feed/festivals.xml`, today, "weekly", 0.4));
   entries.push(urlEntry(`${SITE_URL}/hindu-festivals`, today, "weekly", 0.8));
 
   for (const f of getAllFestivals()) {
