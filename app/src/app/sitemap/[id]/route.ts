@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCitySlugs } from "@/lib/cities";
 import { getAllFestivals } from "@/data/festivals";
+import { getAllNakshatras } from "@/data/nakshatras";
 import { format, addDays } from "date-fns";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://panchang.vastucart.in";
@@ -22,7 +23,7 @@ const DATE_TOPICS = [
   "sunrise-sunset",
 ] as const;
 
-const MAX_SITEMAP_ID = 17; // 0 core + 2 city/date + 12 topics × period + calendar + weeks + programmatic hubs
+const MAX_SITEMAP_ID = 18; // 0 core + 2 city/date + 12 topics × period + calendar + weeks + programmatic hubs + nakshatra evergreens
 
 // Programmatic city hubs (topic-first URLs) per Reference Files/05 §C.4.
 // Each entry = 1 route family × N cities.
@@ -231,6 +232,14 @@ export async function GET(
       for (const slug of slugs) {
         entries.push(urlEntry(`${SITE_URL}/${topic}/${slug}`, today, "daily", 0.7));
       }
+    }
+  } else if (sitemapId === 18) {
+    // Nakshatra evergreens: /nakshatra hub + 27 /nakshatra/[slug] pages.
+    // Content is evergreen Vedic reference — lastmod only updates on content
+    // rewrites (STATIC_HUB_LASTMOD).
+    entries.push(urlEntry(`${SITE_URL}/nakshatra`, STATIC_HUB_LASTMOD, "monthly", 0.8));
+    for (const n of getAllNakshatras()) {
+      entries.push(urlEntry(`${SITE_URL}/nakshatra/${n.slug}`, STATIC_HUB_LASTMOD, "yearly", 0.7));
     }
   }
 
