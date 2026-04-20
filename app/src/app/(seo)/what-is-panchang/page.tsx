@@ -85,6 +85,11 @@ export default function WhatIsPanchangPage() {
       REFS.conceptRahuKaal,
       REFS.conceptChoghadiya,
     ],
+    hasPartRefs: [
+      IDS.subPillarTithi,
+      IDS.subPillarNakshatra,
+      IDS.subPillarRahuKaal,
+    ],
   });
 
   return (
