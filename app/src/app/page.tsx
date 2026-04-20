@@ -8,6 +8,7 @@ import { getNatureStyle, getScoreLabel } from "@/lib/constants";
 import { NetworkHeader } from "@/components/layout/network-header";
 import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
+import { buildHomepageGraph } from "@/lib/schema";
 import {
   ArrowRight,
   Sunrise,
@@ -129,10 +130,18 @@ export default async function HomePage() {
   const tithiStyle = getNatureStyle(data.panchang.tithi.nature);
   const nakshatraStyle = getNatureStyle(data.panchang.nakshatra.nature);
 
+  const homepageGraph = buildHomepageGraph();
+
   return (
     <div className="flex min-h-screen flex-col">
       <NetworkHeader />
       <main className="flex-1 overflow-hidden">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(homepageGraph).replace(/</g, "\\u003c"),
+          }}
+        />
         <JsonLd
           city={city.name}
           breadcrumbs={[{ name: "Home", url: SITE_CONFIG.url }]}

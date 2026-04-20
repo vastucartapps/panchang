@@ -1,4 +1,4 @@
-import { SITE_CONFIG, SOCIAL_LINKS } from "@/lib/constants";
+import { IDS, REFS } from "@/lib/schema/ids";
 
 interface FaqItem {
   question: string;
@@ -11,34 +11,16 @@ interface JsonLdProps {
   faqs?: FaqItem[];
 }
 
+/**
+ * Per-page JSON-LD emitter. Keeps page-scoped schemas (Breadcrumb, FAQ)
+ * inline and references the global entities (Organization, WebSite) via
+ * @id. Local Organization emission was removed — vastucart.in owns that
+ * canonical declaration and every subdomain only references it (shared
+ * contracts §2.1, §5.2). Emitting it locally breaks the entity graph.
+ */
 export function JsonLd({ breadcrumbs, faqs }: JsonLdProps) {
-  const schemas = [];
+  const schemas: object[] = [];
 
-  // WebSite schema
-  schemas.push({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: SITE_CONFIG.name,
-    url: SITE_CONFIG.url,
-    description: SITE_CONFIG.description,
-    publisher: {
-      "@type": "Organization",
-      name: SITE_CONFIG.brandName,
-      url: SITE_CONFIG.brandUrl,
-    },
-  });
-
-  // Organization schema
-  schemas.push({
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE_CONFIG.brandName,
-    url: SITE_CONFIG.brandUrl,
-    logo: `${SITE_CONFIG.url}/images/vastucart-logo.png`,
-    sameAs: Object.values(SOCIAL_LINKS),
-  });
-
-  // BreadcrumbList
   if (breadcrumbs && breadcrumbs.length > 0) {
     schemas.push({
       "@context": "https://schema.org",
@@ -52,7 +34,6 @@ export function JsonLd({ breadcrumbs, faqs }: JsonLdProps) {
     });
   }
 
-  // FAQPage schema for rich results
   if (faqs && faqs.length > 0) {
     schemas.push({
       "@context": "https://schema.org",
@@ -67,6 +48,15 @@ export function JsonLd({ breadcrumbs, faqs }: JsonLdProps) {
       })),
     });
   }
+
+  // Reference WebSite + Organization on every page so Google links the
+  // entity graph even on pages that only emit page-scoped schemas.
+  schemas.push({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    isPartOf: { "@id": IDS.website },
+    publisher: { "@id": REFS.organization },
+  });
 
   return (
     <>

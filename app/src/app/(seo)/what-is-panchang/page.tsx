@@ -5,6 +5,7 @@ import { SITE_CONFIG } from "@/lib/constants";
 import { PANCHANG_GUIDE_FAQS } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
+import { buildPillarArticleSchema, IDS, REFS } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: "What is Panchang? Complete Vedic Calendar Guide",
@@ -62,9 +63,40 @@ const POPULAR_CITIES = [
   { name: "Ujjain", slug: "ujjain" },
 ];
 
+// Pillar article body summary. The rendered JSX below contains the full
+// human-readable article; this text is what the Article schema emits as
+// its representative body excerpt and also satisfies the min-char gate.
+const ARTICLE_BODY = `Panchang (also spelled Panchangam) is the traditional Hindu calendar and almanac. The word comes from Sanskrit: "Pancha" (five) + "Anga" (limb), referring to five key elements that together describe the quality of any given day: Tithi (lunar day), Nakshatra (lunar mansion), Yoga (Sun-Moon combination), Karana (half of a Tithi), and Vara (weekday). Each limb is computed from precise astronomical positions of the Sun and Moon anchored to the observer's sunrise at a specific location — which is why the same date's Tithi or Nakshatra can differ between cities. A modern Panchang extends these five limbs with Rahu Kaal (90-minute inauspicious window per weekday), Yamaganda and Gulika Kaal (additional inauspicious periods), Abhijit Muhurta (auspicious solar-noon window), Brahma Muhurta (pre-sunrise window), Choghadiya (eight 90-minute day-quality periods), and sunrise/sunset timings. Panchang determines auspicious and inauspicious times for daily activities; selects Muhurta for weddings, housewarmings, business launches, and religious ceremonies; establishes festival dates, fasting days, and vrat observances; drives Vedic astrology chart construction and predictions; and historically guided agricultural planning by lunar cycles. VastuCart Panchang computes all five limbs plus the extended timing set individually for 200+ Indian cities using the Drik Ganita (observational real-sky) system aligned with Lahiri Ayanamsa — the same conventions used by the Rashtriya Panchang. Data refreshes daily at each city's local sunrise.`;
+
 export default function WhatIsPanchangPage() {
+  const articleSchema = buildPillarArticleSchema({
+    id: IDS.pillarArticle,
+    url: `${SITE_CONFIG.url}/what-is-panchang`,
+    headline: "What is Panchang? The Complete Vedic Calendar Guide",
+    description:
+      "Panchang is the Vedic calendar with five limbs — Tithi, Nakshatra, Yoga, Karana, Vara. This complete guide covers every limb, Rahu Kaal, Choghadiya, and how Panchang is computed per city.",
+    body: ARTICLE_BODY,
+    datePublished: "2025-06-01T00:00:00+05:30",
+    dateModified: "2026-04-18T00:00:00+05:30",
+    aboutRefs: [
+      REFS.conceptPanchang,
+      REFS.conceptTithiSet,
+      REFS.conceptNakshatraSet,
+      REFS.conceptRahuKaal,
+      REFS.conceptChoghadiya,
+    ],
+  });
+
   return (
     <>
+      {articleSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <JsonLd
         breadcrumbs={[
           { name: "Home", url: SITE_CONFIG.url },
