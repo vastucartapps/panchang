@@ -1,4 +1,4 @@
-import { IDS, SITE_ORIGIN } from "./ids";
+import { IDS, REFS, SITE_ORIGIN } from "./ids";
 
 export interface CityTopicQAInput {
   cityName: string;
@@ -8,6 +8,12 @@ export interface CityTopicQAInput {
   question: string; // "What is Rahu Kaal in New Delhi on 2026-04-20?"
   answerText: string; // plain-text answer, ≥ 40 chars
 }
+
+// All six topic-date pages are Jyotish content per shared-contracts §2.2 →
+// authored by pt-raghav-sharma. datePublished tracks the date the answer
+// applies to (the panchang date itself), which is what the page is
+// authoritative for.
+const AUTHOR_REF = { "@id": REFS.authorJyotish };
 
 /**
  * QAPage schema for /[city]/{topic}/[date] pages. Each page answers a
@@ -40,11 +46,16 @@ export function buildCityTopicQAPageSchema(input: CityTopicQAInput): object | nu
       name: input.question,
       text: input.question,
       answerCount: 1,
+      datePublished: input.date,
+      author: AUTHOR_REF,
       acceptedAnswer: {
         "@type": "Answer",
         text: input.answerText,
         url: pageUrl,
         inLanguage: "en-IN",
+        datePublished: input.date,
+        author: AUTHOR_REF,
+        upvoteCount: 0,
       },
     },
   };
