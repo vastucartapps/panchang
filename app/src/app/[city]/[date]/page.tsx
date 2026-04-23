@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
 import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
@@ -76,7 +76,9 @@ export async function generateMetadata({
     title: { absolute: titleText },
     description: `Panchang for ${city.name}, ${city.state} on ${formattedDate}. Accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for ${city.name}.`,
     alternates: {
-      canonical: `${SITE_CONFIG.url}/${city.slug}/${date}`,
+      canonical: date === getTodayISO()
+        ? `${SITE_CONFIG.url}/${city.slug}`
+        : `${SITE_CONFIG.url}/${city.slug}/${date}`,
     },
     openGraph: {
       title: `${city.name} Panchang ${shortDate} — ${tithi || "Tithi"}, ${nakshatra || "Nakshatra"}`,
@@ -109,6 +111,7 @@ export default async function CityDatePanchangPage({
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
   if (!isValidDate(date)) notFound();
+  if (date === getTodayISO()) redirect(`/${city.slug}`);
 
   const faqs = getCityFaqs(city.name, city.state);
   const nearbyCities = getNearbyCities(citySlug, 8);

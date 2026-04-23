@@ -57,7 +57,10 @@ function getPastDates(): string[] {
 function getFutureDates(): string[] {
   const today = new Date();
   const dates: string[] = [];
-  for (let i = 0; i <= FUTURE_DAYS; i++) {
+  // Start from tomorrow (i=1) — today is covered by /{city} in sitemap 0.
+  // /{city}/{today} redirects to /{city}, so listing it here would be a
+  // redirect entry Google has to resolve unnecessarily.
+  for (let i = 1; i <= FUTURE_DAYS; i++) {
     dates.push(format(addDays(today, i), "yyyy-MM-dd"));
   }
   return dates;

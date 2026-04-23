@@ -110,7 +110,7 @@ export default async function CityPanchangPage({
     latitude: city.lat,
     longitude: city.lng,
     timezone: city.tz,
-  });
+  }).catch(() => notFound());
 
   const nakshatraKey = data.panchang.nakshatra.nakshatra.toLowerCase().replace(/\s+/g, "_");
   const nakshatraSign = NAKSHATRA_TO_SIGN[nakshatraKey];
