@@ -30,7 +30,7 @@ import { getAllFestivals, getFestivalBySlug } from "@/data/festivals";
 import type { Festival } from "@/data/festivals";
 import { getFestivalContent } from "@/data/festival-content";
 import type { FestivalContent } from "@/data/festival-content";
-import { fetchPanchang } from "@/lib/api";
+import { fetchPanchangBuildSafe } from "@/lib/api";
 import type { PanchangResponse, FestivalEntry, VratEntry } from "@/schemas/panchang";
 import {
   formatDate,
@@ -79,7 +79,7 @@ function getFestivalHeroImage(slug: string): string | null {
   return FESTIVAL_HERO_IMAGES[baseName] || null;
 }
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -95,6 +95,13 @@ function slugToApiKey(slug: string): string {
   return slug.replace(/-\d{4}$/, "").replace(/-/g, "_");
 }
 
+// At build phase: a single fetch only — fallback ±1-day lookups are a
+// runtime concern and would push per-page render past the 180s ceiling
+// when upstream is slow. Pages built without API data render the full
+// static layer (hero, story, traditions, content) and ISR upgrades them
+// on the next runtime hit.
+const IS_BUILDING = process.env.NEXT_PHASE === "phase-production-build";
+
 async function fetchFestivalData(festival: Festival) {
   const apiKey = slugToApiKey(festival.slug);
   const loc = {
@@ -107,38 +114,40 @@ async function fetchFestivalData(festival: Festival) {
   let actualDate = festival.date;
 
   try {
-    data = await fetchPanchang({ targetDate: festival.date, ...loc }, 3600);
+    data = await fetchPanchangBuildSafe({ targetDate: festival.date, ...loc }, 3600);
   } catch {
     data = null;
   }
 
-  const hasMatch = data?.festivals?.some((f) => f.key === apiKey);
+  if (!IS_BUILDING) {
+    const hasMatch = data?.festivals?.some((f) => f.key === apiKey);
 
-  if (!hasMatch && data) {
-    const nextDay = shiftDate(festival.date, 1);
-    try {
-      const nextData = await fetchPanchang({ targetDate: nextDay, ...loc }, 3600);
-      const nextMatch = nextData.festivals?.some((f) => f.key === apiKey);
-      if (nextMatch) {
-        data = nextData;
-        actualDate = nextDay;
+    if (!hasMatch && data) {
+      const nextDay = shiftDate(festival.date, 1);
+      try {
+        const nextData = await fetchPanchangBuildSafe({ targetDate: nextDay, ...loc }, 3600);
+        const nextMatch = nextData?.festivals?.some((f) => f.key === apiKey);
+        if (nextData && nextMatch) {
+          data = nextData;
+          actualDate = nextDay;
+        }
+      } catch {
+        // Keep the original data
       }
-    } catch {
-      // Keep the original data
     }
-  }
 
-  if (!data?.festivals?.some((f) => f.key === apiKey) && data) {
-    const prevDay = shiftDate(festival.date, -1);
-    try {
-      const prevData = await fetchPanchang({ targetDate: prevDay, ...loc }, 3600);
-      const prevMatch = prevData.festivals?.some((f) => f.key === apiKey);
-      if (prevMatch) {
-        data = prevData;
-        actualDate = prevDay;
+    if (!data?.festivals?.some((f) => f.key === apiKey) && data) {
+      const prevDay = shiftDate(festival.date, -1);
+      try {
+        const prevData = await fetchPanchangBuildSafe({ targetDate: prevDay, ...loc }, 3600);
+        const prevMatch = prevData?.festivals?.some((f) => f.key === apiKey);
+        if (prevData && prevMatch) {
+          data = prevData;
+          actualDate = prevDay;
+        }
+      } catch {
+        // Keep the original data
       }
-    } catch {
-      // Keep the original data
     }
   }
 
