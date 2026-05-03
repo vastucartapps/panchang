@@ -25,7 +25,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  if (!city) notFound();
 
   return {
     title: `Rahu Kaal in ${city.name} Today — Timing & How to Observe`,
@@ -92,7 +92,6 @@ export default async function RahuKaalCityHubPage({ params }: PageProps) {
           { name: "Rahu Kaal Today", url: `${SITE_CONFIG.url}/rahu-kaal-today` },
           { name: city.name, url: `${SITE_CONFIG.url}/rahu-kaal/${city.slug}` },
         ]}
-        faqs={faqs}
       />
 
       <section

@@ -5,7 +5,7 @@ import { Moon, MapPin } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
 import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
 import { buildCityTopicQAPageSchema } from "@/lib/schema";
-import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, formatTime12h, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getCityMoonPhaseFaqs } from "@/lib/faqs";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -33,12 +33,13 @@ function isValidDate(dateStr: string): boolean {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidDate(date)) return {};
+  if (!city || !isValidDate(date)) notFound();
 
   const shortDate = formatDateShort(date);
 
   let phaseName = "";
   let illumination = 0;
+  let moonrise = "";
   try {
     const data = await fetchPanchang({
       targetDate: date,
@@ -48,17 +49,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
     phaseName = data.moon_phase.phase_name;
     illumination = Math.round(data.moon_phase.illumination_percent);
+    // moon_phase carries moonrise/moonset (per-city) — try several known field
+    // names for robustness against API shape evolution.
+    const mp = data.moon_phase as unknown as Record<string, string | undefined>;
+    const mr = mp.moonrise || mp.moonrise_time || mp.moon_rise;
+    if (mr && typeof mr === "string") moonrise = formatTime12h(mr);
   } catch {}
 
-  const titleText = phaseName
-    ? `Moon Phase ${city.name} ${shortDate} — ${phaseName}`
-    : `Moon Phase ${city.name} ${shortDate} — Illumination & Paksha`;
+  // Moon phase + illumination are global; moonrise time is per-city. Adding
+  // moonrise turns 216 cities × same-day phase into 216 unique titles.
+  const titleText = phaseName && moonrise
+    ? `Moon Phase ${city.name} ${shortDate} — ${phaseName}, Moonrise ${moonrise}`
+    : phaseName
+      ? `Moon Phase ${city.name} ${shortDate} — ${phaseName} (${illumination}% illumination)`
+      : `Moon Phase ${city.name} ${shortDate} — Illumination & Paksha`;
 
   return {
     title: titleText,
-    description: phaseName
-      ? `${phaseName} (${illumination}% illumination) in ${city.name} on ${shortDate}. Lunar phase, Paksha & age. Vedic significance updated daily.`
-      : `Moon phase details for ${city.name} on ${shortDate}. Illumination, Paksha & lunar age. Vedic significance updated daily.`,
+    description: phaseName && moonrise
+      ? `${phaseName} (${illumination}% illumination) in ${city.name} on ${shortDate}. Moonrise ${moonrise}, Paksha & lunar age. Sunrise-anchored Vedic calendar.`
+      : phaseName
+        ? `${phaseName} (${illumination}% illumination) in ${city.name} on ${shortDate}. Lunar phase, Paksha & age. Vedic significance updated daily.`
+        : `Moon phase details for ${city.name} on ${shortDate}. Illumination, Paksha & lunar age. Vedic significance updated daily.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/moon-phase-today/${date}`,
     },
@@ -115,7 +127,6 @@ export default async function CityMoonPhaseDatePage({ params }: PageProps) {
           { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
           { name: `Moon Phase - ${formatDate(date)}`, url: `${SITE_CONFIG.url}/${city.slug}/moon-phase-today/${date}` },
         ]}
-        faqs={cityFaqs}
       />
 
       <section
@@ -161,6 +172,49 @@ export default async function CityMoonPhaseDatePage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {/* Per-day narrative — references this city's actual computed phase
+            and paksha so the prose changes per date. */}
+        <article className="mt-10 space-y-4 rounded-2xl border bg-card p-6 sm:p-8">
+          <h2 className="heading-display text-xl font-bold text-[var(--color-vedic)] sm:text-2xl">
+            {moon_phase.phase_name} in {city.name} on {formatDateShort(date)}
+          </h2>
+          <p className="text-base leading-relaxed text-foreground">
+            The Moon today shows{" "}
+            <strong>{moon_phase.illumination_percent}% illumination</strong>{" "}
+            from the perspective of Earth, marking the{" "}
+            <strong>{moon_phase.phase_name}</strong> phase of the lunar
+            cycle. The Moon is currently in{" "}
+            <strong>{moon_phase.paksha}</strong>{" "}
+            — the {moon_phase.paksha?.toLowerCase().includes("shukla") ? "waxing fortnight, half-moon-to-Purnima ascent that traditionally favors growth, public action, and new beginnings" : "waning fortnight, half-moon-to-Amavasya descent that classically supports introspection, completion of pending work, and pitru tarpan offerings to ancestors"}.
+            Moon age this morning was{" "}
+            <strong>{moon_phase.age_days.toFixed(1)} days</strong> from the
+            preceding Amavasya — about{" "}
+            {(moon_phase.age_days / 29.5 * 100).toFixed(0)}% through the
+            ~29.5-day synodic cycle.
+          </p>
+          <p className="text-base leading-relaxed text-foreground">
+            In the Vedic calendar, the Moon&apos;s phase is the visible
+            counterpart of the Tithi — every 12° of angular separation between
+            Sun and Moon equals one Tithi, and a complete cycle gives the 30
+            Tithis of a lunar month. While the phase percentage and phase name
+            are the same globally at any instant, <strong>moonrise and
+            moonset times in {city.name}</strong> differ from other cities
+            because they depend on local longitude and latitude.
+          </p>
+          <p className="text-base leading-relaxed text-foreground">
+            Important Moon-anchored observances tied to specific phases include
+            Purnima (Full Moon — Satyanarayan Vrat, Guru Purnima), Amavasya
+            (New Moon — Shradh, Pitru Paksha), Ekadashi (11th Tithi of either
+            paksha — fasting), and Pradosh Vrat (the Trayodashi twilight). For
+            the complete Vedic snapshot in {city.name} today including Tithi,
+            Nakshatra, sunrise, and Rahu Kaal, see{" "}
+            <Link href={`/${city.slug}/${date}`} className="text-[var(--color-saffron)] hover:underline">
+              {city.name}&apos;s full Panchang for {formatDateShort(date)}
+            </Link>
+            .
+          </p>
+        </article>
 
         <div className="mt-10 space-y-6">
           <div className="flex items-center justify-center">

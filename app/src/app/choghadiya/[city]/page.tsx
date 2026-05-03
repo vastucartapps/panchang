@@ -25,7 +25,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  if (!city) notFound();
   return {
     title: `Choghadiya in ${city.name} Today — Shubh Muhurat & Period Guide`,
     description: `Today's Choghadiya periods for ${city.name}, ${city.state}. Eight 90-minute time-quality windows — find Shubh, Labh, Amrit (auspicious) and Rog, Kaal (inauspicious) muhurtas for travel and business.`,
@@ -88,6 +88,9 @@ export default async function ChoghadiyaCityHubPage({ params }: PageProps) {
           }}
         />
       )}
+      {/* FAQPage schema removed — same FAQs city-substituted across 200+
+          programmatic hubs is the spam pattern Google penalises. The
+          programmaticCityHubGraph + visible FaqSection cover the rest. */}
       <JsonLd
         city={city.name}
         breadcrumbs={[
@@ -95,7 +98,6 @@ export default async function ChoghadiyaCityHubPage({ params }: PageProps) {
           { name: "Choghadiya Today", url: `${SITE_CONFIG.url}/choghadiya-today` },
           { name: city.name, url: `${SITE_CONFIG.url}/choghadiya/${city.slug}` },
         ]}
-        faqs={faqs}
       />
 
       <section

@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
 import { getCityBySlug, getTopCitySlugs } from "@/lib/cities";
-import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, formatTime12h, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
 import { HeroSection } from "@/components/hero/hero-section";
@@ -47,7 +47,7 @@ export async function generateMetadata({
 }: CityDatePageProps): Promise<Metadata> {
   const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidDate(date)) return {};
+  if (!city || !isValidDate(date)) notFound();
 
   const formattedDate = formatDate(date);
   const shortDate = formatDateShort(date);
@@ -55,6 +55,7 @@ export async function generateMetadata({
   // Fetch panchang data for data-rich title (Next.js deduplicates with page fetch)
   let tithi = "";
   let nakshatra = "";
+  let sunrise = "";
   try {
     const data = await fetchPanchang({
       targetDate: date,
@@ -64,17 +65,26 @@ export async function generateMetadata({
     });
     tithi = data.day_quality.breakdown.tithi.name;
     nakshatra = data.day_quality.breakdown.nakshatra.name;
+    sunrise = formatTime12h(data.timing.sunrise);
   } catch {
     // Fallback handled below
   }
 
-  const titleText = tithi && nakshatra
-    ? `${city.name} Panchang ${shortDate} — ${tithi}, ${nakshatra}`
-    : `${city.name} Panchang ${shortDate}`;
+  // Sunrise time is per-city unique (Tithi/Nakshatra are global). Including
+  // sunrise here keeps 216 cities × this date from collapsing as near-dupes.
+  const titleText = tithi && sunrise
+    ? `${city.name} Panchang ${shortDate} — Sunrise ${sunrise}, ${tithi}`
+    : tithi
+      ? `${city.name} Panchang ${shortDate} — ${tithi}`
+      : `${city.name} Panchang ${shortDate}`;
+
+  const description = sunrise && tithi
+    ? `${city.name} Panchang for ${formattedDate}: Sunrise ${sunrise}, ${tithi}${nakshatra ? `, ${nakshatra}` : ""}. Yoga, Karana, Rahu Kaal & Choghadiya timings calculated from ${city.name}'s local sunrise.`
+    : `Panchang for ${city.name}, ${city.state} on ${formattedDate}. Accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for ${city.name}.`;
 
   return {
     title: { absolute: titleText },
-    description: `Panchang for ${city.name}, ${city.state} on ${formattedDate}. Accurate Tithi, Nakshatra, Yoga, Karana, Rahu Kaal, Choghadiya timings for ${city.name}.`,
+    description,
     alternates: {
       canonical: date === getTodayISO()
         ? `${SITE_CONFIG.url}/${city.slug}`
@@ -138,7 +148,7 @@ export default async function CityDatePanchangPage({
         <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
           <div className="flex flex-col items-center text-center">
             <h1 className="animate-fade-in-up heading-display text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-              Panchang &mdash; {city.name}
+              {city.name} Panchang &mdash; {formatDateShort(date)}
             </h1>
             <div className="mt-4 h-px w-24 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
             <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">
@@ -161,6 +171,9 @@ export default async function CityDatePanchangPage({
       </section>
 
       <div className="mx-auto max-w-[92%] overflow-hidden px-4 py-6 sm:px-6">
+        {/* No FAQPage schema on the date template — same 8 substituted FAQs
+            across 216 cities × 270 dates ≈ 58K identical FAQ blocks. Article
+            schema below + visible FaqSection cover the user/Google needs. */}
         <JsonLd
           city={city.name}
           breadcrumbs={[
@@ -168,7 +181,6 @@ export default async function CityDatePanchangPage({
             { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
             { name: formatDate(date), url: `${SITE_CONFIG.url}/${city.slug}/${date}` },
           ]}
-          faqs={faqs}
         />
         <script
           type="application/ld+json"

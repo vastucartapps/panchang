@@ -1,5 +1,15 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
+import type { Metadata } from "next";
+
+// Belt-and-suspenders: even if Next/CDN serves the not-found UI as HTTP 200
+// instead of 404 (stale ISR cache), Google must not index this boilerplate.
+// Without this, /madeupcity-style invalid slugs were getting indexed as
+// near-duplicates of every other invalid slug.
+export const metadata: Metadata = {
+  title: "City Not Found",
+  robots: { index: false, follow: false },
+};
 
 export default function CityNotFound() {
   return (

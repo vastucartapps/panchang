@@ -25,7 +25,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  if (!city) notFound();
   return {
     title: `Nakshatra in ${city.name} Today — Aaj Ka Nakshatra with Pada & Lord`,
     description: `Today's Nakshatra for ${city.name}, ${city.state} — lunar mansion with Pada, deity, lord, and Gana. Sunrise-anchored per the Vedic Drik Ganita system.`,
@@ -90,7 +90,6 @@ export default async function TodaysNakshatraCityHubPage({ params }: PageProps) 
           { name: "Aaj Ka Nakshatra", url: `${SITE_CONFIG.url}/todays-nakshatra` },
           { name: city.name, url: `${SITE_CONFIG.url}/todays-nakshatra/${city.slug}` },
         ]}
-        faqs={faqs}
       />
 
       <section

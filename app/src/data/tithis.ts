@@ -296,3 +296,22 @@ export function getTithiBySlug(slug: string): Tithi | undefined {
 export function getTithiSlugs(): string[] {
   return TITHIS.map((t) => t.slug);
 }
+
+/**
+ * Look up a Tithi by its display name as returned by the upstream panchang
+ * API (e.g. "Pratipada", "PRATIPADA", "Chaturdashi"). Used by
+ * /[city]/todays-tithi/[date] to wire 700-char unique body content per
+ * Tithi into otherwise data-only pages.
+ */
+export function getTithiByName(name: string): Tithi | undefined {
+  // API may return paksha-prefixed names like "Shukla Pratipada" — strip any
+  // paksha prefix and match on the canonical Tithi name only.
+  const stripped = name
+    .trim()
+    .toLowerCase()
+    .replace(/^(shukla|krishna)\s+/i, "");
+  const slugified = stripped.replace(/\s+/g, "-");
+  return TITHIS.find(
+    (t) => t.slug === slugified || t.name.toLowerCase() === stripped
+  );
+}

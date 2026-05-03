@@ -581,3 +581,17 @@ export function getNakshatraBySlug(slug: string): Nakshatra | undefined {
 export function getNakshatraSlugs(): string[] {
   return NAKSHATRAS.map((n) => n.slug);
 }
+
+/**
+ * Look up a Nakshatra by its display name as returned by the upstream
+ * panchang API (e.g. "Ashwini", "ASHWINI", "Punarvasu", "Uttara Phalguni").
+ * Used by /[city]/todays-nakshatra/[date] to wire 800-char unique body
+ * content per Nakshatra into otherwise data-only pages.
+ */
+export function getNakshatraByName(name: string): Nakshatra | undefined {
+  const normalized = name.trim().toLowerCase();
+  const slugified = normalized.replace(/\s+/g, "-");
+  return NAKSHATRAS.find(
+    (n) => n.slug === slugified || n.name.toLowerCase() === normalized
+  );
+}

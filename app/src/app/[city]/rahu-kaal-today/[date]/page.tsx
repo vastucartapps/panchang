@@ -32,7 +32,7 @@ function isValidDate(dateStr: string): boolean {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidDate(date)) return {};
+  if (!city || !isValidDate(date)) notFound();
 
   const formattedDate = formatDate(date);
   const shortDate = formatDateShort(date);
@@ -117,7 +117,6 @@ export default async function CityRahuKaalDatePage({ params }: PageProps) {
           { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
           { name: `Rahu Kaal - ${formatDate(date)}`, url: `${SITE_CONFIG.url}/${city.slug}/rahu-kaal-today/${date}` },
         ]}
-        faqs={cityFaqs}
       />
 
       {/* Hero */}

@@ -61,7 +61,7 @@ function formatWeekRange(dates: string[]): string {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, weekId } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidWeekStart(weekId)) return {};
+  if (!city || !isValidWeekStart(weekId)) notFound();
 
   const dates = getWeekDates(weekId);
   const startDate = parseISO(dates[0]);

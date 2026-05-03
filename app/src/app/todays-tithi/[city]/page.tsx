@@ -25,7 +25,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  if (!city) notFound();
   return {
     title: `Tithi in ${city.name} Today — Aaj Ki Tithi with Paksha & Deity`,
     description: `Today's Tithi for ${city.name}, ${city.state} — the lunar day with Paksha, deity, nature, and category. Sunrise-anchored calculation per the Vedic Drik Ganita system.`,
@@ -90,7 +90,6 @@ export default async function TodaysTithiCityHubPage({ params }: PageProps) {
           { name: "Aaj Ki Tithi", url: `${SITE_CONFIG.url}/todays-tithi` },
           { name: city.name, url: `${SITE_CONFIG.url}/todays-tithi/${city.slug}` },
         ]}
-        faqs={faqs}
       />
 
       <section

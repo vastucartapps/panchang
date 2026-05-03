@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { Home } from "lucide-react";
+import type { Metadata } from "next";
+
+// Belt-and-suspenders: even if a CDN/Next stale cache serves this UI as
+// HTTP 200 instead of 404, Google must not index the boilerplate.
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (

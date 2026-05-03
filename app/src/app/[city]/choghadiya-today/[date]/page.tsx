@@ -32,15 +32,35 @@ function isValidDate(dateStr: string): boolean {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidDate(date)) return {};
+  if (!city || !isValidDate(date)) notFound();
 
   const formattedDate = formatDate(date);
   const shortDate = formatDateShort(date);
-  const titleText = `Choghadiya ${city.name} ${shortDate} — Shubh & Ashubh Timings`;
+
+  // Choghadiya boundaries derive from local sunrise — fetch to differentiate
+  // 216 cities that would otherwise share the same generic title.
+  let sunrise = "";
+  let firstChoghadiya = "";
+  try {
+    const data = await fetchPanchang({
+      targetDate: date,
+      latitude: city.lat,
+      longitude: city.lng,
+      timezone: city.tz,
+    });
+    sunrise = formatTime12h(data.timing.sunrise);
+    firstChoghadiya = data.choghadiya?.day_periods?.[0]?.name ?? "";
+  } catch {}
+
+  const titleText = sunrise
+    ? `Choghadiya ${city.name} ${shortDate} — From Sunrise ${sunrise}${firstChoghadiya ? ` (${firstChoghadiya})` : ""}`
+    : `Choghadiya ${city.name} ${shortDate} — Shubh & Ashubh Timings`;
 
   return {
     title: { absolute: titleText },
-    description: `Choghadiya timings for ${city.name}, ${city.state} on ${formattedDate}. Find Amrit, Shubh, Labh, Chal, Rog, Kaal, and Udveg periods.`,
+    description: sunrise
+      ? `${city.name} Choghadiya for ${formattedDate} — eight 90-minute windows starting at sunrise (${sunrise}). Amrit, Shubh, Labh auspicious; Rog, Kaal, Udveg avoided. Local-sunrise calculation.`
+      : `Choghadiya timings for ${city.name}, ${city.state} on ${formattedDate}. Find Amrit, Shubh, Labh, Chal, Rog, Kaal, and Udveg periods.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/choghadiya-today/${date}`,
     },
@@ -74,10 +94,21 @@ export default async function CityChoghadiyaDatePage({ params }: PageProps) {
   });
   if (!data) notFound();
 
-  const { choghadiya } = data;
+  const { choghadiya, timing } = data;
   const cityFaqs = getCityChoghadiyaFaqs(city.name, city.state);
   const otherCities = getNearbyCities(citySlug, 8);
   const firstDayPeriod = choghadiya.day_periods?.[0];
+  // Per-day auspicious-window summary: pick the first Amrit, Shubh, and
+  // Labh occurrences in today's day periods so the prose narrative below
+  // references concrete computed values for THIS city + THIS date.
+  const auspiciousNames = ["Amrit", "Shubh", "Labh"];
+  const auspiciousToday = (choghadiya.day_periods || [])
+    .filter((p) => auspiciousNames.some((n) => p.name?.includes(n)))
+    .slice(0, 3);
+  const inauspiciousNames = ["Rog", "Kaal", "Udveg"];
+  const firstInauspicious = (choghadiya.day_periods || []).find((p) =>
+    inauspiciousNames.some((n) => p.name?.includes(n))
+  );
   const qaSchema = buildCityTopicQAPageSchema({
     cityName: city.name,
     citySlug,
@@ -106,7 +137,6 @@ export default async function CityChoghadiyaDatePage({ params }: PageProps) {
           { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
           { name: `Choghadiya - ${formatDate(date)}`, url: `${SITE_CONFIG.url}/${city.slug}/choghadiya-today/${date}` },
         ]}
-        faqs={cityFaqs}
       />
 
       <section
@@ -163,6 +193,69 @@ export default async function CityChoghadiyaDatePage({ params }: PageProps) {
             );
           })}
         </div>
+
+        {/* Per-day narrative prose. Values inline below come from THIS city's
+            sunrise + computed periods so the article changes by date AND
+            city — fixing the 5-of-7 zero-prose templates audit finding. */}
+        <article className="mt-10 space-y-4 rounded-2xl border bg-card p-6 sm:p-8">
+          <h2 className="heading-display text-xl font-bold text-[var(--color-vedic)] sm:text-2xl">
+            How to use Choghadiya in {city.name} on {formatDateShort(date)}
+          </h2>
+          <p className="text-base leading-relaxed text-foreground">
+            Choghadiya divides {city.name}&apos;s daylight — from sunrise at{" "}
+            <strong>{formatTime12h(timing.sunrise)}</strong> to sunset at{" "}
+            <strong>{formatTime12h(timing.sunset)}</strong> — into eight
+            equal 90-minute periods, each carrying a quality classification
+            inherited from the planetary lord governing that segment. Because
+            the segmentation anchors to {city.name}&apos;s local sunrise, the
+            period start times above shift from cities just a few longitude
+            degrees away by several minutes; on Amrit/Shubh transitions a
+            household in Mumbai may be in Labh while one in Kolkata is already
+            in Char.
+          </p>
+          {auspiciousToday.length > 0 && (
+            <p className="text-base leading-relaxed text-foreground">
+              <strong>Auspicious windows today</strong> in {city.name} include{" "}
+              {auspiciousToday.map((p, i) => (
+                <span key={i}>
+                  {i > 0 && (i === auspiciousToday.length - 1 ? ", and " : ", ")}
+                  <strong>{p.name}</strong> ({formatTime12h(p.start_time)}–{formatTime12h(p.end_time)})
+                </span>
+              ))}
+              . These are the periods to schedule new ventures, contract
+              signings, vehicle purchases, and travel starts. Amrit is the
+              most concentrated auspiciousness; Shubh suits ceremonies and
+              rituals; Labh favors financial and profit-oriented work.
+            </p>
+          )}
+          {firstInauspicious && (
+            <p className="text-base leading-relaxed text-foreground">
+              The day&apos;s first inauspicious window in {city.name} is{" "}
+              <strong>{firstInauspicious.name}</strong> from{" "}
+              {formatTime12h(firstInauspicious.start_time)} to{" "}
+              {formatTime12h(firstInauspicious.end_time)}. Traditional practice
+              avoids new initiations during Rog (illness), Kaal (death/time),
+              and Udveg (anxiety) Choghadiya, though Udveg is held acceptable
+              for government work and dealings with authority. Existing work
+              already underway can continue without concern — Choghadiya
+              quality primarily affects the moment of beginning.
+            </p>
+          )}
+          <p className="text-base leading-relaxed text-foreground">
+            Night Choghadiya runs from sunset to next sunrise on a separate
+            8-period cycle — useful when planning late-evening ceremonies or
+            overnight journeys. For the complete Vedic snapshot today including
+            Tithi, Nakshatra, Yoga, Karana, Rahu Kaal and Hora alongside
+            Choghadiya, see{" "}
+            <Link
+              href={`/${city.slug}/${date}`}
+              className="text-[var(--color-saffron)] hover:underline"
+            >
+              {city.name}&apos;s full Panchang for {formatDateShort(date)}
+            </Link>
+            .
+          </p>
+        </article>
 
         <div className="mt-10 space-y-6">
           <div className="flex items-center justify-center">

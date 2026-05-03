@@ -5,10 +5,11 @@ import { Moon, MapPin } from "lucide-react";
 import { fetchPanchang, fetchPanchangBuildSafe } from "@/lib/api";
 import { getCityBySlug, getNearbyCities, getTopCitySlugs } from "@/lib/cities";
 import { buildCityTopicQAPageSchema } from "@/lib/schema";
-import { formatDate, formatDateShort, getTodayISO } from "@/lib/format";
+import { formatDate, formatDateShort, formatTime12h, getTodayISO } from "@/lib/format";
 import { SITE_CONFIG } from "@/lib/constants";
 import { getNatureStyle } from "@/lib/constants";
 import { getCityTithiFaqs } from "@/lib/faqs";
+import { getTithiByName } from "@/data/tithis";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/seo/faq-section";
 
@@ -33,11 +34,12 @@ function isValidDate(dateStr: string): boolean {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidDate(date)) return {};
+  if (!city || !isValidDate(date)) notFound();
 
   const shortDate = formatDateShort(date);
 
   let tithiName = "";
+  let sunrise = "";
   try {
     const data = await fetchPanchang({
       targetDate: date,
@@ -46,17 +48,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       timezone: city.tz,
     });
     tithiName = data.day_quality.breakdown.tithi.name;
+    sunrise = formatTime12h(data.timing.sunrise);
   } catch {}
 
-  const titleText = tithiName
-    ? `Aaj Ki Tithi ${city.name} ${shortDate} — ${tithiName}`
-    : `Aaj Ki Tithi ${city.name} ${shortDate} — Lunar Day`;
+  // Tithi prevails at sunrise — including sunrise time in the title turns
+  // 216 cities × otherwise-identical Tithi-name suffixes into 216 unique titles.
+  const titleText = tithiName && sunrise
+    ? `Tithi ${city.name} ${shortDate} — ${tithiName} (Sunrise ${sunrise})`
+    : tithiName
+      ? `Aaj Ki Tithi ${city.name} ${shortDate} — ${tithiName}`
+      : `Aaj Ki Tithi ${city.name} ${shortDate} — Lunar Day`;
 
   return {
     title: titleText,
-    description: tithiName
-      ? `${tithiName} in ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi details for Vedic rituals and fasting.`
-      : `Tithi details for ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi for Vedic rituals and fasting.`,
+    description: tithiName && sunrise
+      ? `${tithiName} prevails at ${city.name}'s sunrise (${sunrise}) on ${shortDate}. Paksha, deity, category & elapsed percentage — sunrise-anchored per Drik Ganita.`
+      : tithiName
+        ? `${tithiName} in ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi details for Vedic rituals and fasting.`
+        : `Tithi details for ${city.name} on ${shortDate}. Paksha, deity, nature & elapsed time. Accurate Tithi for Vedic rituals and fasting.`,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}/todays-tithi/${date}`,
     },
@@ -88,6 +97,22 @@ export default async function CityTithiDatePage({ params }: PageProps) {
   const style = getNatureStyle(tithi.nature);
   const cityFaqs = getCityTithiFaqs(city.name, city.state);
   const otherCities = getNearbyCities(citySlug, 8);
+  // Authoritative Tithi entry — 16 unique 700-char bodies + paksha-specific
+  // observances. Each city-date page rendering Pratipada gets the same
+  // Pratipada prose; that's correct (the Tithi itself is shared) — what makes
+  // city pages distinct is the paksha + sunrise + festivals layer above.
+  const tithiInfo = getTithiByName(tithi.tithi);
+  const isShukla = (tithi.paksha || "").toLowerCase().includes("shukla");
+  const pakshaDeity = tithiInfo
+    ? isShukla
+      ? tithiInfo.shuklaDeity
+      : tithiInfo.krishnaDeity
+    : null;
+  const pakshaObservance = tithiInfo
+    ? isShukla
+      ? tithiInfo.shuklaObservance
+      : tithiInfo.krishnaObservance
+    : null;
   const qaSchema = buildCityTopicQAPageSchema({
     cityName: city.name,
     citySlug,
@@ -107,6 +132,8 @@ export default async function CityTithiDatePage({ params }: PageProps) {
           }}
         />
       )}
+      {/* FAQPage schema removed — see /[city]/page.tsx comment. QAPage above
+          carries the day-and-city-specific structured Q/A. */}
       <JsonLd
         city={city.name}
         breadcrumbs={[
@@ -114,7 +141,6 @@ export default async function CityTithiDatePage({ params }: PageProps) {
           { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
           { name: `Tithi - ${formatDate(date)}`, url: `${SITE_CONFIG.url}/${city.slug}/todays-tithi/${date}` },
         ]}
-        faqs={cityFaqs}
       />
 
       <section
@@ -179,6 +205,79 @@ export default async function CityTithiDatePage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {/* Authoritative Tithi prose — sourced from data/tithis.ts. 16
+            distinct 700-char bodies × paksha-specific observances make this
+            page genuinely substantive content, not a data card. */}
+        {tithiInfo && (
+          <article className="mt-10 space-y-5 rounded-2xl border bg-card p-6 sm:p-8">
+            <div>
+              <h2 className="heading-display text-2xl font-bold text-[var(--color-vedic)] sm:text-3xl">
+                {tithiInfo.name} Tithi
+                <span className="ml-2 align-middle text-base font-normal text-muted-foreground">
+                  {tithiInfo.devanagari} · {tithi.paksha} Paksha
+                </span>
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {tithiInfo.categoryMeaning}
+              </p>
+            </div>
+            <p className="text-base leading-relaxed text-foreground">
+              {tithiInfo.body}
+            </p>
+            {pakshaObservance && (
+              <div className="rounded-xl border-l-4 border-[var(--color-saffron)]/60 bg-[var(--color-saffron)]/5 p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-saffron)]">
+                  {tithi.paksha} Paksha · Observance
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-foreground">
+                  {pakshaObservance}
+                </p>
+                {pakshaDeity && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Presiding deity: <span className="text-foreground">{pakshaDeity}</span>
+                  </p>
+                )}
+              </div>
+            )}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl bg-emerald-50 p-4 dark:bg-emerald-950/30">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                  Favorable for
+                </p>
+                <ul className="mt-2 space-y-1 text-sm text-foreground">
+                  {tithiInfo.favorable.map((f) => (
+                    <li key={f} className="flex gap-1.5">
+                      <span className="text-emerald-600">✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-xl bg-rose-50 p-4 dark:bg-rose-950/30">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-300">
+                  Best avoided
+                </p>
+                <ul className="mt-2 space-y-1 text-sm text-foreground">
+                  {tithiInfo.avoid.map((a) => (
+                    <li key={a} className="flex gap-1.5">
+                      <span className="text-rose-600">✕</span>
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="pt-2">
+              <Link
+                href={`/tithi/${tithiInfo.slug}`}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-saffron)] hover:underline"
+              >
+                Deep dive into {tithiInfo.name} Tithi →
+              </Link>
+            </div>
+          </article>
+        )}
 
         <div className="mt-10 space-y-6">
           <div className="flex items-center justify-center">

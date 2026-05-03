@@ -67,49 +67,49 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
+    // Security headers apply to every response (HTML, XML, JS, JSON).
+    // X-Robots-Tag is HTML-only — Google has been observed treating
+    // unrecognised X-Robots-Tag directives on /sitemap.xml conservatively,
+    // so we never attach `noai, noimageai` to non-HTML responses.
+    const securityHeaders = [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-Frame-Options", value: "SAMEORIGIN" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      {
+        key: "Permissions-Policy",
+        value: "geolocation=(self), camera=(), microphone=()",
+      },
+      {
+        key: "Strict-Transport-Security",
+        value: "max-age=63072000; includeSubDomains; preload",
+      },
+      {
+        key: "Content-Security-Policy",
+        value: [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+          "style-src 'self' 'unsafe-inline'",
+          "img-src 'self' data: blob: https://api.vastucart.in https://vastucart.in https://www.google-analytics.com https://www.googletagmanager.com",
+          "connect-src 'self' https://api.vastucart.in https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://stats.g.doubleclick.net",
+          "font-src 'self'",
+          "frame-ancestors 'self'",
+          "base-uri 'self'",
+          "form-action 'self'",
+        ].join("; "),
+      },
+    ];
+
     return [
       {
+        // X-Robots-Tag — exclude XML feeds (sitemap, RSS), JS (sw.js),
+        // JSON, and any /api/* response. Effectively HTML-only.
+        source:
+          "/((?!api/|sitemap\\.xml|sitemap/|robots\\.txt|sw\\.js|feed/|.*\\.(?:xml|json|js|css|png|jpg|jpeg|svg|webp|ico|woff|woff2|ttf|otf|map|txt)).*)",
+        headers: [{ key: "X-Robots-Tag", value: "noai, noimageai" }],
+      },
+      {
         source: "/(.*)",
-        headers: [
-          {
-            key: "X-Robots-Tag",
-            value: "noai, noimageai",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "X-Frame-Options",
-            value: "SAMEORIGIN",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "geolocation=(self), camera=(), microphone=()",
-          },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://api.vastucart.in https://vastucart.in https://www.google-analytics.com https://www.googletagmanager.com",
-              "connect-src 'self' https://api.vastucart.in https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://stats.g.doubleclick.net",
-              "font-src 'self'",
-              "frame-ancestors 'self'",
-              "base-uri 'self'",
-              "form-action 'self'",
-            ].join("; "),
-          },
-        ],
+        headers: securityHeaders,
       },
     ];
   },

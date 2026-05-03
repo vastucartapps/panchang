@@ -32,7 +32,7 @@ function isValidDate(dateStr: string): boolean {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, date } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidDate(date)) return {};
+  if (!city || !isValidDate(date)) notFound();
 
   const shortDate = formatDateShort(date);
 
@@ -118,7 +118,6 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
           { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
           { name: `Sunrise & Sunset - ${formatDate(date)}`, url: `${SITE_CONFIG.url}/${city.slug}/sunrise-sunset/${date}` },
         ]}
-        faqs={cityFaqs}
       />
 
       <section
@@ -226,6 +225,60 @@ export default async function CitySunriseSunsetDatePage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {/* Per-day narrative prose. References this city's actual computed
+            sunrise/sunset/dinamana so the prose changes per date AND per city. */}
+        <article className="mt-10 space-y-4 rounded-2xl border bg-card p-6 sm:p-8">
+          <h2 className="heading-display text-xl font-bold text-[var(--color-vedic)] sm:text-2xl">
+            Sunrise, sunset & sacred windows in {city.name} on {formatDateShort(date)}
+          </h2>
+          <p className="text-base leading-relaxed text-foreground">
+            On {formatDate(date)}, {city.name} sees sunrise at{" "}
+            <strong>{formatTime12h(timing.sunrise)}</strong> and sunset at{" "}
+            <strong>{formatTime12h(timing.sunset)}</strong>, giving a Dinamana
+            (daylight duration) of <strong>{dinamanaHours} hours {dinamanaMinutes} minutes</strong>.
+            Dinamana shifts continuously through the year — longest near the
+            summer solstice in mid-June and shortest near the winter solstice
+            in late December — and every Vedic time period that anchors to
+            sunrise (Rahu Kaal, Yamagandam, Gulika, the eight day Choghadiya
+            slots, the day Hora cycle) elongates or compresses with it.
+          </p>
+          <p className="text-base leading-relaxed text-foreground">
+            The most sacred window for spiritual practice today is{" "}
+            <strong>Brahma Muhurta</strong>, running from{" "}
+            <strong>{timing.brahma_muhurta.start_time}</strong> to{" "}
+            <strong>{timing.brahma_muhurta.end_time}</strong> — the 96-minute
+            interval before {city.name}&apos;s sunrise. Rishis, yogis, and
+            traditional householders rise during Brahma Muhurta for meditation,
+            mantra japa, and pranayama because the mind is naturally settled
+            and the prevailing sattvic atmosphere supports inner work.
+          </p>
+          {timing.abhijit_muhurta && (
+            <p className="text-base leading-relaxed text-foreground">
+              Around solar noon, <strong>Abhijit Muhurta</strong> in {city.name}{" "}
+              runs from <strong>{timing.abhijit_muhurta.start_time}</strong> to{" "}
+              <strong>{timing.abhijit_muhurta.end_time}</strong>. This ~48-minute
+              window is considered universally auspicious for important
+              decisions, contract signings, and any new initiation — it is the
+              one Muhurta that can override otherwise unfavorable Tithi or
+              Nakshatra factors. Note that Abhijit is sometimes excluded on
+              Wednesdays in classical texts; consult the full Panchang for the
+              applicable convention.
+            </p>
+          )}
+          <p className="text-base leading-relaxed text-foreground">
+            Three inauspicious windows derived from the same sunrise–sunset
+            arc also appear today: Rahu Kaal{" "}
+            ({timing.rahu_kalam.start_time}–{timing.rahu_kalam.end_time}),
+            Yamagandam ({timing.yamagandam.start_time}–{timing.yamagandam.end_time}),
+            and Gulika Kaal ({timing.gulika_kalam.start_time}–{timing.gulika_kalam.end_time}).
+            For the complete Vedic calendar today, see{" "}
+            <Link href={`/${city.slug}/${date}`} className="text-[var(--color-saffron)] hover:underline">
+              {city.name}&apos;s full Panchang for {formatDateShort(date)}
+            </Link>
+            .
+          </p>
+        </article>
 
         <div className="mt-10 space-y-6">
           <div className="flex items-center justify-center">

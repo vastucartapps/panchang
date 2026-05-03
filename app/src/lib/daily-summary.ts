@@ -1,9 +1,12 @@
 import type { PanchangResponse } from "@/schemas/panchang";
 import { formatTime12h } from "@/lib/format";
+import { getNakshatraByName } from "@/data/nakshatras";
 
 /**
  * Generate a natural-language daily Panchang summary from the API data.
- * This is a template-based approach — no external AI calls needed.
+ * Pulls festival/vrat and Nakshatra-shakti detail so the prose changes by
+ * date (not just by city) — preventing Google's near-duplicate detector
+ * from collapsing the 333K city-date corpus to a finite combinatorial set.
  */
 export function generateDailySummary(
   data: PanchangResponse,
@@ -23,12 +26,41 @@ export function generateDailySummary(
   const tithiNature = panchang.tithi.nature.toLowerCase();
   const nakshatraNature = panchang.nakshatra.nature.toLowerCase();
 
+  // Authoritative Nakshatra entry — gives us the unique "shakti" descriptor
+  // per Nakshatra (27 distinct phrases). Inlining one increases prose
+  // entropy without enlarging the page significantly.
+  const nakshatraInfo = getNakshatraByName(
+    data.day_quality.breakdown.nakshatra.name || panchang.nakshatra.nakshatra
+  );
+
+  // Date-anchored festival / vrat — the strongest signal that THIS date is
+  // distinct from other dates. The same Tithi on different dates may have
+  // different festivals, and most Tithis carry no festival, so this varies
+  // sharply across the 333K corpus.
+  const festivalNames = (data.festivals ?? [])
+    .map((f) => f.name)
+    .filter(Boolean);
+  const vratNames = (data.vrat ?? []).map((v) => v.name).filter(Boolean);
+
   const parts: string[] = [];
 
   // Opening line
   parts.push(
     `Today's Panchang for ${cityName} shows a ${qualityDesc} day with an overall score of ${score}/100.`
   );
+
+  // Festival / vrat anchor — only if present. This is the single biggest
+  // duplication-buster because it ties prose to a specific calendar date.
+  if (festivalNames.length > 0) {
+    parts.push(
+      `${festivalNames.length === 1 ? "The day observes " : "Today's observances include "}${formatList(festivalNames)} — refer to the festival section below for muhurta and ritual details specific to ${cityName}.`
+    );
+  }
+  if (vratNames.length > 0) {
+    parts.push(
+      `Vrat (fast) observances today: ${formatList(vratNames)}.`
+    );
+  }
 
   // Tithi + Paksha
   parts.push(
@@ -37,10 +69,16 @@ export function generateDailySummary(
     }.`
   );
 
-  // Nakshatra
-  parts.push(
-    `The ruling Nakshatra is ${nakshatra} (Pada ${panchang.nakshatra.pada}), governed by ${panchang.nakshatra.lord}, and is ${nakshatraNature} — making it ${getNakshatraRecommendation(nakshatraNature)}.`
-  );
+  // Nakshatra — augmented with shakti string when available (27 unique phrases)
+  if (nakshatraInfo) {
+    parts.push(
+      `The ruling Nakshatra is ${nakshatra} (Pada ${panchang.nakshatra.pada}), governed by ${panchang.nakshatra.lord}, with the shakti of ${nakshatraInfo.shakti.split("—")[0].trim().toLowerCase()} — ${getNakshatraRecommendation(nakshatraNature)}.`
+    );
+  } else {
+    parts.push(
+      `The ruling Nakshatra is ${nakshatra} (Pada ${panchang.nakshatra.pada}), governed by ${panchang.nakshatra.lord}, and is ${nakshatraNature} — making it ${getNakshatraRecommendation(nakshatraNature)}.`
+    );
+  }
 
   // Yoga
   const yogaNature = panchang.yoga.nature.toLowerCase();

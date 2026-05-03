@@ -263,8 +263,13 @@ export async function GET(
 
   return new NextResponse(wrapUrlset(entries), {
     headers: {
-      "Content-Type": "application/xml",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control":
+        "public, max-age=600, s-maxage=3600, stale-while-revalidate=86400",
+      // Cloudflare/Vercel edge directive — authoritative when present.
+      "CDN-Cache-Control": "public, max-age=3600",
+      "Cloudflare-CDN-Cache-Control": "public, max-age=3600",
+      "X-Robots-Tag": "noindex",
     },
   });
 }

@@ -56,8 +56,20 @@ ${entries}
 
   return new NextResponse(xml, {
     headers: {
-      "Content-Type": "application/xml",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      "Content-Type": "application/xml; charset=utf-8",
+      // Browser TTL short, edge TTL long, generous SWR.
+      "Cache-Control":
+        "public, max-age=600, s-maxage=3600, stale-while-revalidate=86400",
+      // CDN-Cache-Control is a more authoritative directive for Cloudflare
+      // and Vercel's edge — they prefer it over plain Cache-Control. Without
+      // this header, CF was returning cf-cache-status: DYNAMIC for sitemaps
+      // (origin re-rendered every Googlebot fetch). Honored by CF Cache Rules
+      // as well as Vercel.
+      "CDN-Cache-Control": "public, max-age=3600",
+      "Cloudflare-CDN-Cache-Control": "public, max-age=3600",
+      // Override any inherited X-Robots-Tag with an explicit no-op so search
+      // engines treat the sitemap as a normal indexable manifest.
+      "X-Robots-Tag": "noindex",
     },
   });
 }

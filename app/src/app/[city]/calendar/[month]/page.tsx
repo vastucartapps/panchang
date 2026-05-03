@@ -64,7 +64,7 @@ function formatMonthYear(yearMonth: string): string {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { city: citySlug, month } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city || !isValidMonth(month)) return {};
+  if (!city || !isValidMonth(month)) notFound();
 
   const monthYear = formatMonthYear(month);
 

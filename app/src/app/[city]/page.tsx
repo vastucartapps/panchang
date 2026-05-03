@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { fetchPanchang } from "@/lib/api";
 import { getCityBySlug } from "@/lib/cities";
-import { getTodayISO, formatDate, formatDateShort } from "@/lib/format";
+import { getTodayISO, formatDate, formatDateShort, formatTime12h } from "@/lib/format";
 import { SITE_CONFIG, NAKSHATRA_TO_SIGN } from "@/lib/constants";
 import { getCityFaqs } from "@/lib/faqs";
 import { HeroSection } from "@/components/hero/hero-section";
@@ -42,13 +42,19 @@ export async function generateMetadata({
 }: CityPageProps): Promise<Metadata> {
   const { city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  // notFound() in generateMetadata aborts the metadata phase entirely so
+  // Next.js never caches metadata for an invalid slug — preventing the
+  // stale-200-prerender pathology where /madeupcity gets prerendered with
+  // the parent layout's `index, follow` robots meta and is then served from
+  // CDN cache for weeks. Pair with the noindex in [city]/not-found.tsx.
+  if (!city) notFound();
 
   const todayISO = getTodayISO();
   const shortToday = formatDateShort(todayISO);
 
   let tithi = "";
   let nakshatra = "";
+  let sunrise = "";
   try {
     const data = await fetchPanchang({
       targetDate: todayISO,
@@ -58,15 +64,24 @@ export async function generateMetadata({
     });
     tithi = data.day_quality.breakdown.tithi.name;
     nakshatra = data.day_quality.breakdown.nakshatra.name;
+    sunrise = formatTime12h(data.timing.sunrise);
   } catch {}
 
-  const titleText = tithi && nakshatra
-    ? `Panchang Today ${city.name} — ${tithi}, ${nakshatra}`
+  // Sunrise is the genuinely-per-city differentiator (~30 min spread across
+  // India). Tithi/Nakshatra are global so 216 cities otherwise ship identical
+  // suffixes — Google's near-duplicate detector then collapses them. Keeping
+  // sunrise in title makes every city's title meaningfully unique.
+  const titleText = tithi && sunrise
+    ? `Panchang Today ${city.name} — Sunrise ${sunrise}, ${tithi}`
     : `Panchang Today ${city.name} — Tithi, Nakshatra & Rahu Kaal`;
+
+  const description = sunrise && tithi
+    ? `${city.name} Panchang for ${shortToday}: Sunrise ${sunrise}, ${tithi}${nakshatra ? `, ${nakshatra}` : ""}. Rahu Kaal & Choghadiya timings calculated from local sunrise.`
+    : `Today's Panchang for ${city.name} on ${shortToday}. Tithi, Nakshatra, Rahu Kaal & Choghadiya timings. Accurate Vedic calendar updated daily.`;
 
   return {
     title: { absolute: titleText },
-    description: `Today's Panchang for ${city.name} on ${shortToday}. Tithi, Nakshatra, Rahu Kaal & Choghadiya timings. Accurate Vedic calendar updated daily.`,
+    description,
     alternates: {
       canonical: `${SITE_CONFIG.url}/${city.slug}`,
     },
@@ -138,7 +153,7 @@ export default async function CityPanchangPage({
         <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: "92%" }}>
           <div className="flex flex-col items-center text-center">
             <h1 className="animate-fade-in-up heading-display text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-              Panchang &mdash; {city.name}
+              Panchang Today &mdash; {city.name}
             </h1>
             <div className="mt-4 h-px w-24 bg-gradient-to-r from-transparent via-[#C4973B] to-transparent" />
             <p className="animate-fade-in-up-delay mt-4 text-lg tracking-wide text-white/60">
@@ -169,13 +184,16 @@ export default async function CityPanchangPage({
             }}
           />
         )}
+        {/* FAQPage schema intentionally NOT emitted here. The same 8 FAQs
+            string-substituted across 216 cities triggers Google's spam-FAQ
+            classifier. The visual FaqSection still renders for users; the
+            page-level WebPage + cityGraph schemas carry the entity weight. */}
         <JsonLd
           city={city.name}
           breadcrumbs={[
             { name: "Home", url: SITE_CONFIG.url },
             { name: `Panchang - ${city.name}`, url: `${SITE_CONFIG.url}/${city.slug}` },
           ]}
-          faqs={faqs}
         />
         <HeroSection data={data} locale="en" />
 
