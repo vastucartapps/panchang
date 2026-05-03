@@ -1,12 +1,36 @@
 import { IDS, REFS, BRAND_LOGO_URL, SITE_ORIGIN } from "./ids";
+import { getAllCities } from "@/lib/cities";
+
+const VASTUCART_ORIGIN = "https://www.vastucart.in";
+
+const ORGANIZATION_SAME_AS = [
+  "https://www.linkedin.com/company/vastucart",
+  "https://www.facebook.com/vastucartindia",
+  "https://www.instagram.com/vastucart/",
+  "https://in.pinterest.com/vastucart/",
+  "https://www.threads.com/@vastucart",
+  "https://x.com/vastucart",
+  "https://vastucart.etsy.com",
+  "https://www.amazon.in/s?k=vastucart",
+];
 
 // Emitted once on the homepage. Other pages reference these entities via
-// @id only (never redeclare). The @graph shape lets Google bind all three
+// @id only (never redeclare). The @graph shape lets Google bind all
 // entities to the same page in one parse.
 export function buildHomepageGraph(): object {
+  const cities = getAllCities();
+
   return {
     "@context": "https://schema.org",
     "@graph": [
+      {
+        "@type": "Organization",
+        "@id": REFS.organization,
+        name: "VastuCart",
+        url: VASTUCART_ORIGIN,
+        logo: BRAND_LOGO_URL,
+        sameAs: ORGANIZATION_SAME_AS,
+      },
       {
         "@type": "WebSite",
         "@id": IDS.website,
@@ -41,8 +65,20 @@ export function buildHomepageGraph(): object {
         "@type": "Brand",
         "@id": IDS.brand,
         name: "Panchang by VastuCart",
+        url: `${SITE_ORIGIN}/`,
         logo: BRAND_LOGO_URL,
         parentOrganization: { "@id": REFS.organization },
+      },
+      {
+        "@type": "ItemList",
+        name: "Aaj Ka Panchang for Indian cities",
+        numberOfItems: cities.length,
+        itemListElement: cities.map((c, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: c.name,
+          url: `${SITE_ORIGIN}/${c.slug}`,
+        })),
       },
     ],
   };
