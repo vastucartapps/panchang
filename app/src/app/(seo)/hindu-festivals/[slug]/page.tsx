@@ -95,11 +95,13 @@ function slugToApiKey(slug: string): string {
   return slug.replace(/-\d{4}$/, "").replace(/-/g, "_");
 }
 
-// At build phase: a single fetch only — fallback ±1-day lookups are a
-// runtime concern and would push per-page render past the 180s ceiling
-// when upstream is slow. Pages built without API data render the full
-// static layer (hero, story, traditions, content) and ISR upgrades them
-// on the next runtime hit.
+// At build phase: skip the upstream call entirely. The Coolify build
+// runs 11 Next.js workers behind upstream's 2-concurrent semaphore;
+// 30+ festival pages × queue depth pushes per-page render past the
+// 180s staticPageGenerationTimeout regardless of how many fetches each
+// page does. Festival pages render fully without API data (every
+// Panchang section is wrapped in `{data && …}`) and ISR populates
+// them on the first runtime request via the runtime branch below.
 const IS_BUILDING = process.env.NEXT_PHASE === "phase-production-build";
 
 async function fetchFestivalData(festival: Festival) {
@@ -113,13 +115,14 @@ async function fetchFestivalData(festival: Festival) {
   let data: PanchangResponse | null = null;
   let actualDate = festival.date;
 
-  try {
-    data = await fetchPanchangBuildSafe({ targetDate: festival.date, ...loc }, 3600);
-  } catch {
-    data = null;
-  }
-
   if (!IS_BUILDING) {
+    try {
+      data = await fetchPanchangBuildSafe({ targetDate: festival.date, ...loc }, 3600);
+    } catch {
+      data = null;
+    }
+
+
     const hasMatch = data?.festivals?.some((f) => f.key === apiKey);
 
     if (!hasMatch && data) {
