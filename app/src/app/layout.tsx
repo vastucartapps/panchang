@@ -62,6 +62,14 @@ export default function RootLayout({
             gtag('config', '${GA_ID}');
           `}
         </Script>
+        {/* AdSense initialization script */}
+        <Script
+          id="adsense-init"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1411902986257886"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <Script id="sw-register" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
@@ -70,8 +78,9 @@ export default function RootLayout({
           `}
         </Script>
       </head>
+      {/* Added google-anno-skip to protect the UI layout from Auto Ads mutations */}
       <body
-        className={`${merriweather.variable} ${inter.variable} antialiased`}
+        className={`${merriweather.variable} ${inter.variable} antialiased google-anno-skip`}
         suppressHydrationWarning
       >
         {children}
